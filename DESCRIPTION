@@ -1,0 +1,26 @@
+Package: dynacem
+Title: Evaluates Cost-Effectiveness Models With Dynamic Pricing And Uptake
+Version: 0.1.0.9000
+Authors@R: c(
+    person("Dominic", "Muston", , "dominic.muston@msd.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4876-7940")),
+    person("Merck & Co., Inc., Rahway, NJ, USA and its affiliates", role = c("cph", "fnd"))
+    )
+Description: Evaluates cost-effectiveness models with dynamic pricing and uptake.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    dplyr,
+    purrr,
+    readr,
+    rlang,
+    tidyr
+Suggests: 
+    heemod,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Depends: 
+    R (>= 3.5)
+LazyData: true
