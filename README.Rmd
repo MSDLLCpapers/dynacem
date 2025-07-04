@@ -28,18 +28,24 @@ Cost-effectiveness models are conventionally developed for single cohorts withou
 You can install the development version of dynacem from [GitHub](https://github.com/) with:
 
 ```{r install}
-# install.packages("pak")
-# pak::pak("MSDLLCpapers/dynacem")
+#| eval: false
+install.packages("pak")
+pak::pak("MSDLLCpapers/dynacem")
 ```
 
 ## Example
 
 Some example present value calculations are provided below for a single payoff. A typical cost-effectiveness model may involve several separate payoffs, for each intevention modeled, each with their own price index and discount rate.
 
+### Obtain payoffs vector
+
+In this case, we call out the drug acquisition cost of the new intervention (*cost_daq_new*), the total cost (*cost_total*) and QALYs (*qaly*) accumulated in each timestep. The *get_dynfields()* function will also calculated 'rolled-up' values as at the start of each timestep rather than discounted to time zero.
+
 ```{r getdata}
 # Load the dynacem package
 library(dynacem)
 library(ggplot2)
+library(tidyr)
 
 # Review oncpsm model (heemod object)
 oncpsm
@@ -51,15 +57,27 @@ democe <- get_dynfields(
     discount = "disc"
     )
 head(democe)
+```
 
+For this example, we are just interested in the payoff for drug acquisition costs of the new intervention.
+
+```{r payoffs}
 # Obtain a vector of payoffs
 payoffs <- democe |>
     dplyr::filter(int=="new") |>
-    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
+    dplyr::select(model_time, int, cost_daq_new, cost_daq_new_rup)
 payoffs
 ```
 
-Now let us calculate a discounted present value, given dynamic uptake (of one patient per timestep) and dynamic pricing. We assume that there are 52 timesteps per year and a discount rate of 3% (real) per year. The general rate of inflation is 5% per year. The underlying price of the payoff being costed rises with inflation of 5% for the first three years, then drops by 50%, where it rises by 4% per year.
+### Define dynamic pricing and uptake
+
+Now let us calculate a discounted present value, given dynamic uptake of one patient per timestep, and dynamic pricing.
+
+- We assume that there are 52 timesteps per year and a discount rate of 3% (real) per year.
+- The general rate of inflation is 5% per year.
+- The underlying price of the payoff being costed rises with inflation of 5% for the first three years, then drops by 50%, after which it rises by 4% per year.
+
+We create a price index twice as long as we need right now for reasons that should become clear later.
 
 ```{r calc1}
 # Time horizon
@@ -73,32 +91,65 @@ disc_pt <- (1+disc_py)^(1/52) - 1
 prices <- c(1.05^((1:156)/52), 0.5 * (1.05^3) * 1.04^((1:(2 * Nt-156))/52))
 
 # Graphically check the prices index
-dsprices <- tibble::tibble(
+tibble::tibble(
   years = (1:Nt)/52,
   prices = prices[1:Nt]
-)
-ggplot2::ggplot(dsprices, aes(x = years, y = prices)) +
-  geom_line()
+  ) |>
+  ggplot2::ggplot(aes(x = years, y = prices)) +
+    ggplot2::geom_line() +
+    ylim(0, 1.5)
+```
 
-# Calculate total discounted present value, given dynamic uptake and pricing
+### Calculate current present value
+
+Now with the payoff, uptake, pricing and discount rate set, we can call the *dynpv()* function and calculate the present value of the payoff.
+
+```{r calc_pv}
+# Calculate total discounted present value of drug acquisition costs, given dynamic uptake and pricing
 pv1 <- dynpv(
     uptakes = rep(1, Nt),
-    payoffs = payoffs$cost_oth,
+    payoffs = payoffs$cost_daq_new_rup,
     prices = prices[1:Nt],
     disc = disc_pt
     )
 pv1$results
 ```
 
-We also wish to calculate discounted present values into the future, say every annually for 10 years. We need a price index that lasts 30 years (20 year time horizon + up to 10 years of future evaluations). We would expect this to change over time due to the price index.
+### Present values into the future
+
+We also wish to calculate discounted present values (PV) into the future, say every annually for 10 years.
+
+We need a price index that lasts 30 years (20 year time horizon + up to 10 years of future evaluations). Fortunately our price index is 40 years long (2 x 20).
+
+We would expect the PV to change over time. The nominal PV will increase over time due to price inflation of of this payoff of 4\% per year. The real PV will decrease because the rate of price inflation of this particular payoff (4\% per year) is less than the general rate of inflation (5\% per year) factored into the nominal discount rate (8\% per year).
 
 ```{r calc2}
 # Present value at time 1, 53, 105, ...
 pv2 <- futurepv(
-  l = (1:10)*52 - 51,
-  payoffs = payoffs$cost_oth,
+  l = (1:11)*52 - 51,
+  payoffs = payoffs$cost_daq_new_rup,
   prices = prices,
   disc = disc_pt
 )
-pv2$results
+
+# Obtain a dataset of the real and nominal ICER over time
+ds <- pv2$results$mean |>
+  dplyr::rename(Nominal = mean) |>
+  dplyr::mutate(
+    Years = tzero/52,
+    pinfl = 1.05^Years,
+    Real = Nominal / pinfl
+    ) |>
+  tidyr::pivot_longer(
+    cols = c("Nominal", "Real"),
+    names_to = "Type",
+    values_to = "PV"
+  )
+
+# Plot real and nominal ICER over time
+ggplot2::ggplot(ds,
+  aes(x = Years, y = PV, color=Type)) +
+  ggplot2::geom_line() +
+  xlim(0, 10) +
+  ylim(0, 150000)
 ```
