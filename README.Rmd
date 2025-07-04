@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/MSDLLCpapers/dynacem/graph/badge.svg)](https://app.codecov.io/gh/MSDLLCpapers/dynacem)
 <!-- badges: end -->
 
-The goal of *dynacem* is to evaluates cost-effectiveness models with dynamic pricing and uptake.
+The goal of *dynacem* is to evaluate present values and cost-effectiveness models with dynamic pricing and uptake.
 
 Cost-effectiveness models are conventionally developed for single cohorts without considering of lifecycle drug pricing or other causes of dynamic pricing. This package allows calculation of cost-effectiveness results after applying dynamic pricing and dynamic uptake assumptions. The starting point is a conventional cohort cost-effectiveness model, such as one computed using the [heemod](https://cran.r-project.org/package=heemod) package.
 
