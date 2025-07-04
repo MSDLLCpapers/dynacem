@@ -8,6 +8,8 @@ Authors@R: c(
     )
 Description: Evaluates cost-effectiveness models with dynamic pricing and uptake.
 License: GPL (>= 3)
+URL: https://MSDLLCpapers.github.io/dynacem/, https://github.com/MSDLLCpapers/dynacem
+BugReports: https://github.com/MSDLLCpapers/dynacem/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
