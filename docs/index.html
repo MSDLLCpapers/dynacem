@@ -77,17 +77,22 @@
 </h2>
 <p>You can install the development version of dynacem from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="co"># pak::pak("MSDLLCpapers/dynacem")</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"MSDLLCpapers/dynacem"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <p>Some example present value calculations are provided below for a single payoff. A typical cost-effectiveness model may involve several separate payoffs, for each intevention modeled, each with their own price index and discount rate.</p>
+<div class="section level3">
+<h3 id="obtain-payoffs-vector">Obtain payoffs vector<a class="anchor" aria-label="anchor" href="#obtain-payoffs-vector"></a>
+</h3>
+<p>In this case, we call out the drug acquisition cost of the new intervention (<em>cost_daq_new</em>), the total cost (<em>cost_total</em>) and QALYs (<em>qaly</em>) accumulated in each timestep. The <em>get_dynfields()</em> function will also calculated ‘rolled-up’ values as at the start of each timestep rather than discounted to time zero.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the dynacem package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dynacem</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Review oncpsm model (heemod object)</span></span>
 <span><span class="va">oncpsm</span></span>
@@ -135,30 +140,40 @@
 <span><span class="co">#&gt; 4          4            0       721. 0.0150 soc   0.998                0</span></span>
 <span><span class="co">#&gt; 5          5            0       726. 0.0149 soc   0.998                0</span></span>
 <span><span class="co">#&gt; 6          6            0       730. 0.0148 soc   0.997                0</span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: cost_total_rup &lt;dbl&gt;, qaly_rup &lt;dbl&gt;</span></span>
-<span></span>
-<span><span class="co"># Obtain a vector of payoffs</span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: cost_total_rup &lt;dbl&gt;, qaly_rup &lt;dbl&gt;</span></span></code></pre></div>
+<p>For this example, we are just interested in the payoff for drug acquisition costs of the new intervention.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Obtain a vector of payoffs</span></span>
 <span><span class="va">payoffs</span> <span class="op">&lt;-</span> <span class="va">democe</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cost_oth <span class="op">=</span> <span class="va">cost_total</span> <span class="op">-</span> <span class="va">cost_daq_new</span><span class="op">)</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model_time</span>, <span class="va">int</span>, <span class="va">cost_daq_new</span>, <span class="va">cost_daq_new_rup</span><span class="op">)</span></span>
 <span><span class="va">payoffs</span></span>
-<span><span class="co">#&gt; # A tibble: 1,044 × 10</span></span>
-<span><span class="co">#&gt;    model_time cost_daq_new cost_total   qaly int      vt cost_daq_new_rup</span></span>
-<span><span class="co">#&gt;         &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;            &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1          1        1493.      1847. 0.0153 new   1                1493.</span></span>
-<span><span class="co">#&gt;  2          2        1477.      1831. 0.0153 new   0.999            1478.</span></span>
-<span><span class="co">#&gt;  3          3        1461.      1815. 0.0152 new   0.999            1463.</span></span>
-<span><span class="co">#&gt;  4          4        1446.      1799. 0.0152 new   0.998            1448.</span></span>
-<span><span class="co">#&gt;  5          5        1431.      1783. 0.0151 new   0.998            1434.</span></span>
-<span><span class="co">#&gt;  6          6        1416.      1766. 0.0150 new   0.997            1420.</span></span>
-<span><span class="co">#&gt;  7          7        1401.      1750. 0.0149 new   0.997            1406.</span></span>
-<span><span class="co">#&gt;  8          8        1386.      1733. 0.0148 new   0.996            1392.</span></span>
-<span><span class="co">#&gt;  9          9        1372.      1717. 0.0147 new   0.995            1378.</span></span>
-<span><span class="co">#&gt; 10         10        1357.      1700. 0.0146 new   0.995            1364.</span></span>
-<span><span class="co">#&gt; # ℹ 1,034 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 3 more variables: cost_total_rup &lt;dbl&gt;, qaly_rup &lt;dbl&gt;, cost_oth &lt;dbl&gt;</span></span></code></pre></div>
-<p>Now let us calculate a discounted present value, given dynamic uptake (of one patient per timestep) and dynamic pricing. We assume that there are 52 timesteps per year and a discount rate of 3% (real) per year. The general rate of inflation is 5% per year. The underlying price of the payoff being costed rises with inflation of 5% for the first three years, then drops by 50%, where it rises by 4% per year.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; # A tibble: 1,044 × 4</span></span>
+<span><span class="co">#&gt;    model_time int   cost_daq_new cost_daq_new_rup</span></span>
+<span><span class="co">#&gt;         &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;            &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1          1 new          1493.            1493.</span></span>
+<span><span class="co">#&gt;  2          2 new          1477.            1478.</span></span>
+<span><span class="co">#&gt;  3          3 new          1461.            1463.</span></span>
+<span><span class="co">#&gt;  4          4 new          1446.            1448.</span></span>
+<span><span class="co">#&gt;  5          5 new          1431.            1434.</span></span>
+<span><span class="co">#&gt;  6          6 new          1416.            1420.</span></span>
+<span><span class="co">#&gt;  7          7 new          1401.            1406.</span></span>
+<span><span class="co">#&gt;  8          8 new          1386.            1392.</span></span>
+<span><span class="co">#&gt;  9          9 new          1372.            1378.</span></span>
+<span><span class="co">#&gt; 10         10 new          1357.            1364.</span></span>
+<span><span class="co">#&gt; # ℹ 1,034 more rows</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="define-dynamic-pricing-and-uptake">Define dynamic pricing and uptake<a class="anchor" aria-label="anchor" href="#define-dynamic-pricing-and-uptake"></a>
+</h3>
+<p>Now let us calculate a discounted present value, given dynamic uptake of one patient per timestep, and dynamic pricing.</p>
+<ul>
+<li>We assume that there are 52 timesteps per year and a discount rate of 3% (real) per year.</li>
+<li>The general rate of inflation is 5% per year.</li>
+<li>The underlying price of the payoff being costed rises with inflation of 5% for the first three years, then drops by 50%, after which it rises by 4% per year.</li>
+</ul>
+<p>We create a price index twice as long as we need right now for reasons that should become clear later.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time horizon</span></span>
 <span><span class="va">Nt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">)</span></span>
 <span></span>
@@ -170,19 +185,24 @@
 <span><span class="va">prices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.05</span><span class="op">^</span><span class="op">(</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">156</span><span class="op">)</span><span class="op">/</span><span class="fl">52</span><span class="op">)</span>, <span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1.05</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.04</span><span class="op">^</span><span class="op">(</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">Nt</span><span class="op">-</span><span class="fl">156</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">52</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Graphically check the prices index</span></span>
-<span><span class="va">dsprices</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  years <span class="op">=</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">Nt</span><span class="op">)</span><span class="op">/</span><span class="fl">52</span>,</span>
 <span>  prices <span class="op">=</span> <span class="va">prices</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">Nt</span><span class="op">]</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dsprices</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">years</span>, y <span class="op">=</span> <span class="va">prices</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">years</span>, y <span class="op">=</span> <span class="va">prices</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-calc1-1.png" width="100%"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Calculate total discounted present value, given dynamic uptake and pricing</span></span>
+</div>
+<div class="section level3">
+<h3 id="calculate-current-present-value">Calculate current present value<a class="anchor" aria-label="anchor" href="#calculate-current-present-value"></a>
+</h3>
+<p>Now with the payoff, uptake, pricing and discount rate set, we can call the <em>dynpv()</em> function and calculate the present value of the payoff.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Calculate total discounted present value of drug acquisition costs, given dynamic uptake and pricing</span></span>
 <span><span class="va">pv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
 <span>    uptakes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">Nt</span><span class="op">)</span>,</span>
-<span>    payoffs <span class="op">=</span> <span class="va">payoffs</span><span class="op">$</span><span class="va">cost_oth</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">payoffs</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">Nt</span><span class="op">]</span>,</span>
 <span>    disc <span class="op">=</span> <span class="va">disc_pt</span></span>
 <span>    <span class="op">)</span></span>
@@ -197,115 +217,77 @@
 <span><span class="co">#&gt; # A tibble: 545,490 × 9</span></span>
 <span><span class="co">#&gt;        j     k     l     t    uj    pk     R     v    pv</span></span>
 <span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1     1     1     0     1     1  355.  1.00 1      355.</span></span>
-<span><span class="co">#&gt;  2     1     2     0     2     1  354.  1.00 0.999  354.</span></span>
-<span><span class="co">#&gt;  3     1     3     0     3     1  354.  1.00 0.997  354.</span></span>
-<span><span class="co">#&gt;  4     1     4     0     4     1  353.  1.00 0.996  353.</span></span>
-<span><span class="co">#&gt;  5     1     5     0     5     1  352.  1.00 0.994  351.</span></span>
-<span><span class="co">#&gt;  6     1     6     0     6     1  351.  1.01 0.993  350.</span></span>
-<span><span class="co">#&gt;  7     1     7     0     7     1  349.  1.01 0.991  348.</span></span>
-<span><span class="co">#&gt;  8     1     8     0     8     1  347.  1.01 0.990  346.</span></span>
-<span><span class="co">#&gt;  9     1     9     0     9     1  345.  1.01 0.988  344.</span></span>
-<span><span class="co">#&gt; 10     1    10     0    10     1  343.  1.01 0.987  342.</span></span>
+<span><span class="co">#&gt;  1     1     1     0     1     1 1493.  1.00 1     1494.</span></span>
+<span><span class="co">#&gt;  2     1     2     0     2     1 1478.  1.00 0.999 1478.</span></span>
+<span><span class="co">#&gt;  3     1     3     0     3     1 1463.  1.00 0.997 1463.</span></span>
+<span><span class="co">#&gt;  4     1     4     0     4     1 1448.  1.00 0.996 1447.</span></span>
+<span><span class="co">#&gt;  5     1     5     0     5     1 1434.  1.00 0.994 1432.</span></span>
+<span><span class="co">#&gt;  6     1     6     0     6     1 1420.  1.01 0.993 1417.</span></span>
+<span><span class="co">#&gt;  7     1     7     0     7     1 1406.  1.01 0.991 1402.</span></span>
+<span><span class="co">#&gt;  8     1     8     0     8     1 1392.  1.01 0.990 1388.</span></span>
+<span><span class="co">#&gt;  9     1     9     0     9     1 1378.  1.01 0.988 1373.</span></span>
+<span><span class="co">#&gt; 10     1    10     0    10     1 1364.  1.01 0.987 1359.</span></span>
 <span><span class="co">#&gt; # ℹ 545,480 more rows</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $cohpv</span></span>
 <span><span class="co">#&gt; # A tibble: 1,044 × 3</span></span>
-<span><span class="co">#&gt;        j tzero    spv</span></span>
-<span><span class="co">#&gt;    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1     1     0 38831.</span></span>
-<span><span class="co">#&gt;  2     2     0 38760.</span></span>
-<span><span class="co">#&gt;  3     3     0 38689.</span></span>
-<span><span class="co">#&gt;  4     4     0 38617.</span></span>
-<span><span class="co">#&gt;  5     5     0 38545.</span></span>
-<span><span class="co">#&gt;  6     6     0 38473.</span></span>
-<span><span class="co">#&gt;  7     7     0 38401.</span></span>
-<span><span class="co">#&gt;  8     8     0 38328.</span></span>
-<span><span class="co">#&gt;  9     9     0 38255.</span></span>
-<span><span class="co">#&gt; 10    10     0 38182.</span></span>
+<span><span class="co">#&gt;        j tzero     spv</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1     1     0 128471.</span></span>
+<span><span class="co">#&gt;  2     2     0 128253.</span></span>
+<span><span class="co">#&gt;  3     3     0 128034.</span></span>
+<span><span class="co">#&gt;  4     4     0 127813.</span></span>
+<span><span class="co">#&gt;  5     5     0 127592.</span></span>
+<span><span class="co">#&gt;  6     6     0 127368.</span></span>
+<span><span class="co">#&gt;  7     7     0 127143.</span></span>
+<span><span class="co">#&gt;  8     8     0 126917.</span></span>
+<span><span class="co">#&gt;  9     9     0 126689.</span></span>
+<span><span class="co">#&gt; 10    10     0 126460.</span></span>
 <span><span class="co">#&gt; # ℹ 1,034 more rows</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $total</span></span>
-<span><span class="co">#&gt; [1] 16770896</span></span>
+<span><span class="co">#&gt; [1] 54847752</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $mean</span></span>
-<span><span class="co">#&gt; [1] 16064.08</span></span></code></pre></div>
-<p>We also wish to calculate discounted present values into the future, say every annually for 10 years. We need a price index that lasts 30 years (20 year time horizon + up to 10 years of future evaluations). We would expect this to change over time due to the price index.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; [1] 52536.16</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="present-values-into-the-future">Present values into the future<a class="anchor" aria-label="anchor" href="#present-values-into-the-future"></a>
+</h3>
+<p>We also wish to calculate discounted present values (PV) into the future, say every annually for 10 years.</p>
+<p>We need a price index that lasts 30 years (20 year time horizon + up to 10 years of future evaluations). Fortunately our price index is 40 years long (2 x 20).</p>
+<p>We would expect the PV to change over time. The nominal PV will increase over time due to price inflation of of this payoff of 4% per year. The real PV will decrease because the rate of price inflation of this particular payoff (4% per year) is less than the general rate of inflation (5% per year) factored into the nominal discount rate (8% per year).</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Present value at time 1, 53, 105, ...</span></span>
 <span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
-<span>  l <span class="op">=</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fl">52</span> <span class="op">-</span> <span class="fl">51</span>,</span>
-<span>  payoffs <span class="op">=</span> <span class="va">payoffs</span><span class="op">$</span><span class="va">cost_oth</span>,</span>
+<span>  l <span class="op">=</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">11</span><span class="op">)</span><span class="op">*</span><span class="fl">52</span> <span class="op">-</span> <span class="fl">51</span>,</span>
+<span>  payoffs <span class="op">=</span> <span class="va">payoffs</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>  prices <span class="op">=</span> <span class="va">prices</span>,</span>
 <span>  disc <span class="op">=</span> <span class="va">disc_pt</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; $ncoh</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $uptake</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $calc</span></span>
-<span><span class="co">#&gt; # A tibble: 10,440 × 9</span></span>
-<span><span class="co">#&gt;        j     k     l     t    uj    pk     R     v    pv</span></span>
-<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1     1     1     0     1     1  355. 1.00      1  355.</span></span>
-<span><span class="co">#&gt;  2     1     1    52     1     1  355. 1.05      1  373.</span></span>
-<span><span class="co">#&gt;  3     1     1   104     1     1  355. 1.10      1  392.</span></span>
-<span><span class="co">#&gt;  4     1     1   156     1     1  355. 0.579     1  206.</span></span>
-<span><span class="co">#&gt;  5     1     1   208     1     1  355. 0.602     1  214.</span></span>
-<span><span class="co">#&gt;  6     1     1   260     1     1  355. 0.627     1  222.</span></span>
-<span><span class="co">#&gt;  7     1     1   312     1     1  355. 0.652     1  231.</span></span>
-<span><span class="co">#&gt;  8     1     1   364     1     1  355. 0.678     1  240.</span></span>
-<span><span class="co">#&gt;  9     1     1   416     1     1  355. 0.705     1  250.</span></span>
-<span><span class="co">#&gt; 10     1     1   468     1     1  355. 0.733     1  260.</span></span>
-<span><span class="co">#&gt; # ℹ 10,430 more rows</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $cohpv</span></span>
-<span><span class="co">#&gt; # A tibble: 10 × 3</span></span>
-<span><span class="co">#&gt;        j tzero    spv</span></span>
-<span><span class="co">#&gt;    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1     1     0 38831.</span></span>
-<span><span class="co">#&gt;  2     1    52 37503.</span></span>
-<span><span class="co">#&gt;  3     1   104 34075.</span></span>
-<span><span class="co">#&gt;  4     1   156 26691.</span></span>
-<span><span class="co">#&gt;  5     1   208 27759.</span></span>
-<span><span class="co">#&gt;  6     1   260 28869.</span></span>
-<span><span class="co">#&gt;  7     1   312 30024.</span></span>
-<span><span class="co">#&gt;  8     1   364 31225.</span></span>
-<span><span class="co">#&gt;  9     1   416 32474.</span></span>
-<span><span class="co">#&gt; 10     1   468 33773.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $total</span></span>
-<span><span class="co">#&gt; # A tibble: 10 × 2</span></span>
-<span><span class="co">#&gt;    tzero  total</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1     0 38831.</span></span>
-<span><span class="co">#&gt;  2    52 37503.</span></span>
-<span><span class="co">#&gt;  3   104 34075.</span></span>
-<span><span class="co">#&gt;  4   156 26691.</span></span>
-<span><span class="co">#&gt;  5   208 27759.</span></span>
-<span><span class="co">#&gt;  6   260 28869.</span></span>
-<span><span class="co">#&gt;  7   312 30024.</span></span>
-<span><span class="co">#&gt;  8   364 31225.</span></span>
-<span><span class="co">#&gt;  9   416 32474.</span></span>
-<span><span class="co">#&gt; 10   468 33773.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $mean</span></span>
-<span><span class="co">#&gt; # A tibble: 10 × 2</span></span>
-<span><span class="co">#&gt;    tzero   mean</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1     0 38831.</span></span>
-<span><span class="co">#&gt;  2    52 37503.</span></span>
-<span><span class="co">#&gt;  3   104 34075.</span></span>
-<span><span class="co">#&gt;  4   156 26691.</span></span>
-<span><span class="co">#&gt;  5   208 27759.</span></span>
-<span><span class="co">#&gt;  6   260 28869.</span></span>
-<span><span class="co">#&gt;  7   312 30024.</span></span>
-<span><span class="co">#&gt;  8   364 31225.</span></span>
-<span><span class="co">#&gt;  9   416 32474.</span></span>
-<span><span class="co">#&gt; 10   468 33773.</span></span></code></pre></div>
+<span></span>
+<span><span class="co"># Obtain a dataset of the real and nominal ICER over time</span></span>
+<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="va">pv2</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">mean</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Nominal <span class="op">=</span> <span class="va">mean</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    Years <span class="op">=</span> <span class="va">tzero</span><span class="op">/</span><span class="fl">52</span>,</span>
+<span>    pinfl <span class="op">=</span> <span class="fl">1.05</span><span class="op">^</span><span class="va">Years</span>,</span>
+<span>    Real <span class="op">=</span> <span class="va">Nominal</span> <span class="op">/</span> <span class="va">pinfl</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nominal"</span>, <span class="st">"Real"</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"Type"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"PV"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot real and nominal ICER over time</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ds</span>,</span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Years</span>, y <span class="op">=</span> <span class="va">PV</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150000</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-calc2-1.png" width="100%"></p>
+</div>
 </div>
 </div>
   </div>

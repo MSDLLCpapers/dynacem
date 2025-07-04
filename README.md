@@ -4,6 +4,7 @@
 # dynacem: Evaluate cost-effectiveness models with dynamic pricing and uptake <img src="man/figures/logo.png" align="right" height="139" />
 
 <!-- badges: start -->
+
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
@@ -25,8 +26,8 @@ You can install the development version of dynacem from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("pak")
-# pak::pak("MSDLLCpapers/dynacem")
+install.packages("pak")
+pak::pak("MSDLLCpapers/dynacem")
 ```
 
 ## Example
@@ -36,10 +37,19 @@ payoff. A typical cost-effectiveness model may involve several separate
 payoffs, for each intevention modeled, each with their own price index
 and discount rate.
 
+### Obtain payoffs vector
+
+In this case, we call out the drug acquisition cost of the new
+intervention (*cost_daq_new*), the total cost (*cost_total*) and QALYs
+(*qaly*) accumulated in each timestep. The *get_dynfields()* function
+will also calculated ‘rolled-up’ values as at the start of each timestep
+rather than discounted to time zero.
+
 ``` r
 # Load the dynacem package
 library(dynacem)
 library(ggplot2)
+library(tidyr)
 
 # Review oncpsm model (heemod object)
 oncpsm
@@ -88,35 +98,47 @@ head(democe)
 #> 5          5            0       726. 0.0149 soc   0.998                0
 #> 6          6            0       730. 0.0148 soc   0.997                0
 #> # ℹ 2 more variables: cost_total_rup <dbl>, qaly_rup <dbl>
+```
 
+For this example, we are just interested in the payoff for drug
+acquisition costs of the new intervention.
+
+``` r
 # Obtain a vector of payoffs
 payoffs <- democe |>
     dplyr::filter(int=="new") |>
-    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
+    dplyr::select(model_time, int, cost_daq_new, cost_daq_new_rup)
 payoffs
-#> # A tibble: 1,044 × 10
-#>    model_time cost_daq_new cost_total   qaly int      vt cost_daq_new_rup
-#>         <int>        <dbl>      <dbl>  <dbl> <chr> <dbl>            <dbl>
-#>  1          1        1493.      1847. 0.0153 new   1                1493.
-#>  2          2        1477.      1831. 0.0153 new   0.999            1478.
-#>  3          3        1461.      1815. 0.0152 new   0.999            1463.
-#>  4          4        1446.      1799. 0.0152 new   0.998            1448.
-#>  5          5        1431.      1783. 0.0151 new   0.998            1434.
-#>  6          6        1416.      1766. 0.0150 new   0.997            1420.
-#>  7          7        1401.      1750. 0.0149 new   0.997            1406.
-#>  8          8        1386.      1733. 0.0148 new   0.996            1392.
-#>  9          9        1372.      1717. 0.0147 new   0.995            1378.
-#> 10         10        1357.      1700. 0.0146 new   0.995            1364.
+#> # A tibble: 1,044 × 4
+#>    model_time int   cost_daq_new cost_daq_new_rup
+#>         <int> <chr>        <dbl>            <dbl>
+#>  1          1 new          1493.            1493.
+#>  2          2 new          1477.            1478.
+#>  3          3 new          1461.            1463.
+#>  4          4 new          1446.            1448.
+#>  5          5 new          1431.            1434.
+#>  6          6 new          1416.            1420.
+#>  7          7 new          1401.            1406.
+#>  8          8 new          1386.            1392.
+#>  9          9 new          1372.            1378.
+#> 10         10 new          1357.            1364.
 #> # ℹ 1,034 more rows
-#> # ℹ 3 more variables: cost_total_rup <dbl>, qaly_rup <dbl>, cost_oth <dbl>
 ```
 
-Now let us calculate a discounted present value, given dynamic uptake
-(of one patient per timestep) and dynamic pricing. We assume that there
-are 52 timesteps per year and a discount rate of 3% (real) per year. The
-general rate of inflation is 5% per year. The underlying price of the
-payoff being costed rises with inflation of 5% for the first three
-years, then drops by 50%, where it rises by 4% per year.
+### Define dynamic pricing and uptake
+
+Now let us calculate a discounted present value, given dynamic uptake of
+one patient per timestep, and dynamic pricing.
+
+- We assume that there are 52 timesteps per year and a discount rate of
+  3% (real) per year.
+- The general rate of inflation is 5% per year.
+- The underlying price of the payoff being costed rises with inflation
+  of 5% for the first three years, then drops by 50%, after which it
+  rises by 4% per year.
+
+We create a price index twice as long as we need right now for reasons
+that should become clear later.
 
 ``` r
 # Time horizon
@@ -130,22 +152,27 @@ disc_pt <- (1+disc_py)^(1/52) - 1
 prices <- c(1.05^((1:156)/52), 0.5 * (1.05^3) * 1.04^((1:(2 * Nt-156))/52))
 
 # Graphically check the prices index
-dsprices <- tibble::tibble(
+tibble::tibble(
   years = (1:Nt)/52,
   prices = prices[1:Nt]
-)
-ggplot2::ggplot(dsprices, aes(x = years, y = prices)) +
-  geom_line()
+  ) |>
+  ggplot2::ggplot(aes(x = years, y = prices)) +
+    ggplot2::geom_line() +
+    ylim(0, 1.5)
 ```
 
 <img src="man/figures/README-calc1-1.png" width="100%" />
 
-``` r
+### Calculate current present value
 
-# Calculate total discounted present value, given dynamic uptake and pricing
+Now with the payoff, uptake, pricing and discount rate set, we can call
+the *dynpv()* function and calculate the present value of the payoff.
+
+``` r
+# Calculate total discounted present value of drug acquisition costs, given dynamic uptake and pricing
 pv1 <- dynpv(
     uptakes = rep(1, Nt),
-    payoffs = payoffs$cost_oth,
+    payoffs = payoffs$cost_daq_new_rup,
     prices = prices[1:Nt],
     disc = disc_pt
     )
@@ -160,119 +187,86 @@ pv1$results
 #> # A tibble: 545,490 × 9
 #>        j     k     l     t    uj    pk     R     v    pv
 #>    <int> <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1     1     1     0     1     1  355.  1.00 1      355.
-#>  2     1     2     0     2     1  354.  1.00 0.999  354.
-#>  3     1     3     0     3     1  354.  1.00 0.997  354.
-#>  4     1     4     0     4     1  353.  1.00 0.996  353.
-#>  5     1     5     0     5     1  352.  1.00 0.994  351.
-#>  6     1     6     0     6     1  351.  1.01 0.993  350.
-#>  7     1     7     0     7     1  349.  1.01 0.991  348.
-#>  8     1     8     0     8     1  347.  1.01 0.990  346.
-#>  9     1     9     0     9     1  345.  1.01 0.988  344.
-#> 10     1    10     0    10     1  343.  1.01 0.987  342.
+#>  1     1     1     0     1     1 1493.  1.00 1     1494.
+#>  2     1     2     0     2     1 1478.  1.00 0.999 1478.
+#>  3     1     3     0     3     1 1463.  1.00 0.997 1463.
+#>  4     1     4     0     4     1 1448.  1.00 0.996 1447.
+#>  5     1     5     0     5     1 1434.  1.00 0.994 1432.
+#>  6     1     6     0     6     1 1420.  1.01 0.993 1417.
+#>  7     1     7     0     7     1 1406.  1.01 0.991 1402.
+#>  8     1     8     0     8     1 1392.  1.01 0.990 1388.
+#>  9     1     9     0     9     1 1378.  1.01 0.988 1373.
+#> 10     1    10     0    10     1 1364.  1.01 0.987 1359.
 #> # ℹ 545,480 more rows
 #> 
 #> $cohpv
 #> # A tibble: 1,044 × 3
-#>        j tzero    spv
-#>    <int> <dbl>  <dbl>
-#>  1     1     0 38831.
-#>  2     2     0 38760.
-#>  3     3     0 38689.
-#>  4     4     0 38617.
-#>  5     5     0 38545.
-#>  6     6     0 38473.
-#>  7     7     0 38401.
-#>  8     8     0 38328.
-#>  9     9     0 38255.
-#> 10    10     0 38182.
+#>        j tzero     spv
+#>    <int> <dbl>   <dbl>
+#>  1     1     0 128471.
+#>  2     2     0 128253.
+#>  3     3     0 128034.
+#>  4     4     0 127813.
+#>  5     5     0 127592.
+#>  6     6     0 127368.
+#>  7     7     0 127143.
+#>  8     8     0 126917.
+#>  9     9     0 126689.
+#> 10    10     0 126460.
 #> # ℹ 1,034 more rows
 #> 
 #> $total
-#> [1] 16770896
+#> [1] 54847752
 #> 
 #> $mean
-#> [1] 16064.08
+#> [1] 52536.16
 ```
 
-We also wish to calculate discounted present values into the future, say
-every annually for 10 years. We need a price index that lasts 30 years
-(20 year time horizon + up to 10 years of future evaluations). We would
-expect this to change over time due to the price index.
+### Present values into the future
+
+We also wish to calculate discounted present values (PV) into the
+future, say every annually for 10 years.
+
+We need a price index that lasts 30 years (20 year time horizon + up to
+10 years of future evaluations). Fortunately our price index is 40 years
+long (2 x 20).
+
+We would expect the PV to change over time. The nominal PV will increase
+over time due to price inflation of of this payoff of 4% per year. The
+real PV will decrease because the rate of price inflation of this
+particular payoff (4% per year) is less than the general rate of
+inflation (5% per year) factored into the nominal discount rate (8% per
+year).
 
 ``` r
 # Present value at time 1, 53, 105, ...
 pv2 <- futurepv(
-  l = (1:10)*52 - 51,
-  payoffs = payoffs$cost_oth,
+  l = (1:11)*52 - 51,
+  payoffs = payoffs$cost_daq_new_rup,
   prices = prices,
   disc = disc_pt
 )
-pv2$results
-#> $ncoh
-#> [1] 1
-#> 
-#> $uptake
-#> [1] 1
-#> 
-#> $calc
-#> # A tibble: 10,440 × 9
-#>        j     k     l     t    uj    pk     R     v    pv
-#>    <int> <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1     1     1     0     1     1  355. 1.00      1  355.
-#>  2     1     1    52     1     1  355. 1.05      1  373.
-#>  3     1     1   104     1     1  355. 1.10      1  392.
-#>  4     1     1   156     1     1  355. 0.579     1  206.
-#>  5     1     1   208     1     1  355. 0.602     1  214.
-#>  6     1     1   260     1     1  355. 0.627     1  222.
-#>  7     1     1   312     1     1  355. 0.652     1  231.
-#>  8     1     1   364     1     1  355. 0.678     1  240.
-#>  9     1     1   416     1     1  355. 0.705     1  250.
-#> 10     1     1   468     1     1  355. 0.733     1  260.
-#> # ℹ 10,430 more rows
-#> 
-#> $cohpv
-#> # A tibble: 10 × 3
-#>        j tzero    spv
-#>    <int> <dbl>  <dbl>
-#>  1     1     0 38831.
-#>  2     1    52 37503.
-#>  3     1   104 34075.
-#>  4     1   156 26691.
-#>  5     1   208 27759.
-#>  6     1   260 28869.
-#>  7     1   312 30024.
-#>  8     1   364 31225.
-#>  9     1   416 32474.
-#> 10     1   468 33773.
-#> 
-#> $total
-#> # A tibble: 10 × 2
-#>    tzero  total
-#>    <dbl>  <dbl>
-#>  1     0 38831.
-#>  2    52 37503.
-#>  3   104 34075.
-#>  4   156 26691.
-#>  5   208 27759.
-#>  6   260 28869.
-#>  7   312 30024.
-#>  8   364 31225.
-#>  9   416 32474.
-#> 10   468 33773.
-#> 
-#> $mean
-#> # A tibble: 10 × 2
-#>    tzero   mean
-#>    <dbl>  <dbl>
-#>  1     0 38831.
-#>  2    52 37503.
-#>  3   104 34075.
-#>  4   156 26691.
-#>  5   208 27759.
-#>  6   260 28869.
-#>  7   312 30024.
-#>  8   364 31225.
-#>  9   416 32474.
-#> 10   468 33773.
+
+# Obtain a dataset of the real and nominal ICER over time
+ds <- pv2$results$mean |>
+  dplyr::rename(Nominal = mean) |>
+  dplyr::mutate(
+    Years = tzero/52,
+    pinfl = 1.05^Years,
+    Real = Nominal / pinfl
+    ) |>
+  tidyr::pivot_longer(
+    cols = c("Nominal", "Real"),
+    names_to = "Type",
+    values_to = "PV"
+  )
+
+# Plot real and nominal ICER over time
+ggplot2::ggplot(ds,
+  aes(x = Years, y = PV, color=Type)) +
+  ggplot2::geom_line() +
+  xlim(0, 10) +
+  ylim(0, 150000)
 ```
+
+<img src="man/figures/README-calc2-1.png" width="100%" />
