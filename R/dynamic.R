@@ -45,13 +45,15 @@ trim_vec <- function(vec){
 #' @param payoffs Vector of payoffs of interest (numeric vector) 
 #' @param prices Vector of price indices through the time horizon of interest
 #' @param discrate Discount rate per timestep, corresponding to price index
-#' @returns List including
-#' - calc: Tibble of calculation results
-#' - cohpv: Tibble of summarized calculation results for each uptake cohort
-#' - total: Total present value
-#' - ncoh: Number of cohorts of uptaking patients
-#' - uptake: Total number of uptaking patients
-#' - mean: Average present value per uptaking patient (=total/uptake)
+#' @returns Two lists named `inputs` and `results`.
+#' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
+#' The `results` list contains the following elements:
+#' - `ncoh`: Number of cohorts of uptaking patients
+#' - `uptake`: Total number of uptaking patients
+#' - `calc`: Tibble of calculation results
+#' - `cohpv`: Tibble of summarized calculation results for each uptake cohort
+#' - `total`: Total present value
+#' - `mean`: Average present value per uptaking patient (=total/uptake)
 #' @export
 #' @importFrom rlang .data
 #' @examples
@@ -62,9 +64,9 @@ trim_vec <- function(vec){
 #'    discount = "disc"
 #'    )
 #' 
-#' # Obtain payoff vector of interest
+#' # Obtain short payoff vector of interest
 #' payoffs <- democe |>
-#'    dplyr::filter(int=="new") |>
+#'    dplyr::filter(int=="new", model_time<11) |>
 #'    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
 #' Nt <- nrow(payoffs)
 #' 
@@ -72,8 +74,8 @@ trim_vec <- function(vec){
 #' dynpv(
 #'    uptakes = rep(1, Nt),
 #'    payoffs = payoffs$cost_oth,
-#'    prices = 1 + (1:Nt)*0.05/52,
-#'    discrate = (0.05 + 0.03)/52 
+#'    prices = 1 + (1:Nt)*0.05,
+#'    discrate = 0.08 
 #' )
 dynpv <- function(
     uptakes = 1,

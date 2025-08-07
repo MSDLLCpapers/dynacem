@@ -27,14 +27,16 @@ dynpv(
 \item{discrate}{Discount rate per timestep, corresponding to price index}
 }
 \value{
-List including
+Two lists named \code{inputs} and \code{results}.
+The \code{inputs} list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
+The \code{results} list contains the following elements:
 \itemize{
-\item calc: Tibble of calculation results
-\item cohpv: Tibble of summarized calculation results for each uptake cohort
-\item total: Total present value
-\item ncoh: Number of cohorts of uptaking patients
-\item uptake: Total number of uptaking patients
-\item mean: Average present value per uptaking patient (=total/uptake)
+\item \code{ncoh}: Number of cohorts of uptaking patients
+\item \code{uptake}: Total number of uptaking patients
+\item \code{calc}: Tibble of calculation results
+\item \code{cohpv}: Tibble of summarized calculation results for each uptake cohort
+\item \code{total}: Total present value
+\item \code{mean}: Average present value per uptaking patient (=total/uptake)
 }
 }
 \description{
@@ -48,9 +50,9 @@ democe <- get_dynfields(
    discount = "disc"
    )
 
-# Obtain payoff vector of interest
+# Obtain short payoff vector of interest
 payoffs <- democe |>
-   dplyr::filter(int=="new") |>
+   dplyr::filter(int=="new", model_time<11) |>
    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
 Nt <- nrow(payoffs)
 
@@ -58,7 +60,7 @@ Nt <- nrow(payoffs)
 dynpv(
    uptakes = rep(1, Nt),
    payoffs = payoffs$cost_oth,
-   prices = 1 + (1:Nt)*0.05/52,
-   discrate = (0.05 + 0.03)/52 
+   prices = 1 + (1:Nt)*0.05,
+   discrate = 0.08 
 )
 }
