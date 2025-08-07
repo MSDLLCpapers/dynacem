@@ -264,9 +264,9 @@
 <p>We need a price index that lasts 30 years (20 year time horizon + up to 10 years of future evaluations). Fortunately our price index is 40 years long (2 x 20).</p>
 <p>We would expect the PV to change over time. The nominal PV will increase over time due to price inflation of of this payoff of 4% per year. The real PV will decrease because the rate of price inflation of this particular payoff (4% per year) is less than the general rate of inflation (5% per year) factored into the nominal discount rate (8% per year).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Present value at time 1, 53, 105, ...</span></span>
+<code class="sourceCode R"><span><span class="co"># Present value at time 0, 52, 104, ...</span></span>
 <span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
-<span>  tzero <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fl">52</span>,</span>
+<span>  tzero <span class="op">=</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fl">52</span>,</span>
 <span>  payoffs <span class="op">=</span> <span class="va">payoffs</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>  prices <span class="op">=</span> <span class="va">prices</span>,</span>
 <span>  disc <span class="op">=</span> <span class="va">disc_pt</span></span>
@@ -291,9 +291,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Years</span>, y <span class="op">=</span> <span class="va">PV</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150000</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150000</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-calc2-1.png" width="100%"></p>
 </div>
 </div>
