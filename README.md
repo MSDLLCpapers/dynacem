@@ -242,9 +242,9 @@ inflation (5% per year) factored into the nominal discount rate (8% per
 year).
 
 ``` r
-# Present value at time 1, 53, 105, ...
+# Present value at time 0, 52, 104, ...
 pv2 <- futurepv(
-  tzero = 1 + (0:10)*52,
+  tzero = (0:10)*52,
   payoffs = payoffs$cost_daq_new_rup,
   prices = prices,
   disc = disc_pt
@@ -270,8 +270,6 @@ ggplot2::ggplot(ds,
   ggplot2::geom_line() +
   xlim(0, 10) +
   ylim(0, 150000)
-#> Warning: Removed 2 rows containing missing values or values outside the scale range
-#> (`geom_line()`).
 ```
 
 <img src="man/figures/README-calc2-1.png" width="100%" />

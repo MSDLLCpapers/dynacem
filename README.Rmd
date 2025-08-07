@@ -126,9 +126,9 @@ We need a price index that lasts 30 years (20 year time horizon + up to 10 years
 We would expect the PV to change over time. The nominal PV will increase over time due to price inflation of of this payoff of 4\% per year. The real PV will decrease because the rate of price inflation of this particular payoff (4\% per year) is less than the general rate of inflation (5\% per year) factored into the nominal discount rate (8\% per year).
 
 ```{r calc2}
-# Present value at time 1, 53, 105, ...
+# Present value at time 0, 52, 104, ...
 pv2 <- futurepv(
-  tzero = 1 + (0:10)*52,
+  tzero = (0:10)*52,
   payoffs = payoffs$cost_daq_new_rup,
   prices = prices,
   disc = disc_pt
