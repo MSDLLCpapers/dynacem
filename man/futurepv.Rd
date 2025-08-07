@@ -4,10 +4,10 @@
 \alias{futurepv}
 \title{Calculate present value for a payoff in a single cohort with dynamic pricing across multiple timepoints}
 \usage{
-futurepv(l, payoffs, prices, discrate)
+futurepv(tzero = 0, payoffs, prices, discrate)
 }
 \arguments{
-\item{l}{Vector of times at which present value is to be evaluated}
+\item{tzero}{Time at the date of calculation, to be used in lookup in prices vector}
 
 \item{payoffs}{Vector of payoffs of interest (numeric vector)}
 
@@ -19,7 +19,7 @@ futurepv(l, payoffs, prices, discrate)
 Discounted present value
 }
 \description{
-Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for \code{\link[=dynpv]{dynpv()}}.
+Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for \code{\link[=dynpv]{dynpv()}} restricted to evaluation of a single cohort.
 }
 \examples{
 # Obtain dataset
@@ -40,7 +40,7 @@ Nt <- nrow(payoffs)
 
 # Run calculation for timesteps 1:10
 futurepv(
-  l = 52*(1:10),
+  tzero = 52*(0:9),
   payoffs = payoffs$cost_oth,
   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3\% every 52 steps
   discrate = 0.001 + discrate

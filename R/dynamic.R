@@ -83,6 +83,8 @@ dynpv <- function(
     prices = rep(1, length(payoffs)+tzero),
     discrate = 0
     ){
+  # Avoid no visible binding note
+  j <- k <- l <- uj <- pk <- R <- v <- pv <- spv <- total <- suptakes <- NULL
   # Trim
   uptakes <- trim_vec(uptakes)
   payoffs <- trim_vec(payoffs)

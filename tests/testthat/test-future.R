@@ -20,7 +20,7 @@ Nt <- nrow(payoffs)
 test_that("Simple calculation works", {
   # Actual
   act_val1 <- futurepv(
-      l = 1:10,
+      tzero = 0:9,
       payoffs = payoffs$cost_oth,
       prices = rep(1, 2*Nt),
       discrate = discrate
@@ -35,7 +35,7 @@ test_that("Simple calculation works", {
 test_that("Complex calculation works", {
   # Actual
   act_val2 <- futurepv(
-    l = 1,
+    tzero = 0,
     payoffs = payoffs$cost_oth[1:(Nt/2)],
     prices = rep(1, 2*Nt),
     discrate = discrate

@@ -23,9 +23,8 @@
 
 #' Calculate present value for a payoff in a single cohort with dynamic pricing across multiple timepoints
 #' 
-#' Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for [dynpv()].
+#' Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for [dynpv()] restricted to evaluation of a single cohort.
 #' @inheritParams dynpv
-#' @param l Vector of times at which present value is to be evaluated
 #' @seealso [dynpv()]
 #' @returns Discounted present value
 #' @export
@@ -48,17 +47,17 @@
 #' 
 #' # Run calculation for timesteps 1:10
 #' futurepv(
-#'   l = 52*(1:10),
+#'   tzero = 52*(0:9),
 #'   payoffs = payoffs$cost_oth,
 #'   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3% every 52 steps
 #'   discrate = 0.001 + discrate
 #' )
-futurepv <- function(l, payoffs, prices, discrate){
+futurepv <- function(tzero=0, payoffs, prices, discrate){
   dynpv(
     uptakes = 1,
     payoffs = payoffs,
     horizon = length(payoffs),
-    tzero = l-1,
+    tzero = tzero,
     prices = prices,
     discrate = discrate
   )

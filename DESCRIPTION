@@ -1,5 +1,5 @@
 Package: dynacem
-Title: Evaluates Cost-Effectiveness Models With Dynamic Pricing And Uptake
+Title: Evaluates Present Values and Cost-Effectiveness With Dynamic Pricing And Uptake
 Version: 0.1.0.9000
 Authors@R: c(
     person("Dominic", "Muston", , "dominic.muston@msd.com", role = c("aut", "cre"),
@@ -15,13 +15,15 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     dplyr,
-    purrr,
     readr,
     rlang,
     tidyr
 Suggests: 
+    ggplot2,
     heemod,
-    testthat (>= 3.0.0)
+    purrr,
+    testthat (>= 3.0.0),
+    usethis
 Config/testthat/edition: 3
 Depends: 
     R (>= 3.5)

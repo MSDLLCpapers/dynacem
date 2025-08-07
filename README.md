@@ -1,23 +1,26 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# dynacem: Evaluate cost-effectiveness models with dynamic pricing and uptake <img src="man/figures/logo.png" align="right" height="139" />
+# dynacem: Evaluate present values and cost-effectiveness with dynamic pricing and uptake <img src="man/figures/logo.png" align="right" height="139" />
 
 <!-- badges: start -->
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/MSDLLCpapers/dynacem/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MSDLLCpapers/dynacem/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/MSDLLCpapers/dynacem/graph/badge.svg)](https://app.codecov.io/gh/MSDLLCpapers/dynacem)
 <!-- badges: end -->
 
-The goal of *dynacem* is to evaluates cost-effectiveness models with
-dynamic pricing and uptake.
+The goal of *dynacem* is to evaluate present values and
+cost-effectiveness with dynamic pricing and uptake.
 
-Cost-effectiveness models are conventionally developed for single
-cohorts without considering of lifecycle drug pricing or other causes of
-dynamic pricing. This package allows calculation of cost-effectiveness
-results after applying dynamic pricing and dynamic uptake assumptions.
-The starting point is a conventional cohort cost-effectiveness model,
-such as one computed using the
+Through the *dynpv()* function, the package provides for the present
+value of costs, life years, QALYs or other payoffs in the
+cost-effectiveness model to be recalculated so as to allow for dynamic
+uptake (also known as multiple cohorts) and dynamic (also known as
+life-cycle) pricing. The starting point is a conventional cohort
+cost-effectiveness model, such as one computed using the
 [heemod](https://cran.r-project.org/package=heemod) package.
 
 ## Installation
@@ -241,13 +244,13 @@ year).
 ``` r
 # Present value at time 1, 53, 105, ...
 pv2 <- futurepv(
-  l = (1:11)*52 - 51,
+  tzero = 1 + (0:10)*52,
   payoffs = payoffs$cost_daq_new_rup,
   prices = prices,
   disc = disc_pt
 )
 
-# Obtain a dataset of the real and nominal ICER over time
+# Obtain a dataset of the real and nominal present value over time
 ds <- pv2$results$mean |>
   dplyr::rename(Nominal = mean) |>
   dplyr::mutate(
@@ -261,12 +264,14 @@ ds <- pv2$results$mean |>
     values_to = "PV"
   )
 
-# Plot real and nominal ICER over time
+# Plot real and nominal present value over time
 ggplot2::ggplot(ds,
   aes(x = Years, y = PV, color=Type)) +
   ggplot2::geom_line() +
   xlim(0, 10) +
   ylim(0, 150000)
+#> Warning: Removed 2 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
 ```
 
 <img src="man/figures/README-calc2-1.png" width="100%" />

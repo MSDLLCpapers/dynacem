@@ -4,7 +4,7 @@
 \name{dynacem-package}
 \alias{dynacem}
 \alias{dynacem-package}
-\title{dynacem: Evaluates Cost-Effectiveness Models With Dynamic Pricing And Uptake}
+\title{dynacem: Evaluates Present Values and Cost-Effectiveness With Dynamic Pricing And Uptake}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 

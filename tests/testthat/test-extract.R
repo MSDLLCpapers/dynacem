@@ -1,4 +1,7 @@
-# Create a quiet functions
+# Use the purrr package
+library(purrr)
+
+# Create a quiet function
 qget_dynfields <- purrr::quietly(get_dynfields)
 qread_csv <- purrr::quietly(readr::read_csv)
 

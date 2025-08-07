@@ -16,3 +16,4 @@ source code license, in order to use this software.
 * purrr - https://purrr.tidyverse.org/LICENSE.html
 * readr - https://readr.tidyverse.org/LICENSE.html
 * rlang - https://rlang.r-lib.org/LICENSE.html
+* tidyr - https://tidyr.tidyverse.org/LICENSE.html
