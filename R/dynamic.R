@@ -74,7 +74,7 @@ trim_vec <- function(vec){
 #' dynpv(
 #'    uptakes = rep(1, Nt),
 #'    payoffs = payoffs$cost_oth,
-#'    prices = 1 + (1:Nt)*0.05,
+#'    prices = 1 + (0:(Nt-1))*0.05,
 #'    discrate = 0.08 
 #' )
 dynpv <- function(
