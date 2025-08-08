@@ -29,14 +29,16 @@ Through the *dynpv()* function, the package provides for the present value of co
 
 You can install the development version of *dynacem* from [GitHub](https://github.com/) as follows. You should then load the package, alongside some other packages used here.
 
-```{r install}
-#| eval: true
+```{r instal1}
+#| eval: false
 # Install pak package if not already installed
-# install.packages("pak")
+install.packages("pak")
 
 # Install dynacem using pak
 pak::pak("MSDLLCpapers/dynacem")
+```
 
+```{r instal2}
 # Load dynacem and other packages
 library(dynacem)
 library(ggplot2)
