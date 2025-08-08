@@ -27,12 +27,20 @@ Through the *dynpv()* function, the package provides for the present value of co
 
 ## Installation
 
-You can install the development version of dynacem from [GitHub](https://github.com/) with:
+You can install the development version of *dynacem* from [GitHub](https://github.com/) as follows. You should then load the package, alongside some other packages used here.
 
 ```{r install}
-#| eval: false
-install.packages("pak")
+#| eval: true
+# Install pak package if not already installed
+# install.packages("pak")
+
+# Install dynacem using pak
 pak::pak("MSDLLCpapers/dynacem")
+
+# Load dynacem and other packages
+library(dynacem)
+library(ggplot2)
+library(tidyr)
 ```
 
 ## Example
@@ -41,23 +49,37 @@ Some example present value calculations are provided below for a single payoff. 
 
 ### Obtain payoffs vector
 
-In this case, we call out the drug acquisition cost of the new intervention (*cost_daq_new*), the total cost (*cost_total*) and QALYs (*qaly*) accumulated in each timestep. The *get_dynfields()* function will also calculated 'rolled-up' values as at the start of each timestep rather than discounted to time zero.
+The package comes with a cost-effectiveness model object, *oncpsm*, created using [heemod](https://cran.r-project.org/package=heemod).
 
-```{r getdata}
-# Load the dynacem package
-library(dynacem)
-library(ggplot2)
-library(tidyr)
-
+```{r getobj}
 # Review oncpsm model (heemod object)
 oncpsm
+```
 
+The next steps extract a payoff vector from the model object. The model/object contains several payoffs accumulated in each timestep, calculated as at time zero: 
+
+- drug acquisition cost of the standard of care (*cost_daq_soc*),
+- drug acquisition cost of the new intervention (*cost_daq_new*),
+- cost of drug administration (*cost_dadmin*),
+- cost of disease management (*cost_dman*),
+- cost of treating adverse events (*cost_ae*),
+- cost of subsequent lines of treatment (*cost_subs*),
+- total cost (*cost_total*),
+- progression-free life years (*pf_year*),
+- life years (*life_year*), and
+- QALYs (*qaly*).
+
+The *get_dynfields()* function extracts these parameters from the [heemod](https://cran.r-project.org/package=heemod) model object, and calculates 'rolled-up' values as at the start of each timestep rather than discounted to time zero. The rolled-up values are what *dynacem* requires.
+
+```{r extractfields}
 # Derive the dataset necessary for the dynamic pricing/uptake calculations
 democe <- get_dynfields(
     heemodel = oncpsm,
     payoffs = c("cost_daq_new", "cost_total", "qaly"),
     discount = "disc"
     )
+
+# View the extracted data
 head(democe)
 ```
 
