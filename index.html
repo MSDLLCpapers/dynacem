@@ -84,179 +84,12 @@
 <p>You can install the development version of <em>dynacem</em> from <a href="https://github.com/" class="external-link">GitHub</a> as follows. You should then load the package, alongside some other packages used here.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install pak package if not already installed</span></span>
-<span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install dynacem using pak</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"MSDLLCpapers/dynacem"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ! Using bundled GitHub PAT. Please add your own PAT using `gitcreds::gitcreds_set()`.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ✔ Updated metadata database: 962.07 kB in 1 file.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Updating metadata database</span></span>
-<span><span class="co">#&gt; ✔ Updating metadata database ... done</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Will install 30 packages.</span></span>
-<span><span class="co">#&gt; → Will update 1 package.</span></span>
-<span><span class="co">#&gt; → Will download 30 CRAN packages (21.43 MB), cached: 1 (0 B).</span></span>
-<span><span class="co">#&gt; + bit                      4.6.0      [bld][cmp][dl] (304.58 kB)</span></span>
-<span><span class="co">#&gt; + bit64                    4.6.0-1    [bld][cmp][dl] (142.04 kB)</span></span>
-<span><span class="co">#&gt; + cli                      3.6.5      [bld][cmp][dl] (640.24 kB)</span></span>
-<span><span class="co">#&gt; + clipr                    0.8.0      [bld][dl] (21.90 kB) + ✔ libX11-devel</span></span>
-<span><span class="co">#&gt; + cpp11                    0.5.2      [bld][dl] (291.99 kB)</span></span>
-<span><span class="co">#&gt; + crayon                   1.5.3      [bld][dl] (40.40 kB)</span></span>
-<span><span class="co">#&gt; + dplyr                    1.1.4      [bld][cmp][dl] (1.21 MB)</span></span>
-<span><span class="co">#&gt; + dynacem     0.1.0.9000 → 0.1.0.9000 [bld][cmp] (GitHub: 1098097)</span></span>
-<span><span class="co">#&gt; + generics                 0.1.4      [bld][dl] (47.22 kB)</span></span>
-<span><span class="co">#&gt; + glue                     1.8.0      [bld][cmp][dl] (126.68 kB)</span></span>
-<span><span class="co">#&gt; + hms                      1.1.3      [bld][dl] (43.38 kB)</span></span>
-<span><span class="co">#&gt; + lifecycle                1.0.4      [bld][dl] (107.66 kB)</span></span>
-<span><span class="co">#&gt; + magrittr                 2.0.3      [bld][cmp][dl] (267.07 kB)</span></span>
-<span><span class="co">#&gt; + pillar                   1.11.0     [bld][dl] (409.32 kB)</span></span>
-<span><span class="co">#&gt; + pkgconfig                2.0.3      [bld][dl] (6.08 kB)</span></span>
-<span><span class="co">#&gt; + prettyunits              1.2.0      [bld][dl] (97.50 kB)</span></span>
-<span><span class="co">#&gt; + progress                 1.2.3      [bld][dl] (30.50 kB)</span></span>
-<span><span class="co">#&gt; + purrr                    1.1.0      [bld][cmp][dl] (263.98 kB)</span></span>
-<span><span class="co">#&gt; + R6                       2.6.1      [bld][dl] (64.51 kB)</span></span>
-<span><span class="co">#&gt; + readr                    2.1.5      [bld][cmp][dl] (298.06 kB)</span></span>
-<span><span class="co">#&gt; + rlang                    1.1.6      [bld][cmp][dl] (767.93 kB)</span></span>
-<span><span class="co">#&gt; + stringi                  1.8.7      [bld][cmp][dl] (11.91 MB) + ✔ libicu-devel</span></span>
-<span><span class="co">#&gt; + stringr                  1.5.1      [bld][dl] (176.60 kB)</span></span>
-<span><span class="co">#&gt; + tibble                   3.3.0      [bld][cmp][dl] (588.67 kB)</span></span>
-<span><span class="co">#&gt; + tidyr                    1.3.1      [bld][cmp][dl] (809.06 kB)</span></span>
-<span><span class="co">#&gt; + tidyselect               1.2.1      [bld][cmp][dl] (103.59 kB)</span></span>
-<span><span class="co">#&gt; + tzdb                     0.5.0      [bld][cmp][dl] (600.72 kB)</span></span>
-<span><span class="co">#&gt; + utf8                     1.2.6      [bld][cmp][dl] (243.86 kB)</span></span>
-<span><span class="co">#&gt; + vctrs                    0.6.5      [bld][cmp][dl] (969.07 kB)</span></span>
-<span><span class="co">#&gt; + vroom                    1.6.5      [bld][cmp][dl] (750.42 kB)</span></span>
-<span><span class="co">#&gt; + withr                    3.0.2      [bld][dl] (103.24 kB)</span></span>
-<span><span class="co">#&gt; ✔ All system requirements are already installed.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Getting 30 pkgs (21.43 MB), 1 cached</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of bit 4.6.0 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of bit64 4.6.0-1 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of cli 3.6.5 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of clipr 0.8.0 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of cpp11 0.5.2 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of generics 0.1.4 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of hms 1.1.3 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of lifecycle 1.0.4 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of pkgconfig 2.0.3 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of tidyselect 1.2.1 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of tzdb 0.5.0 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Cached copy of withr 3.0.2 (source) is the latest build</span></span>
-<span><span class="co">#&gt; ✔ Got glue 1.8.0 (source) (126.54 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got crayon 1.5.3 (source) (40.50 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got progress 1.2.3 (source) (30.79 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got readr 2.1.5 (source) (295.60 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got stringr 1.5.1 (source) (177.06 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got dplyr 1.1.4 (source) (1.21 MB)</span></span>
-<span><span class="co">#&gt; ✔ Got purrr 1.1.0 (source) (263.51 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got utf8 1.2.6 (source) (243.47 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got R6 2.6.1 (source) (64.41 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got prettyunits 1.2.0 (source) (98.28 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got pillar 1.11.0 (source) (408.93 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got vroom 1.6.5 (source) (746.59 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got magrittr 2.0.3 (source) (267.20 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got tidyr 1.3.1 (source) (804.97 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got tibble 3.3.0 (source) (585.06 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got rlang 1.1.6 (source) (765.49 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got vctrs 0.6.5 (source) (967.95 kB)</span></span>
-<span><span class="co">#&gt; ✔ Got stringi 1.8.7 (source) (11.91 MB)</span></span>
-<span><span class="co">#&gt; ℹ Building bit 4.6.0</span></span>
-<span><span class="co">#&gt; ℹ Building cli 3.6.5</span></span>
-<span><span class="co">#&gt; ℹ Building clipr 0.8.0</span></span>
-<span><span class="co">#&gt; ℹ Building cpp11 0.5.2</span></span>
-<span><span class="co">#&gt; ℹ Building crayon 1.5.3</span></span>
-<span><span class="co">#&gt; ℹ Building generics 0.1.4</span></span>
-<span><span class="co">#&gt; ℹ Building glue 1.8.0</span></span>
-<span><span class="co">#&gt; ℹ Building magrittr 2.0.3</span></span>
-<span><span class="co">#&gt; ℹ Building pkgconfig 2.0.3</span></span>
-<span><span class="co">#&gt; ℹ Building prettyunits 1.2.0</span></span>
-<span><span class="co">#&gt; ℹ Building R6 2.6.1</span></span>
-<span><span class="co">#&gt; ℹ Building rlang 1.1.6</span></span>
-<span><span class="co">#&gt; ℹ Building stringi 1.8.7</span></span>
-<span><span class="co">#&gt; ℹ Building utf8 1.2.6</span></span>
-<span><span class="co">#&gt; ℹ Building withr 3.0.2</span></span>
-<span><span class="co">#&gt; ✔ Installed dynacem 0.1.0.9000 (github::MSDLLCpapers/dynacem@1098097) (1s)</span></span>
-<span><span class="co">#&gt; ✔ Built clipr 0.8.0 (1.6s)</span></span>
-<span><span class="co">#&gt; ✔ Built cpp11 0.5.2 (1.6s)</span></span>
-<span><span class="co">#&gt; ✔ Built pkgconfig 2.0.3 (1.4s)</span></span>
-<span><span class="co">#&gt; ✔ Installed clipr 0.8.0  (50ms)</span></span>
-<span><span class="co">#&gt; ✔ Built R6 2.6.1 (2.5s)</span></span>
-<span><span class="co">#&gt; ✔ Installed cpp11 0.5.2  (1.1s)</span></span>
-<span><span class="co">#&gt; ℹ Building tzdb 0.5.0</span></span>
-<span><span class="co">#&gt; ✔ Built glue 1.8.0 (2.7s)</span></span>
-<span><span class="co">#&gt; ✔ Built magrittr 2.0.3 (2.7s)</span></span>
-<span><span class="co">#&gt; ✔ Built prettyunits 1.2.0 (2.7s)</span></span>
-<span><span class="co">#&gt; ✔ Installed pkgconfig 2.0.3  (1.3s)</span></span>
-<span><span class="co">#&gt; ✔ Installed glue 1.8.0  (45ms)</span></span>
-<span><span class="co">#&gt; ✔ Installed magrittr 2.0.3  (84ms)</span></span>
-<span><span class="co">#&gt; ✔ Installed prettyunits 1.2.0  (121ms)</span></span>
-<span><span class="co">#&gt; ✔ Installed R6 2.6.1  (66ms)</span></span>
-<span><span class="co">#&gt; ✔ Built crayon 1.5.3 (3.5s)</span></span>
-<span><span class="co">#&gt; ✔ Installed crayon 1.5.3  (1s)</span></span>
-<span><span class="co">#&gt; ✔ Built generics 0.1.4 (4.5s)</span></span>
-<span><span class="co">#&gt; ✔ Built withr 3.0.2 (4.2s)</span></span>
-<span><span class="co">#&gt; ✔ Installed generics 0.1.4  (42ms)</span></span>
-<span><span class="co">#&gt; ✔ Installed withr 3.0.2  (65ms)</span></span>
-<span><span class="co">#&gt; ✔ Built utf8 1.2.6 (4.9s)</span></span>
-<span><span class="co">#&gt; ✔ Installed utf8 1.2.6  (1s)</span></span>
-<span><span class="co">#&gt; ✔ Built bit 4.6.0 (8.2s)</span></span>
-<span><span class="co">#&gt; ✔ Installed bit 4.6.0  (1s)</span></span>
-<span><span class="co">#&gt; ℹ Building bit64 4.6.0-1</span></span>
-<span><span class="co">#&gt; ✔ Built cli 3.6.5 (14.6s)</span></span>
-<span><span class="co">#&gt; ✔ Installed cli 3.6.5  (1.1s)</span></span>
-<span><span class="co">#&gt; ✔ Built tzdb 0.5.0 (14.7s)</span></span>
-<span><span class="co">#&gt; ✔ Built bit64 4.6.0-1 (8.4s)</span></span>
-<span><span class="co">#&gt; ✔ Installed tzdb 0.5.0  (92ms)</span></span>
-<span><span class="co">#&gt; ✔ Installed bit64 4.6.0-1  (95ms)</span></span>
-<span><span class="co">#&gt; ✔ Built rlang 1.1.6 (18.6s)</span></span>
-<span><span class="co">#&gt; ✔ Installed rlang 1.1.6  (1.1s)</span></span>
-<span><span class="co">#&gt; ℹ Building lifecycle 1.0.4</span></span>
-<span><span class="co">#&gt; ✔ Built lifecycle 1.0.4 (1.9s)</span></span>
-<span><span class="co">#&gt; ✔ Installed lifecycle 1.0.4  (1s)</span></span>
-<span><span class="co">#&gt; ℹ Building vctrs 0.6.5</span></span>
-<span><span class="co">#&gt; ✔ Built vctrs 0.6.5 (23.6s)</span></span>
-<span><span class="co">#&gt; ✔ Installed vctrs 0.6.5  (1.1s)</span></span>
-<span><span class="co">#&gt; ℹ Building hms 1.1.3</span></span>
-<span><span class="co">#&gt; ℹ Building pillar 1.11.0</span></span>
-<span><span class="co">#&gt; ℹ Building purrr 1.1.0</span></span>
-<span><span class="co">#&gt; ℹ Building tidyselect 1.2.1</span></span>
-<span><span class="co">#&gt; ✔ Built tidyselect 1.2.1 (2.8s)</span></span>
-<span><span class="co">#&gt; ✔ Installed tidyselect 1.2.1  (1.1s)</span></span>
-<span><span class="co">#&gt; ✔ Built pillar 1.11.0 (5.6s)</span></span>
-<span><span class="co">#&gt; ✔ Installed pillar 1.11.0  (1s)</span></span>
-<span><span class="co">#&gt; ℹ Building tibble 3.3.0</span></span>
-<span><span class="co">#&gt; ✔ Built purrr 1.1.0 (6.6s)</span></span>
-<span><span class="co">#&gt; ✔ Installed purrr 1.1.0  (1.1s)</span></span>
-<span><span class="co">#&gt; ✔ Built hms 1.1.3 (7.9s)</span></span>
-<span><span class="co">#&gt; ✔ Installed hms 1.1.3  (1s)</span></span>
-<span><span class="co">#&gt; ℹ Building progress 1.2.3</span></span>
-<span><span class="co">#&gt; ✔ Built progress 1.2.3 (2.1s)</span></span>
-<span><span class="co">#&gt; ✔ Installed progress 1.2.3  (1s)</span></span>
-<span><span class="co">#&gt; ✔ Built tibble 3.3.0 (5.5s)</span></span>
-<span><span class="co">#&gt; ✔ Installed tibble 3.3.0  (1.1s)</span></span>
-<span><span class="co">#&gt; ℹ Building dplyr 1.1.4</span></span>
-<span><span class="co">#&gt; ℹ Building vroom 1.6.5</span></span>
-<span><span class="co">#&gt; ✔ Built dplyr 1.1.4 (14.9s)</span></span>
-<span><span class="co">#&gt; ✔ Installed dplyr 1.1.4  (1.1s)</span></span>
-<span><span class="co">#&gt; ✔ Built stringi 1.8.7 (1m 25.7s)</span></span>
-<span><span class="co">#&gt; ✔ Installed stringi 1.8.7  (1.1s)</span></span>
-<span><span class="co">#&gt; ℹ Building stringr 1.5.1</span></span>
-<span><span class="co">#&gt; ✔ Built stringr 1.5.1 (5.3s)</span></span>
-<span><span class="co">#&gt; ✔ Installed stringr 1.5.1  (1.1s)</span></span>
-<span><span class="co">#&gt; ℹ Building tidyr 1.3.1</span></span>
-<span><span class="co">#&gt; ✔ Built tidyr 1.3.1 (10.4s)</span></span>
-<span><span class="co">#&gt; ✔ Installed tidyr 1.3.1  (1.1s)</span></span>
-<span><span class="co">#&gt; ✔ Built vroom 1.6.5 (1m 23.3s)</span></span>
-<span><span class="co">#&gt; ✔ Installed vroom 1.6.5  (1.2s)</span></span>
-<span><span class="co">#&gt; ℹ Building readr 2.1.5</span></span>
-<span><span class="co">#&gt; ✔ Built readr 2.1.5 (45.8s)</span></span>
-<span><span class="co">#&gt; ✔ Installed readr 2.1.5  (1.1s)</span></span>
-<span><span class="co">#&gt; ✔ 1 pkg + 30 deps: upd 1, added 30, dld 18 (19.01 MB) [3m 30.6s]</span></span>
-<span></span>
-<span><span class="co"># Load dynacem and other packages</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"MSDLLCpapers/dynacem"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load dynacem and other packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/" class="external-link">dynacem</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
@@ -269,7 +102,7 @@
 <h3 id="obtain-payoffs-vector">Obtain payoffs vector<a class="anchor" aria-label="anchor" href="#obtain-payoffs-vector"></a>
 </h3>
 <p>The package comes with a cost-effectiveness model object, <em>oncpsm</em>, created using <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Review oncpsm model (heemod object)</span></span>
 <span><span class="va">oncpsm</span></span>
 <span><span class="co">#&gt; 2 strategies run for 1044 cycles.</span></span>
@@ -313,7 +146,7 @@
 <li>QALYs (<em>qaly</em>).</li>
 </ul>
 <p>The <em>get_dynfields()</em> function extracts these parameters from the <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a> model object, and calculates ‘rolled-up’ values as at the start of each timestep rather than discounted to time zero. The rolled-up values are what <em>dynacem</em> requires.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Derive the dataset necessary for the dynamic pricing/uptake calculations</span></span>
 <span><span class="va">democe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dynfields.html">get_dynfields</a></span><span class="op">(</span></span>
 <span>    heemodel <span class="op">=</span> <span class="va">oncpsm</span>,</span>
@@ -334,7 +167,7 @@
 <span><span class="co">#&gt; 6          6            0       730. 0.0148 soc   0.997                0</span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: cost_total_rup &lt;dbl&gt;, qaly_rup &lt;dbl&gt;</span></span></code></pre></div>
 <p>For this example, we are just interested in the payoff for drug acquisition costs of the new intervention.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Obtain a vector of payoffs</span></span>
 <span><span class="va">payoffs</span> <span class="op">&lt;-</span> <span class="va">democe</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -365,7 +198,7 @@
 <li>The underlying price of the payoff being costed rises with inflation of 5% for the first three years, then drops by 50%, after which it rises by 4% per year.</li>
 </ul>
 <p>We create a price index twice as long as we need right now for reasons that should become clear later.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time horizon</span></span>
 <span><span class="va">Nt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">)</span></span>
 <span></span>
@@ -390,7 +223,7 @@
 <h3 id="calculate-current-present-value">Calculate current present value<a class="anchor" aria-label="anchor" href="#calculate-current-present-value"></a>
 </h3>
 <p>Now with the payoff, uptake, pricing and discount rate set, we can call the <em>dynpv()</em> function and calculate the present value of the payoff.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate total discounted present value of drug acquisition costs, given dynamic uptake and pricing</span></span>
 <span><span class="va">pv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
 <span>    uptakes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">Nt</span><span class="op">)</span>,</span>
@@ -449,7 +282,7 @@
 <p>We also wish to calculate discounted present values (PV) into the future, say every annually for 10 years.</p>
 <p>We need a price index that lasts 30 years (20 year time horizon + up to 10 years of future evaluations). Fortunately our price index is 40 years long (2 x 20).</p>
 <p>We would expect the PV to change over time. The nominal PV will increase over time due to price inflation of of this payoff of 4% per year. The real PV will decrease because the rate of price inflation of this particular payoff (4% per year) is less than the general rate of inflation (5% per year) factored into the nominal discount rate (8% per year).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Present value at time 0, 52, 104, ...</span></span>
 <span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
 <span>  tzero <span class="op">=</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fl">52</span>,</span>
