@@ -41,7 +41,7 @@
 #' 
 #' # Obtain payoff vector of interest
 #' payoffs <- democe |>
-#'    dplyr::filter(int=="new") |>
+#'    dplyr::filter(int=="new", model_time<11) |>
 #'    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
 #' Nt <- nrow(payoffs)
 #' 

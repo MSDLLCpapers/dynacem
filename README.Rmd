@@ -27,7 +27,7 @@ Through the *dynpv()* function, the package provides for the present value of co
 
 ## Installation
 
-You can install the development version of *dynacem* from [GitHub](https://github.com/) as follows. You should then load the package, alongside some other packages used here.
+You can install the development version of *dynacem* from [GitHub](https://github.com/) as follows.
 
 ```{r instal1}
 #| eval: false
@@ -38,12 +38,14 @@ install.packages("pak")
 pak::pak("MSDLLCpapers/dynacem")
 ```
 
+You should then load the package, alongside some other packages used here.
+
 ```{r instal2}
 # Load dynacem and other packages
 library(dynacem)
 library(ggplot2)
 library(tidyr)
-```
+``` 
 
 ## Example
 
@@ -141,9 +143,11 @@ pv1 <- dynpv(
 pv1$results
 ```
 
+The total uptake is `r format(round(pv1$results$uptake, 0), big.mark=",")` patients with a total present value of `r format(round(pv1$results$total, 0), big.mark=",")`. This equates to a mean present value per patient of `r format(round(pv1$results$mean, 0), big.mark=",")`.
+
 ### Present values into the future
 
-We also wish to calculate discounted present values (PV) into the future, say every annually for 10 years.
+We also wish to calculate discounted present values (PV) into the future, say every annually for 10 years, assuming a single cohort.
 
 We need a price index that lasts 30 years (20 year time horizon + up to 10 years of future evaluations). Fortunately our price index is 40 years long (2 x 20).
 

@@ -26,8 +26,7 @@ cost-effectiveness model, such as one computed using the
 ## Installation
 
 You can install the development version of *dynacem* from
-[GitHub](https://github.com/) as follows. You should then load the
-package, alongside some other packages used here.
+[GitHub](https://github.com/) as follows.
 
 ``` r
 # Install pak package if not already installed
@@ -36,6 +35,9 @@ install.packages("pak")
 # Install dynacem using pak
 pak::pak("MSDLLCpapers/dynacem")
 ```
+
+You should then load the package, alongside some other packages used
+here.
 
 ``` r
 # Load dynacem and other packages
@@ -253,10 +255,13 @@ pv1$results
 #> [1] 52536.16
 ```
 
+The total uptake is 1,044 patients with a total present value of
+54,847,752. This equates to a mean present value per patient of 52,536.
+
 ### Present values into the future
 
 We also wish to calculate discounted present values (PV) into the
-future, say every annually for 10 years.
+future, say every annually for 10 years, assuming a single cohort.
 
 We need a price index that lasts 30 years (20 year time horizon + up to
 10 years of future evaluations). Fortunately our price index is 40 years
