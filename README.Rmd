@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# dynacem: Evaluate present values and cost-effectiveness with dynamic pricing and uptake <img src="man/figures/logo.png" align="right" height="139" />
+# dynamicpv: Evaluate present values and cost-effectiveness with dynamic pricing and uptake <img src="man/figures/logo.png" align="right" height="139" />
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
@@ -21,20 +21,20 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/MSDLLCpapers/dynacem/graph/badge.svg)](https://app.codecov.io/gh/MSDLLCpapers/dynacem)
 <!-- badges: end -->
 
-The goal of *dynacem* is to evaluate present values and cost-effectiveness with dynamic pricing and uptake.
+The goal of *dynamicpv* is to evaluate present values and cost-effectiveness with dynamic pricing and uptake.
 
 Through the *dynpv()* function, the package provides for the present value of costs, life years, QALYs or other payoffs in the cost-effectiveness model to be recalculated so as to allow for dynamic uptake (also known as multiple cohorts) and dynamic (also known as life-cycle) pricing. The starting point is a conventional cohort cost-effectiveness model, such as one computed using the [heemod](https://cran.r-project.org/package=heemod) package.
 
 ## Installation
 
-You can install the development version of *dynacem* from [GitHub](https://github.com/) as follows.
+You can install the development version of *dynamicpv* from [GitHub](https://github.com/) as follows.
 
 ```{r instal1}
 #| eval: false
 # Install pak package if not already installed
 install.packages("pak")
 
-# Install dynacem using pak
+# Install dynamicpv using pak
 pak::pak("MSDLLCpapers/dynacem")
 ```
 
@@ -42,7 +42,7 @@ You should then load the package, alongside some other packages used here.
 
 ```{r instal2}
 # Load dynacem and other packages
-library(dynacem)
+library(dynamicpv)
 library(ggplot2)
 library(tidyr)
 ``` 
@@ -73,7 +73,7 @@ The next steps extract a payoff vector from the model object. The model/object c
 - life years (*life_year*), and
 - QALYs (*qaly*).
 
-The *get_dynfields()* function extracts these parameters from the [heemod](https://cran.r-project.org/package=heemod) model object, and calculates 'rolled-up' values as at the start of each timestep rather than discounted to time zero. The rolled-up values are what *dynacem* requires.
+The *get_dynfields()* function extracts these parameters from the [heemod](https://cran.r-project.org/package=heemod) model object, and calculates 'rolled-up' values as at the start of each timestep rather than discounted to time zero. The rolled-up values are what *dynamicpv* requires.
 
 ```{r extractfields}
 # Derive the dataset necessary for the dynamic pricing/uptake calculations

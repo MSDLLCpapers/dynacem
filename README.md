@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# dynacem: Evaluate present values and cost-effectiveness with dynamic pricing and uptake <img src="man/figures/logo.png" align="right" height="139" />
+# dynamicpv: Evaluate present values and cost-effectiveness with dynamic pricing and uptake <img src="man/figures/logo.png" align="right" height="139" />
 
 <!-- badges: start -->
 
@@ -12,7 +12,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 coverage](https://codecov.io/gh/MSDLLCpapers/dynacem/graph/badge.svg)](https://app.codecov.io/gh/MSDLLCpapers/dynacem)
 <!-- badges: end -->
 
-The goal of *dynacem* is to evaluate present values and
+The goal of *dynamicpv* is to evaluate present values and
 cost-effectiveness with dynamic pricing and uptake.
 
 Through the *dynpv()* function, the package provides for the present
@@ -25,14 +25,14 @@ cost-effectiveness model, such as one computed using the
 
 ## Installation
 
-You can install the development version of *dynacem* from
+You can install the development version of *dynamicpv* from
 [GitHub](https://github.com/) as follows.
 
 ``` r
 # Install pak package if not already installed
 install.packages("pak")
 
-# Install dynacem using pak
+# Install dynamicpv using pak
 pak::pak("MSDLLCpapers/dynacem")
 ```
 
@@ -41,7 +41,7 @@ here.
 
 ``` r
 # Load dynacem and other packages
-library(dynacem)
+library(dynamicpv)
 library(ggplot2)
 library(tidyr)
 ```
@@ -108,7 +108,7 @@ calculated as at time zero:
 The *get_dynfields()* function extracts these parameters from the
 [heemod](https://cran.r-project.org/package=heemod) model object, and
 calculates ‘rolled-up’ values as at the start of each timestep rather
-than discounted to time zero. The rolled-up values are what *dynacem*
+than discounted to time zero. The rolled-up values are what *dynamicpv*
 requires.
 
 ``` r
