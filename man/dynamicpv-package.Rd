@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Evaluates cost-effectiveness models with dynamic pricing and uptake.
+Evaluates present values and cost-effectiveness with dynamic pricing and uptake.
 }
 \seealso{
 Useful links:

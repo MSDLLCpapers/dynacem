@@ -6,7 +6,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-4876-7940")),
     person("Merck & Co., Inc., Rahway, NJ, USA and its affiliates", role = c("cph", "fnd"))
     )
-Description: Evaluates cost-effectiveness models with dynamic pricing and uptake.
+Description: Evaluates present values and cost-effectiveness with dynamic pricing and uptake.
 License: GPL (>= 3)
 URL: https://MSDLLCpapers.github.io/dynacem/, https://github.com/MSDLLCpapers/dynacem
 BugReports: https://github.com/MSDLLCpapers/dynacem/issues

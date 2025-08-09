@@ -26,13 +26,15 @@ cost-effectiveness model, such as one computed using the
 ## Installation
 
 You can install the development version of *dynamicpv* from
-[GitHub](https://github.com/) as follows.
+[GitHub](https://github.com/) as follows. (The package was previously
+known as *dynacem*, but *dynamicpv* better reflects the package’s
+intent.)
 
 ``` r
 # Install pak package if not already installed
 install.packages("pak")
 
-# Install dynamicpv using pak
+# Install dynamicpv using pak, from MSD's dynacem repository
 pak::pak("MSDLLCpapers/dynacem")
 ```
 
@@ -40,7 +42,7 @@ You should then load the package, alongside some other packages used
 here.
 
 ``` r
-# Load dynacem and other packages
+# Load the dynamicpv package and others
 library(dynamicpv)
 library(ggplot2)
 library(tidyr)

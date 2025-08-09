@@ -2,7 +2,7 @@
 
 # dynamicpv 0.2.0
 
-# dynacem (development version)
+* Package was updated and renamed to be dynamicpv
 
 # dynacem 0.1.0
 
