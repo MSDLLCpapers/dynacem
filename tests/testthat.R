@@ -7,10 +7,10 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(dynacem)
+library(dynamicpv)
 
 # Generate a demonstration heemod model
 # source("R/demo.R")
 
 # Run tests
-test_check("dynacem")
+test_check("dynamicpv")
