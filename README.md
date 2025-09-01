@@ -286,7 +286,7 @@ pv2 <- futurepv(
 )
 
 # Obtain a dataset of the real and nominal present value over time
-ds <- pv2$results$mean |>
+ds <- pv2$pv |>
   dplyr::rename(Nominal = mean) |>
   dplyr::mutate(
     Years = tzero/52,

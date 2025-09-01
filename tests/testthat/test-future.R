@@ -24,7 +24,7 @@ test_that("Simple calculation works", {
       payoffs = payoffs$cost_oth,
       prices = rep(1, 2*Nt),
       discrate = discrate
-      )$results$cohpv$spv
+      )$pv$mean
   # Expected
   exp_val1 <- rep(sum(payoffs$cost_total - payoffs$cost_daq_new), 10)
   # Test
@@ -39,7 +39,7 @@ test_that("Complex calculation works", {
     payoffs = payoffs$cost_oth[1:(Nt/2)],
     prices = rep(1, 2*Nt),
     discrate = discrate
-  )$results$cohpv$spv
+  )$pv
   # Expected
   exp_val2 <- sum((payoffs$cost_total - payoffs$cost_daq_new)[1:(Nt/2)])
   # Tests
