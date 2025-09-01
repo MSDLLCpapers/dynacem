@@ -26,7 +26,10 @@
 #' Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for [dynpv()] restricted to evaluation of a single cohort.
 #' @inheritParams dynpv
 #' @seealso [dynpv()]
-#' @returns Discounted present value
+#' @returns A list containing:
+#' - `inputs`: list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
+#' - `calc`: Tibble of calculation results
+#' - `pv`: Present value
 #' @export
 #' @examples
 #' # Obtain dataset
@@ -41,24 +44,33 @@
 #' 
 #' # Obtain payoff vector of interest
 #' payoffs <- democe |>
-#'    dplyr::filter(int=="new", model_time<11) |>
-#'    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
+#'    dplyr::filter(int=="new") |>
+#'    dplyr::mutate(cost_oth_rup = cost_total_rup - cost_daq_new_rup)
 #' Nt <- nrow(payoffs)
 #' 
-#' # Run calculation for timesteps 1:10
-#' futurepv(
-#'   tzero = 52*(0:9),
-#'   payoffs = payoffs$cost_oth,
+#' # Run calculation for times 0-9
+#' fpv <- futurepv(
+#'   tzero = (0:9)*52,
+#'   payoffs = payoffs$cost_oth_rup,
 #'   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3% every 52 steps
 #'   discrate = 0.001 + discrate
 #' )
+#' fpv$calc
+#' fpv$pv
 futurepv <- function(tzero=0, payoffs, prices, discrate){
-  dynpv(
+  # Wrapper for dynpv with uptakes=1 and horizon=length(payoffs)
+  dpv <- dynpv(
     uptakes = 1,
     payoffs = payoffs,
     horizon = length(payoffs),
     tzero = tzero,
     prices = prices,
     discrate = discrate
+  )
+  # Only return useful outputs
+  list(
+    inputs = dpv$inputs,
+    calc = dpv$results$calc,
+    pv = dpv$results$mean
   )
 }

@@ -16,7 +16,12 @@ futurepv(tzero = 0, payoffs, prices, discrate)
 \item{discrate}{Discount rate per timestep, corresponding to price index}
 }
 \value{
-Discounted present value
+A list containing:
+\itemize{
+\item \code{inputs}: list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
+\item \code{calc}: Tibble of calculation results
+\item \code{pv}: Present value
+}
 }
 \description{
 Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for \code{\link[=dynpv]{dynpv()}} restricted to evaluation of a single cohort.
@@ -34,17 +39,19 @@ discrate <- get_param_value(oncpsm, "disc")
 
 # Obtain payoff vector of interest
 payoffs <- democe |>
-   dplyr::filter(int=="new", model_time<11) |>
-   dplyr::mutate(cost_oth = cost_total - cost_daq_new)
+   dplyr::filter(int=="new") |>
+   dplyr::mutate(cost_oth_rup = cost_total_rup - cost_daq_new_rup)
 Nt <- nrow(payoffs)
 
-# Run calculation for timesteps 1:10
-futurepv(
-  tzero = 52*(0:9),
-  payoffs = payoffs$cost_oth,
+# Run calculation for times 0-9
+fpv <- futurepv(
+  tzero = (0:9)*52,
+  payoffs = payoffs$cost_oth_rup,
   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3\% every 52 steps
   discrate = 0.001 + discrate
 )
+fpv$calc
+fpv$pv
 }
 \seealso{
 \code{\link[=dynpv]{dynpv()}}
