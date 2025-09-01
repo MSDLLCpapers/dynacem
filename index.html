@@ -294,7 +294,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Obtain a dataset of the real and nominal present value over time</span></span>
-<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="va">pv2</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">mean</span> <span class="op">|&gt;</span></span>
+<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="va">pv2</span><span class="op">$</span><span class="va">pv</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Nominal <span class="op">=</span> <span class="va">mean</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    Years <span class="op">=</span> <span class="va">tzero</span><span class="op">/</span><span class="fl">52</span>,</span>
