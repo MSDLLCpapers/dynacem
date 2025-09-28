@@ -18,9 +18,7 @@ knitr::opts_chunk$set(
 
 The cashflows examined in the Dynamic Pricing vignette all began in the first timestep, and continued from there. Dynamic uptake occurs if the same cashflow series may begin at several different times. For example, suppose we are examining costs of treatment over the course of treatment. We might wish to summarize costs according to the time since beginning treatment. If we then wish to examine costs of treatment over a cohort of multiple patients, we will need to take account of the fact that different patients may begin treatment at different times.
 
-## Example
-
-### Set-up
+## Using *dynamicpv*
 
 First let us load the packages we will use for this vignette.
 
@@ -28,7 +26,7 @@ First let us load the packages we will use for this vignette.
 library(dynamicpv)
 ```
 
-Let us work with the same cashflow as in the Dynamic Pricing vignette, but assume all costs/prices are constant in real terms.
+Let us work with the same cashflow as in the Dynamic Pricing vignette, but assume all costs/prices are constant in real terms. The discount rate is 3 \% per year, real.
 
 ```{r demo1}
 # A simple cashflow
@@ -51,9 +49,9 @@ Uptake is not dynamic if the cashflow series begins at the same time for everyon
 | 4 | `r{cashflow[4]}` | `r{vt1[4]}` | `r{cashflow[4] * vt1[4]}` |
 | 5 | `r{cashflow[5]}` | `r{vt1[5]}` | `r{cashflow[5] * vt1[5]}` |
 |------|----------|--------------------|---------|
-| Total | `r{sum(cashflow)}` | | `r{sum(vt1 * cashflow)` | 
+| Total | `r{sum(cashflow)}` | | `r{sum(vt1 * cashflow)}` | 
 
-: Table: Calculation of NPV from a simple cashflow and given discount rate {#tbl-simple}
+: Table: Calculation of NPV from a simple cashflow and given discount rate {#tbl-onecash}
 
 In this case, all cashflow series start at timestep 1.
 
@@ -83,7 +81,7 @@ Suppose we have one new patient each year, and we wish to calculate the total NP
 |------|----------|--------------------|---------|
 | Total | `r{sum(cashflow)}` | | | | | | | `r{dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)$results$total}` | 
 
-: Table: Calculation of NPV from a simple cashflow and given discount rate {#tbl-trisimple}
+: Table: Calculation of NPV from a simple cashflow and given discount rate {#tbl-tri}
 
 There are 5 patients with a total NPV of `r{dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)$results$total}`, which equates to `r{dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)$results$mean}` on average per patient.
 
