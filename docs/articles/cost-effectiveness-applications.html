@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cost Effectiveness Applications • dynamicpv</title>
+<title>Cost-Effectiveness Applications • dynamicpv</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Cost Effectiveness Applications">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Cost-Effectiveness Applications">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/cost-effectiveness-applications.html">Cost Effectiveness Applications</a>
+      <a href="../articles/cost-effectiveness-applications.html">Cost-Effectiveness Applications</a>
     </li>
     <li>
       <a href="../articles/dynamic-pricing.html">Dynamic Pricing</a>
@@ -88,7 +88,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Cost Effectiveness Applications</h1>
+      <h1 data-toc-skip>Cost-Effectiveness Applications</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/MSDLLCpapers/dynacem/blob/HEAD/vignettes/cost-effectiveness-applications.Rmd" class="external-link"><code>vignettes/cost-effectiveness-applications.Rmd</code></a></small>
@@ -98,9 +98,9 @@
 
     
     
-<div class="section level3">
-<h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h3>
+<div class="section level2">
+<h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
+</h2>
 <p>Cost-efffectiveness models evaluate the costs and health outcomes
 associated with a decision, such as treating a patient with a particular
 intervention, as compared with another. Such analyses depend on
@@ -139,27 +139,22 @@ medicines. Therefore assuming static prices is often a highly flawed
 assumption when using these analyses to make decisions about branded
 medicines, whose price may vary in future years - but absolutely not
 remain constant in real terms.</p>
-<p>This vignette describes how to evaluate cost-effectiveness with and
-without dynamic pricing and dynamic uptake, using the <em>dynamicpv</em>
-package.</p>
+<p>This vignette describes how to use <em>dynamicpv</em> to evaluate
+cost-effectiveness with and without dynamic pricing and dynamic uptake.
+It is intended to be read after <code>vignette("Dynamic Pricing")</code>
+and <code>vignette("Dynamic Uptake")</code>.</p>
 <p>Before we begin, let us load the packages we need.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/" class="external-link">dynamicpv</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chjackson/flexsurv" class="external-link">flexsurv</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://aphp.github.io/heemod/" class="external-link">heemod</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/" class="external-link">dynamicpv</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="assumptions">Assumptions<a class="anchor" aria-label="anchor" href="#assumptions"></a>
-</h3>
+<div class="section level2">
+<h2 id="assumptions">Assumptions<a class="anchor" aria-label="anchor" href="#assumptions"></a>
+</h2>
 <p>Before we start, we need to outline our assumptions. These
 concern:</p>
 <ul>
@@ -168,9 +163,9 @@ analysis</li>
 <li>dynamic patient uptake</li>
 <li>dynamic pricing</li>
 </ul>
-<div class="section level4">
-<h4 id="decision-problem-we-are-modeling">Decision problem we are modeling<a class="anchor" aria-label="anchor" href="#decision-problem-we-are-modeling"></a>
-</h4>
+<div class="section level3">
+<h3 id="decision-problem-we-are-modeling">Decision problem we are modeling<a class="anchor" aria-label="anchor" href="#decision-problem-we-are-modeling"></a>
+</h3>
 <p>We wish to evaluate the cost-effectiveness, measured as incremental
 cost per QALY, of a new intervention compared to the standard of care
 (SoC). The model is a partitioned survival analysis typical in oncology
@@ -202,7 +197,8 @@ progression. Subsequent treatment costs are $1200 and $300 per week per
 patient while in the PD state for SoC and new intervention patients
 respectively.</li>
 </ul>
-<p>This model may be coded in <em>heemod</em> as follows.</p>
+<p>We code the time constants, time horizon, discount rates and
+inflation rates first.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time constants</span></span>
 <span><span class="va">days_in_year</span> <span class="op">&lt;-</span> <span class="fl">365.25</span></span>
@@ -223,9 +219,10 @@ respectively.</li>
 <span></span>
 <span><span class="co"># Nominal discounting</span></span>
 <span><span class="va">nomdisc_year</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">disc_year</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">infl_year</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
-<span><span class="va">nomdisc_cycle</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">nomdisc_year</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="va">cycle_years</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span> <span class="co"># Per cycle</span></span>
-<span></span>
-<span><span class="co"># State names</span></span>
+<span><span class="va">nomdisc_cycle</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">nomdisc_year</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="va">cycle_years</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span> <span class="co"># Per cycle</span></span></code></pre></div>
+<p>This model may then be coded in <em>heemod</em> as follows.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># State names</span></span>
 <span><span class="va">state_names</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  progression_free <span class="op">=</span> <span class="st">"PF"</span>,</span>
 <span>  progression <span class="op">=</span> <span class="st">"PD"</span>,</span>
@@ -321,7 +318,7 @@ respectively.</li>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Define PD states</span></span>
-<span><span class="va">state_PD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://aphp.github.io/heemod/reference/define_state.html" class="external-link">define_state</a></span><span class="op">(</span></span>
+<span><span class="va">state_PD</span> <span class="op">&lt;-</span> <span class="fu">heemod</span><span class="fu">::</span><span class="fu"><a href="https://aphp.github.io/heemod/reference/define_state.html" class="external-link">define_state</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Costs for the state</span></span>
 <span>  cost_daq_soc <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  cost_daq_new <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -369,7 +366,7 @@ respectively.</li>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create heemod model</span></span>
-<span><span class="va">oncpsm</span> <span class="op">&lt;-</span> <span class="fu">heemod</span><span class="fu">::</span><span class="fu"><a href="https://aphp.github.io/heemod/reference/run_model.html" class="external-link">run_model</a></span><span class="op">(</span></span>
+<span><span class="va">heemodel</span> <span class="op">&lt;-</span> <span class="fu">heemod</span><span class="fu">::</span><span class="fu"><a href="https://aphp.github.io/heemod/reference/run_model.html" class="external-link">run_model</a></span><span class="op">(</span></span>
 <span>  soc <span class="op">=</span> <span class="va">strat_soc</span>,</span>
 <span>  new <span class="op">=</span> <span class="va">strat_new</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="va">params</span>,</span>
@@ -378,39 +375,95 @@ respectively.</li>
 <span>  effect <span class="op">=</span> <span class="va">qaly</span>,</span>
 <span>  init <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"life-table"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required namespace: flexsurv</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="dynamic-pricing">Dynamic pricing<a class="anchor" aria-label="anchor" href="#dynamic-pricing"></a>
-</h4>
+<div class="section level3">
+<h3 id="dynamic-pricing">Dynamic pricing<a class="anchor" aria-label="anchor" href="#dynamic-pricing"></a>
+</h3>
 <p>Costs are assumed to increases in line with general inflation (2.5%
 per year), except for effects on drug acquisition costs due to LoEs. The
-LoE for the SoC is assumed to occur first, at 2028-01-01, after which
-there is anticipated to be a 70% reduction in prices over one year. The
-new intervention has an LoE occuring three years later, at 2031-01-01,
-after which there would be a 50% reduction in prices over one year.</p>
+date of calculation is 2025-09-01. The LoE for the SoC is assumed to
+occur first, at 2028-01-01, after which there is anticipated to be a 70%
+reduction in prices over one year. The new intervention has an LoE
+occuring three years later, at 2031-01-01, after which there would be a
+50% reduction in prices over one year.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Dates</span></span>
+<span><span class="co"># Date of calculation = 1 September 2025</span></span>
+<span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"20250901"</span><span class="op">)</span></span>
+<span><span class="co"># Date of LOE for SoC = 1 January 2028</span></span>
+<span><span class="va">loe_soc_start</span> <span class="op">&lt;-</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"20280101"</span><span class="op">)</span></span>
+<span><span class="co"># Maturation of SoC prices by LOE + 1 year, i.e. = 1 January 2029</span></span>
+<span><span class="va">loe_soc_end</span> <span class="op">&lt;-</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"20290101"</span><span class="op">)</span> </span>
+<span><span class="co"># Date of LOE for new treatment = 1 January 2031</span></span>
+<span><span class="va">loe_new_start</span> <span class="op">&lt;-</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"20310101"</span><span class="op">)</span></span>
+<span><span class="co"># Maturation of new treatment prices by LOE + 1 year, i.e. = 1 January 2032</span></span>
+<span><span class="va">loe_new_end</span> <span class="op">&lt;-</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"20320101"</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># Effect of LoEs on prices once mature</span></span>
+<span><span class="va">loe_effect_soc</span> <span class="op">&lt;-</span> <span class="fl">0.7</span></span>
+<span><span class="va">loe_effect_new</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
+<span></span>
+<span><span class="co"># Calculation of weeks since DoC for LoEs and price maturities</span></span>
+<span><span class="va">wk_start_soc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">loe_soc_start</span><span class="op">-</span><span class="va">doc</span><span class="op">)</span> <span class="op">/</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">dweeks</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">wk_end_soc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">loe_soc_end</span><span class="op">-</span><span class="va">doc</span><span class="op">)</span> <span class="op">/</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">dweeks</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">wk_start_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">loe_new_start</span><span class="op">-</span><span class="va">doc</span><span class="op">)</span> <span class="op">/</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">dweeks</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">wk_end_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">loe_new_end</span><span class="op">-</span><span class="va">doc</span><span class="op">)</span> <span class="op">/</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">dweeks</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Price maturity times</span></span>
+<span><span class="va">wk_mature_soc</span> <span class="op">&lt;-</span> <span class="va">wk_end_soc</span> <span class="op">-</span> <span class="va">wk_start_soc</span></span>
+<span><span class="va">wk_mature_new</span> <span class="op">&lt;-</span> <span class="va">wk_end_new</span> <span class="op">-</span> <span class="va">wk_start_new</span></span>
+<span></span>
+<span><span class="co"># Create a tibble of price indices of length 2T, then pull out columns as needed</span></span>
+<span><span class="co"># We only need of length T for now, but need of length 2T for future calculations later</span></span>
+<span><span class="va">pricetib</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  model_time <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">Ncycles</span><span class="op">)</span>,</span>
+<span>  model_year <span class="op">=</span> <span class="va">model_time</span> <span class="op">*</span> <span class="va">cycle_years</span>,</span>
+<span>  static <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  geninfl <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">infl_cycle</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="va">model_time</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  loef_soc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">model_time</span> <span class="op">-</span> <span class="va">wk_start_soc</span>, <span class="fl">0</span><span class="op">)</span>, <span class="va">wk_mature_soc</span><span class="op">)</span> <span class="op">/</span> <span class="va">wk_mature_soc</span>,</span>
+<span>  loef_new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">model_time</span> <span class="op">-</span> <span class="va">wk_start_new</span>, <span class="fl">0</span><span class="op">)</span>, <span class="va">wk_mature_new</span><span class="op">)</span> <span class="op">/</span> <span class="va">wk_mature_new</span>,</span>
+<span>  dyn_soc <span class="op">=</span> <span class="va">geninfl</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">loe_effect_soc</span> <span class="op">*</span> <span class="va">loef_soc</span><span class="op">)</span>,</span>
+<span>  dyn_new <span class="op">=</span> <span class="va">geninfl</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">loe_effect_new</span> <span class="op">*</span> <span class="va">loef_new</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Price indices required for calculations</span></span>
+<span><span class="va">prices_oth</span> <span class="op">&lt;-</span> <span class="va">pricetib</span><span class="op">$</span><span class="va">geninfl</span></span>
+<span><span class="va">prices_static</span> <span class="op">&lt;-</span> <span class="va">pricetib</span><span class="op">$</span><span class="va">static</span></span>
+<span><span class="va">prices_dyn_soc</span> <span class="op">&lt;-</span> <span class="va">pricetib</span><span class="op">$</span><span class="va">dyn_soc</span></span>
+<span><span class="va">prices_dyn_new</span> <span class="op">&lt;-</span> <span class="va">pricetib</span><span class="op">$</span><span class="va">dyn_new</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="dynamic-patient-uptake">Dynamic patient uptake<a class="anchor" aria-label="anchor" href="#dynamic-patient-uptake"></a>
-</h4>
+<div class="section level3">
+<h3 id="dynamic-patient-uptake">Dynamic patient uptake<a class="anchor" aria-label="anchor" href="#dynamic-patient-uptake"></a>
+</h3>
 <p>A disease incidence of 1 patient per timestep is assumed, with zero
 prevalence for simplicity. Under the decision problem to be evaluated,
 when the new intervention is available, uptake is assumed to rise
 linearly from 0% to 100% after 2 years. In this way, uptake would be
 gradually increasing with time, accounting for disease epidemiology and
 the share of patients who receive the new intervention.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Time for uptake to occur</span></span>
+<span><span class="va">uptake_years</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span></span>
+<span><span class="co"># Uptake vector for non-dynamic uptake</span></span>
+<span><span class="va">uptake_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">Ncycles</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Uptake vector for dynamic uptake</span></span>
+<span><span class="va">uptake_weeks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">uptake_years</span> <span class="op">/</span> <span class="va">cycle_years</span><span class="op">)</span></span>
+<span><span class="va">share_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">uptake_weeks</span><span class="op">)</span><span class="op">/</span><span class="va">uptake_weeks</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">Ncycles</span><span class="op">-</span><span class="va">uptake_weeks</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">uptake_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">Ncycles</span><span class="op">)</span> <span class="op">*</span> <span class="va">share_multi</span></span></code></pre></div>
 </div>
 </div>
+<div class="section level2">
+<h2 id="using-dynamicpv">Using <em>dynamicpv</em><a class="anchor" aria-label="anchor" href="#using-dynamicpv"></a>
+</h2>
 <div class="section level3">
-<h3 id="using-dynamicpv">Using <em>dynamicpv</em><a class="anchor" aria-label="anchor" href="#using-dynamicpv"></a>
+<h3 id="without-dynamic-pricing-or-dynamic-uptake">Without dynamic pricing or dynamic uptake<a class="anchor" aria-label="anchor" href="#without-dynamic-pricing-or-dynamic-uptake"></a>
 </h3>
-<div class="section level4">
-<h4 id="without-dynamic-pricing-or-dynamic-uptake">Without dynamic pricing or dynamic uptake<a class="anchor" aria-label="anchor" href="#without-dynamic-pricing-or-dynamic-uptake"></a>
-</h4>
 <p>The conventional cost-effectiveness model is static.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">oncpsm</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heemodel</span></span>
 <span><span class="co">#&gt; 2 strategies run for 1044 cycles.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Initial state counts:</span></span>
@@ -439,45 +492,399 @@ the share of patients who receive the new intervention.</p>
 <span><span class="co">#&gt;     Cost Diff. Effect Diff.   ICER Ref.</span></span>
 <span><span class="co">#&gt; new   117033.5    0.9255249 126451  soc</span></span></code></pre></div>
 <p>Let’s examine each payoff more closely.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Pull out the payoffs of interest from oncpsm</span></span>
+<span><span class="va">payoffs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dynfields.html">get_dynfields</a></span><span class="op">(</span></span>
+<span>    heemodel <span class="op">=</span> <span class="va">heemodel</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cost_daq_new"</span>, <span class="st">"cost_daq_soc"</span>, <span class="st">"cost_total"</span>, <span class="st">"qaly"</span>, <span class="st">"life_year"</span><span class="op">)</span>,</span>
+<span>    discount <span class="op">=</span> <span class="st">"disc"</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>      model_years <span class="op">=</span> <span class="va">model_time</span> <span class="op">*</span> <span class="va">cycle_years</span>,</span>
+<span>      <span class="co"># Derive costs other than drug acquisition, as at time zero</span></span>
+<span>      cost_nondaq <span class="op">=</span> <span class="va">cost_total</span> <span class="op">-</span> <span class="va">cost_daq_new</span> <span class="op">-</span> <span class="va">cost_daq_soc</span>,</span>
+<span>      <span class="co"># ... and at the start of each timestep</span></span>
+<span>      cost_nondaq_rup <span class="op">=</span> <span class="va">cost_total_rup</span> <span class="op">-</span> <span class="va">cost_daq_new_rup</span> <span class="op">-</span> <span class="va">cost_daq_soc_rup</span></span>
+<span>    <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create and view dataset for SoC</span></span>
+<span><span class="va">hemout_soc</span> <span class="op">&lt;-</span> <span class="va">payoffs</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"soc"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hemout_soc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 16</span></span></span>
+<span><span class="co">#&gt;   model_time cost_daq_new cost_daq_soc cost_total   qaly life_year int      vt</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          1            0         396.       695. 0.015<span style="text-decoration: underline;">3</span>    0.019<span style="text-decoration: underline;">2</span> soc   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          2            0         388.       705. 0.015<span style="text-decoration: underline;">2</span>    0.019<span style="text-decoration: underline;">1</span> soc   0.999</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>          3            0         380.       714. 0.015<span style="text-decoration: underline;">1</span>    0.019<span style="text-decoration: underline;">1</span> soc   0.999</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>          4            0         372.       721. 0.015<span style="text-decoration: underline;">0</span>    0.019<span style="text-decoration: underline;">1</span> soc   0.998</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>          5            0         365.       726. 0.014<span style="text-decoration: underline;">9</span>    0.019<span style="text-decoration: underline;">0</span> soc   0.998</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>          6            0         357.       730. 0.014<span style="text-decoration: underline;">8</span>    0.018<span style="text-decoration: underline;">9</span> soc   0.997</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8 more variables: cost_daq_new_rup &lt;dbl&gt;, cost_daq_soc_rup &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   cost_total_rup &lt;dbl&gt;, qaly_rup &lt;dbl&gt;, life_year_rup &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   model_years &lt;dbl&gt;, cost_nondaq &lt;dbl&gt;, cost_nondaq_rup &lt;dbl&gt;</span></span></span>
+<span></span>
+<span><span class="co"># Create and view dataset for new intervention</span></span>
+<span><span class="va">hemout_new</span> <span class="op">&lt;-</span> <span class="va">payoffs</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hemout_new</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 16</span></span></span>
+<span><span class="co">#&gt;   model_time cost_daq_new cost_daq_soc cost_total   qaly life_year int      vt</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          1        <span style="text-decoration: underline;">1</span>493.            0      <span style="text-decoration: underline;">1</span>847. 0.015<span style="text-decoration: underline;">3</span>    0.019<span style="text-decoration: underline;">2</span> new   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          2        <span style="text-decoration: underline;">1</span>477.            0      <span style="text-decoration: underline;">1</span>831. 0.015<span style="text-decoration: underline;">3</span>    0.019<span style="text-decoration: underline;">2</span> new   0.999</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>          3        <span style="text-decoration: underline;">1</span>461.            0      <span style="text-decoration: underline;">1</span>815. 0.015<span style="text-decoration: underline;">2</span>    0.019<span style="text-decoration: underline;">1</span> new   0.999</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>          4        <span style="text-decoration: underline;">1</span>446.            0      <span style="text-decoration: underline;">1</span>799. 0.015<span style="text-decoration: underline;">2</span>    0.019<span style="text-decoration: underline;">1</span> new   0.998</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>          5        <span style="text-decoration: underline;">1</span>431.            0      <span style="text-decoration: underline;">1</span>783. 0.015<span style="text-decoration: underline;">1</span>    0.019<span style="text-decoration: underline;">0</span> new   0.998</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>          6        <span style="text-decoration: underline;">1</span>416.            0      <span style="text-decoration: underline;">1</span>766. 0.015<span style="text-decoration: underline;">0</span>    0.019<span style="text-decoration: underline;">0</span> new   0.997</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8 more variables: cost_daq_new_rup &lt;dbl&gt;, cost_daq_soc_rup &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   cost_total_rup &lt;dbl&gt;, qaly_rup &lt;dbl&gt;, life_year_rup &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   model_years &lt;dbl&gt;, cost_nondaq &lt;dbl&gt;, cost_nondaq_rup &lt;dbl&gt;</span></span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="scenario-1-no-dynamic-uptake-or-pricing">Scenario 1: No dynamic uptake or pricing<a class="anchor" aria-label="anchor" href="#scenario-1-no-dynamic-uptake-or-pricing"></a>
+</h3>
+<p>These results show that the new intervention is associated with
+$117,034 incremental costs relative to the standard of care (including
+$141,997 of drug acquisition costs for the new intervention) and 0.926
+incremental QALYs. The cumulative ICER (incremental cost per QALY) is
+$126,451 per QALY at the 20 year time horizon.</p>
+</div>
+<div class="section level3">
+<h3 id="scenario-2-dynamic-pricing-no-dynamic-uptake">Scenario 2: Dynamic pricing, no dynamic uptake<a class="anchor" aria-label="anchor" href="#scenario-2-dynamic-pricing-no-dynamic-uptake"></a>
+</h3>
+<p>Under scenario 2, the new intervention has an incremental
+cost-effectiveness of $124,059 per QALY (incremental costs of $114,820,
+incremental QALYs of 0.926).</p>
+</div>
+<div class="section level3">
+<h3 id="scenario-3-dynamic-uptake-not-dynamic-pricing">Scenario 3: Dynamic uptake, not dynamic pricing<a class="anchor" aria-label="anchor" href="#scenario-3-dynamic-uptake-not-dynamic-pricing"></a>
+</h3>
+<p>Under scenario 3, the new intervention has an incremental
+cost-effectiveness of $149,782 per QALY (incremental costs of
+$78,010,854, incremental QALYs of 521 from a cohort comprising 992
+patients).</p>
+</div>
+<div class="section level3">
+<h3 id="scenario-4-dynamic-pricing-and-uptake">Scenario 4: Dynamic pricing and uptake<a class="anchor" aria-label="anchor" href="#scenario-4-dynamic-pricing-and-uptake"></a>
+</h3>
+<p>Under scenario 4, the new intervention has an incremental
+cost-effectiveness of $94,570 per QALY (incremental costs of
+$49,255,066, incremental QALYs of 521 from a cohort comprising 992
+patients).</p>
+<p>Total costs and QALYs for each scenario are summarized in <span class="citation">@tbl-res1</span>. The results above are skewed by the
+fact that some scenarios represent more than one patient cohort.
+Presenting results per patient, allows easier comparison between the
+scenarios.</p>
+<table class="table">
+<caption>Cost-effectiveness model results by scenario
+{#tbl-res1}</caption>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left"></th>
+<th>Scenario 1</th>
+<th>Scenario 2</th>
+<th>Scenario 3</th>
+<th>Scenario 4</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Dynamic pricing?</td>
+<td align="left"></td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td align="left">Dynamic uptake?</td>
+<td align="left"></td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td align="left">Cohort size</td>
+<td align="left"></td>
+<td>1</td>
+<td>1</td>
+<td>992</td>
+<td>992</td>
+</tr>
+<tr class="even">
+<td align="left">Total costs (cohort)</td>
+<td align="left"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">New intervention</td>
+<td>194,157</td>
+<td>191,248</td>
+<td>129,401,743</td>
+<td>91,698,157</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Standard of care</td>
+<td>77,123</td>
+<td>76,428</td>
+<td>51,390,888</td>
+<td>42,443,090</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Incremental</td>
+<td>117,034</td>
+<td>114,820</td>
+<td>78,010,854</td>
+<td>49,255,066</td>
+</tr>
+<tr class="even">
+<td align="left">Total costs (per patient)</td>
+<td align="left"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">New intervention</td>
+<td>194,157</td>
+<td>191,248</td>
+<td>130,380</td>
+<td>92,391</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Standard of care</td>
+<td>77,123</td>
+<td>76,428</td>
+<td>51,779</td>
+<td>42,764</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Incremental</td>
+<td>117,034</td>
+<td>114,820</td>
+<td>78,600</td>
+<td>49,627</td>
+</tr>
+<tr class="even">
+<td align="left">Total QALYs (cohort)</td>
+<td align="left"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">New intervention</td>
+<td>2.08</td>
+<td>2.08</td>
+<td>1,309</td>
+<td>1,309</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Standard of care</td>
+<td>1.154</td>
+<td>1.154</td>
+<td>788</td>
+<td>788</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Incremental</td>
+<td>0.926</td>
+<td>0.926</td>
+<td>521</td>
+<td>521</td>
+</tr>
+<tr class="even">
+<td align="left">Total QALYs (per patient)</td>
+<td align="left"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">New intervention</td>
+<td>2.08</td>
+<td>2.08</td>
+<td>1.319</td>
+<td>1.319</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Standard of care</td>
+<td>1.154</td>
+<td>1.154</td>
+<td>0.794</td>
+<td>0.794</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Incremental</td>
+<td>0.926</td>
+<td>0.926</td>
+<td>0.525</td>
+<td>0.525</td>
+</tr>
+<tr class="even">
+<td align="left">ICER</td>
+<td align="left"></td>
+<td>126,451</td>
+<td>124,059</td>
+<td>149,782</td>
+<td>94,570</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="section level2">
-<h2 id="derive-the-dataset-necessary-for-the-dynamic-pricinguptake-calculations">Derive the dataset necessary for the dynamic pricing/uptake
-calculations<a class="anchor" aria-label="anchor" href="#derive-the-dataset-necessary-for-the-dynamic-pricinguptake-calculations"></a>
+<h2 id="future-single-cohort-icer">Future single cohort ICER<a class="anchor" aria-label="anchor" href="#future-single-cohort-icer"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">payoffs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dynfields.html">get_dynfields</a></span><span class="op">(</span></span>
-<span>    heemodel <span class="op">=</span> <span class="va">oncpsm</span>,</span>
-<span>    payoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cost_daq_new"</span>, <span class="st">"cost_total"</span>, <span class="st">"qaly"</span>, <span class="st">"life_year"</span><span class="op">)</span>,</span>
-<span>    discount <span class="op">=</span> <span class="st">"disc"</span></span>
-<span>    <span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View the extracted data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 11</span></span></span>
-<span><span class="co">#&gt;   model_time cost_daq_new cost_total   qaly life_year int      vt</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          1            0       695. 0.015<span style="text-decoration: underline;">3</span>    0.019<span style="text-decoration: underline;">2</span> soc   1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          2            0       705. 0.015<span style="text-decoration: underline;">2</span>    0.019<span style="text-decoration: underline;">1</span> soc   0.999</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>          3            0       714. 0.015<span style="text-decoration: underline;">1</span>    0.019<span style="text-decoration: underline;">1</span> soc   0.999</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>          4            0       721. 0.015<span style="text-decoration: underline;">0</span>    0.019<span style="text-decoration: underline;">1</span> soc   0.998</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>          5            0       726. 0.014<span style="text-decoration: underline;">9</span>    0.019<span style="text-decoration: underline;">0</span> soc   0.998</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>          6            0       730. 0.014<span style="text-decoration: underline;">8</span>    0.018<span style="text-decoration: underline;">9</span> soc   0.997</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: cost_daq_new_rup &lt;dbl&gt;, cost_total_rup &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   qaly_rup &lt;dbl&gt;, life_year_rup &lt;dbl&gt;</span></span></span></code></pre></div>
-<p>Look how the incremental costs and QALYs from the static model match
-the sum of the payoffs.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">$</span><span class="va">cost_total</span><span class="op">[</span><span class="va">payoffs</span><span class="op">$</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">]</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">$</span><span class="va">cost_total</span><span class="op">[</span><span class="va">payoffs</span><span class="op">$</span><span class="va">int</span><span class="op">==</span><span class="st">"soc"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 117033.5</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">$</span><span class="va">qaly</span><span class="op">[</span><span class="va">payoffs</span><span class="op">$</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">]</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">$</span><span class="va">qaly</span><span class="op">[</span><span class="va">payoffs</span><span class="op">$</span><span class="va">int</span><span class="op">==</span><span class="st">"soc"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.9255249</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="with-dynamic-pricing-but-without">With dynamic pricing, but without<a class="anchor" aria-label="anchor" href="#with-dynamic-pricing-but-without"></a>
-</h4>
+<p>The table above presents the cost-effectiveness results as of the
+date of calculation, 2025-09-01. However, it is interesting to explore
+how the ICER will change over time, given the expected evolution of
+prices. We use <code><a href="../reference/futurepv.html">dynamicpv::futurepv()</a></code> to calculate present
+values at future times. This function is a wrapper for
+<code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code>. This is the single cohort ICER (no
+dynamic uptake) but with dynamic pricing, so corresponds with Scenario 2
+from earlier.</p>
+<p>First, we calculate the costs at each time of interest. Then we
+calculate the ICER, given the incremental QALYs we have already observed
+- and which are immune from pricing effects.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Times at which to plot ICER</span></span>
+<span><span class="va">gtimes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">thoz</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="va">cycle_years</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co"># SOC drug acquisition costs</span></span>
+<span><span class="va">gc_soc_daq</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
+<span>        payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
+<span>        prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
+<span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># SOC other costs</span></span>
+<span><span class="va">gc_soc_oth</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
+<span>        payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
+<span>        prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
+<span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># New drug acquisition costs</span></span>
+<span><span class="va">gc_new_daq</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
+<span>        payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
+<span>        prices <span class="op">=</span> <span class="va">prices_dyn_new</span>,</span>
+<span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># New other costs</span></span>
+<span><span class="va">gc_new_oth</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
+<span>        payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
+<span>        prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
+<span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># Combine in a tibble</span></span>
+<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    time_weeks <span class="op">=</span> <span class="va">gtimes</span>,</span>
+<span>    time_years <span class="op">=</span> <span class="va">time_weeks</span> <span class="op">*</span> <span class="va">cycle_years</span>,</span>
+<span>    evaldate <span class="op">=</span> <span class="va">doc</span> <span class="op">+</span> <span class="va">time_weeks</span> <span class="op">*</span> <span class="fl">7</span>,</span>
+<span>    daqcost_new <span class="op">=</span> <span class="va">gc_new_daq</span>,</span>
+<span>    daqcost_soc <span class="op">=</span> <span class="va">gc_soc_daq</span>,</span>
+<span>    othcost_new <span class="op">=</span> <span class="va">gc_new_oth</span>,</span>
+<span>    othcost_soc <span class="op">=</span> <span class="va">gc_soc_oth</span>,</span>
+<span>    qaly_soc <span class="op">=</span> <span class="va">s1_soc_qaly</span>,</span>
+<span>    qaly_new <span class="op">=</span> <span class="va">s1_new_qaly</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    totcost_new <span class="op">=</span> <span class="va">daqcost_new</span> <span class="op">+</span> <span class="va">othcost_new</span>,</span>
+<span>    totcost_soc <span class="op">=</span> <span class="va">daqcost_soc</span> <span class="op">+</span> <span class="va">othcost_soc</span>,</span>
+<span>    icost <span class="op">=</span> <span class="va">totcost_new</span><span class="op">-</span><span class="va">totcost_soc</span>,</span>
+<span>    iqaly <span class="op">=</span> <span class="va">qaly_new</span><span class="op">-</span><span class="va">qaly_soc</span>,</span>
+<span>    icer <span class="op">=</span> <span class="va">icost</span><span class="op">/</span><span class="va">iqaly</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p>We should check at this point that the ICER we are starting at
+(124,059) matches the scenario 2 ICER from earlier (124,059).</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Graph of ICER vs incident cohort time</span></span>
+<span><span class="va">g_icert</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">ds</span>,</span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">evaldate</span>, y<span class="op">=</span><span class="va">icer</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">""</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Evaluation date"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"ICER"</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">ds</span><span class="op">$</span><span class="va">icer</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, linetype<span class="op">=</span><span class="st">'dotted'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_new_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_soc_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span>,</span>
+<span>    limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150000</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span></code></pre></div>
+<p>The following plot shows the nominal ICER calculated at different
+times, given the pricing, LoE and other assumptions. The horizontal
+dotted line confirms that the initial ICER matches the value from
+Scenario 2. The vertical dashed lines mark the timings of the LoEs of
+first the standard of care, and then the new treatment.</p>
+<div class="figure">
+<img src="cost-effectiveness-applications_files/figure-html/graph_future-1.png" alt="ICER over time" width="864"><p class="caption">
+ICER over time
+</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
+</h2>
+<p>The findings for this example model are as follows:</p>
+<ul>
+<li><p>The effect of assuming dynamic pricing rather than flat pricing
+over time is shown in the difference between results of scenarios 1 and
+2. Scenario 1 assumed no increases in drug acquisition costs, but
+inflationary increases in other costs. Scenario 2 additionally assumed
+drug prices of the new intervention and SoC comparator would be eroded
+due to losses of exclusivity. This has a material impact on costs per
+patient of the new intervention (reducing from $194,157 to $191,248).
+Accordingly the ICER reduces from $126,451 to $124,059 per
+QALY.</p></li>
+<li><p>The effect of modeling uptake dynamically rather than just the
+current cohort of patients is shown in the difference between results of
+scenarios 1 and 3. Dynamic modeling of uptake has the effect of
+weighting the costs and QALYs per patient in scenario 3 towards a later
+cohort of patients, where the accumulation of costs and QALYs over the
+time remaining in the payer’s 20 year time horizon will be less. The
+incremental costs per patient reduced from $194,157 in scenario 1 to
+$130,380 in scenario 3, whereas the incremental QALYs reduced from 2.08
+to 1.319 per patient. Overall, the ICER increased slightly from $126,451
+to $149,782 per QALY.</p></li>
+<li><p>Scenario 4 illustrates the effects of both dynamic pricing and
+cohort modeling. The results per patient are identical to scenario 3,
+except that the cost per patient of the new intervention reduces from
+$130,380 to $92,391, due to the impact of dynamic pricing. The ICER in
+this case is reduced considerably to $94,570 per QALY.</p></li>
+</ul>
 </div>
   </div>
 
