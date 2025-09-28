@@ -16,18 +16,125 @@ knitr::opts_chunk$set(
 
 ## What is dynamic pricing?
 
-Dynamic pricing is pricing of a resource (e.g. acquisition cost of some medicine, wages of a professional) that changes in time. Often, we might assume that prices are constant in real terms. In other words, were it not for price inflation, prices would be constant. This assumption provides a lot of mathematical convenience in that we can keep calculations of Net Present Value a lot simpler.
+Dynamic pricing is pricing of a resource (e.g. acquisition cost of some medicine, wages of a professional) that changes in time. Often, we might assume that prices are constant in real terms. In other words, were it not for price inflation, prices would be constant. This assumption provides a lot of mathematical convenience in that we can keep calculations of Net Present Value (NPV) a lot simpler.
 
 NPV of a cashflow $c_t$ in $t$ years time, assuming prices constant in real terms and an annual discount rate of $i$:
 
-$$NPV = c_t \times (1+i)^{-t}$$
+$$NPV = \frac{c_t}{(1+i)^{t}}$$
 
-If we cannot make that assumption, then we need an estimate of the future cashflow after allowing for inflation specific to that cashflow (nominal value), and we must discount by a nominal rather than real discount rate: $1+i' = (1+i)(1+r_g)$.
+If we cannot make that assumption, then we need an estimate of the future cashflow after allowing for inflation specific to that cashflow (nominal value), and we must discount by a nominal rather than real discount rate, $i' = (1+i)(1+r_g) - 1$.
 
-$$NPV = c_t \times \frac{(1+r_c)^t}{(1+r_g)^t \cdot (1+i)^t}$$
+$$NPV = c_t \times \frac{(1+r_c)^t}{(1+r_g)^t (1+i)^t} = c_t \times \frac{(1+r_c)^t}{(1+i')^t} $$
 
 The values are only the same if the inflation specific to the cashflow is the same as the general rate of price inflation included in the nominal discount rate ($r_c = r_g$).
 
+When working with resources whose pricing is not dynamic, then calculations in real terms is quite adequate. However, when working with resources whose prices may be dynamic, it can be clearer to work in nominal terms - requiring an explicit estimate of the cashflows in nominal terms, and including an explicit inflation term in the derivation of the (nominal) discount rate.
+
+## Using *dynamicpv*
+
+First let us load the packages we will use for this vignette.
+
 ```{r setup}
+library(dplyr)
+library(ggplot2)
 library(dynamicpv)
 ```
+
+### Cashflows constant in real terms
+
+It is overkill rather to use *dynamicpv* to calculate the NPV of a cashflow that is constant in real terms, since there are simpler routes to doing this. However, let is start there.
+
+```{r demo1}
+# A simple cashflow
+cashflow <- c(110, 120, 130, 140, 150)
+
+# (Real) discount rate of 3\% per timestep (year)
+disc <- 0.03
+
+# Run dynpv calculation with full output
+pv1 <- dynpv(payoffs=cashflow, discrate=disc)
+pv1
+
+# Pull out result of interest
+pv1$results$total
+```
+
+The calculation can be presented in a table as follows.
+
+| Time, $t$ | Cashflow, $c_t$ | Discount factor, $v^t = (1+i)^(-t)$ | Product |
+|-----------|-----------------|-------------------------------------|---------|
+| 1 | `r{cashflow[1]}` | `r{vt1[1]}` | `r{cashflow[1] * vt1[1]}` |
+| 2 | `r{cashflow[2]}` | `r{vt1[2]}` | `r{cashflow[2] * vt1[2]}` |
+| 3 | `r{cashflow[3]}` | `r{vt1[3]}` | `r{cashflow[3] * vt1[3]}` |
+| 4 | `r{cashflow[4]}` | `r{vt1[4]}` | `r{cashflow[4] * vt1[4]}` |
+| 5 | `r{cashflow[5]}` | `r{vt1[5]}` | `r{cashflow[5] * vt1[5]}` |
+|-----------|-----------------|-------------------------------------|---------|
+| Total | `r{sum(cashflow)}` | | `r{sum(vt1 * cashflow)` | 
+
+: Table: Calculation of NPV from a simple cashflow and given discount rate
+
+The present value of this cashflow is `r{pv1$results$tota}`. The same result could have been found more easily than invoking this package.
+
+```{r simpler}
+vt1 <- (1 + disc)^(-1 * (0:4))
+sum(vt1 * cashflow)
+```
+
+### Cashflow escalating at constant rate
+
+In this setting, let us assume that the cashflow escalates at a constant rate, but that this constant rate is not equal to the general price inflation one would include in a nominal discount rate. In this example, let us assume that the price of the cashflow increases at 1 \% per year, but that general price inflation is 2.5 \% per year. The real discount rate is unchanged at 3 \% per year.
+
+We can perform this calculation in two ways.
+
+The first way would be to calculate an adjusted discount rate, equal to $\frac{(1+r_g)(1+i)}{1+r_c}-1$ in the equations above.
+
+```{r calc2a}
+# Calculate adjusted nominal discount rate
+adjdisc <- (1+disc) * 1.025 / 1.01 - 1
+
+# Use dynpv with adjusted discount rate
+pv2 <- dynpv(payoffs=cashflow, discrate=adjdisc)
+pv2$results$total
+
+# Compare with more base calculations
+vt2 <- (1 + adjdisc)^(-1 * (0:4))
+sum(vt2 * cashflow)
+```
+
+The present value of this cashflow is `r{pv2$results$tota}`. The second way works more generally for dynamic pricing, and involves calculating a price index at each time.
+
+```{r calc2b}
+# Set up price index
+pinfl <- 0.01
+pindex <- (1+pinfl)^(0:4)
+pindex
+
+# Nominal discount rate
+nomdisc <- (1+disc)*(1+pinfl)-1
+
+# Calculate present value
+pv3 <- dynpv(payoffs=cashflow, prices=pindex, discrate=nomdisc)
+pv3$results$total
+```
+
+### Cashflow changing irregularly
+
+Where *dynamicpv* is most relevant is when the price index is more irregular. For example, one might anticipate a sudden future change in a price of a certain resource (e.g. drug price reduction on loss of exclusivity). This can be accommodated in the price index. In this simple example, let us assume that the underlying price of the resource reduces to half its original value in the fourth year.
+
+```{r calc3}
+# Revise the price index to be 0.5 in year 4
+pindex[4] <- 0.5
+pindex
+
+# Calculate present value
+pv4 <- dynpv(payoffs=cashflow, prices=pindex, discrate=nomdisc)
+pv4$results$total
+```
+
+The NPV has reduced by `r{pv3$results$total-pv4$results$total}` to `r{pv4$results$total}`.
+
+## Summary
+
+- Dynamic pricing is when pricing of a resource changes in time. This can complicate calculations of NPV.
+- The `dynamicpv::dynpv()` function can be used to calculate NPVs for arbitrary vectors of cashflows, at a given discount rate and a given underlying price index.
+- In this way, the function can accommodate as needed irregular prices changes, regular price changes, or no price change at all.
