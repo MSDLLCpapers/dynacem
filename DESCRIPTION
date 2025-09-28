@@ -19,6 +19,7 @@ Imports:
     rlang,
     tidyr
 Suggests: 
+    flexsurv,
     ggplot2,
     heemod,
     knitr,
