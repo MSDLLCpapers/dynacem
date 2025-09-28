@@ -1,0 +1,21 @@
+---
+title: "Dynamic Uptake"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{dynamic-uptake}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## What is dynamic uptake?
+
+```{r setup}
+library(dynamicpv)
+```

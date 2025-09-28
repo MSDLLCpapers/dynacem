@@ -1,0 +1,33 @@
+---
+title: "Dynamic Pricing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{dynamic-pricing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## What is dynamic pricing?
+
+Dynamic pricing is pricing of a resource (e.g. acquisition cost of some medicine, wages of a professional) that changes in time. Often, we might assume that prices are constant in real terms. In other words, were it not for price inflation, prices would be constant. This assumption provides a lot of mathematical convenience in that we can keep calculations of Net Present Value a lot simpler.
+
+NPV of a cashflow $c_t$ in $t$ years time, assuming prices constant in real terms and an annual discount rate of $i$:
+
+$$NPV = c_t \times (1+i)^{-t}$$
+
+If we cannot make that assumption, then we need an estimate of the future cashflow after allowing for inflation specific to that cashflow (nominal value), and we must discount by a nominal rather than real discount rate: $1+i' = (1+i)(1+r_g)$.
+
+$$NPV = c_t \times \frac{(1+r_c)^t}{(1+r_g)^t \cdot (1+i)^t}$$
+
+The values are only the same if the inflation specific to the cashflow is the same as the general rate of price inflation included in the nominal discount rate ($r_c = r_g$).
+
+```{r setup}
+library(dynamicpv)
+```
