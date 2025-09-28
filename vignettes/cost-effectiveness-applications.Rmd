@@ -1,0 +1,559 @@
+---
+title: "Cost Effectiveness Applications"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{cost-effectiveness-applications}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Motivation
+
+Cost-efffectiveness models evaluate the costs and health outcomes associated with a decision, such as treating a patient with a particular intervention, as compared with another. Such analyses depend on measuring the incremental costs and health outcomes between the different decisions, and considering which decision would be most efficient, given the decision-maker's economic perspective, time horizon, and willingness-to-pay for any improvement in health outcomes. Key to such analysis are the calculation of discounted (net) present values of costs and health outcomes associated with each decision option. Decisions about access to health care innovations are routinely made by health technology assessment (HTA) bodies on the basis of analyses in this form.
+
+One of the problems with such analyses is that they are static in terms of pricing and uptake assumptions. Uptake is static because the analyses are conducted in respect of a single cohort of patients for whom the decision must be made today. In contrast, the decision-maker is likely to be making decisions on behalf of a gradual influx of patients for whom the decision is relevant. That influx may be dependent on disease prevalence, disease incidence, diagnosis patterns, progression of disease, prior treatment patterns - any number of the factors that health economists routinely consider in budget impact models, but not cost-effectiveness modeling.
+
+Pricing is static because the analyses typically assume that costs will remain constant in real terms. When considering the cost-effectiveness of medicines, the acquisition cost of those medicines is a key component of the total cost. One thing we know about drug acquisition costs is that they do not remain constant in real terms. In the United States, companies often raise the Wholesale Acquisition Cost (WAC) prices of branded medicines once or twice a year, and this can be greater than inflation rates in the economy. After the exclusivity period of those branded medicines, generics or biosimilars may become available, and this wider supply can force down prices dramatically. In Europe and elsewhere, companies are often prevented - either directly in law or indirectly through HTA processes - from raising prices on branded medicines. Therefore assuming static prices is often a highly flawed assumption when using these analyses to make decisions about branded medicines, whose price may vary in future years - but absolutely not remain constant in real terms.
+
+This vignette describes how to evaluate cost-effectiveness with and without dynamic pricing and dynamic uptake, using the *dynamicpv* package.
+
+Before we begin, let us load the packages we need.
+
+```{r setup}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(flexsurv)
+library(heemod)
+library(dynamicpv)
+```
+
+## Assumptions
+
+Before we start, we need to outline our assumptions. These concern:
+
+- the decision problem we are modeling through a cost-effectiveness analysis
+- dynamic patient uptake
+- dynamic pricing
+
+### Decision problem we are modeling
+
+We wish to evaluate the cost-effectiveness, measured as incremental cost per QALY, of a new intervention compared to the standard of care (SoC). The model is a partitioned survival analysis typical in oncology with three health states: progression-free (PF), progressive disease (PD) and death, with additional assumptions as follows:
+
+- The time horizon is 20 years, a timestep is 1 week, discounting is at 3% per year, with an effective date of calculation is 2025-06-01.
+- For SoC, progression-free survival (PFS) is modeled as an exponential distribution with mean of 50 weeks; overall survival (OS) in weeks is modelled according to a lognormal distribution with mean and standard deviation on the log scale as 4 and 1 respectively.
+- The effect of the new intervention relative to the SoC is a hazard ratio of 0.5 on PFS and 0.6 on OS.
+- Health utility is 0.8 in the PF state and 0.6 in the PD state.
+- Drug acquisition costs are $400 and $1500 per week for SoC and the new intervention respectively, incurred throughout a patient’s time in the PF state (treat to progression).
+- Drug administration costs are $50 and $75 per week on treatment for SoC and the new intervention respectively.
+- Adverse events occur in 0.08% and 0.10% of SoC and new intervention patients per week respectively, while on treatment, at an average cost of $2000 per event.
+- Disease management costs are $80 per week in PF and $20 per week in PD.
+- Patients receive the treatment of interest (new or SoC) until progression. Subsequent treatment costs are $1200 and $300 per week per patient while in the PD state for SoC and new intervention patients respectively.
+
+This model may be coded in *heemod* as follows.
+
+```{r constants}
+# Time constants
+days_in_year <- 365.25
+days_in_week <- 7
+cycle_years <- days_in_week / days_in_year # Duration of a one week cycle in years
+
+# Time horizon (years) and number of cycles
+thoz <- 20
+Ncycles <- ceiling(thoz/cycle_years)
+
+# Real discounting
+disc_year <- 0.03 # Per year
+disc_cycle <- (1+disc_year)^(cycle_years) - 1 # Per cycle
+
+# Price inflation
+infl_year <- 0.025 # Per year
+infl_cycle <- (1+infl_year)^(cycle_years) - 1 # Per cycle
+
+# Nominal discounting
+nomdisc_year <- (1+disc_year)*(1+infl_year) - 1
+nomdisc_cycle <- (1+nomdisc_year)^(cycle_years) - 1 # Per cycle
+```
+
+```{r heemod}
+# State names
+state_names = c(
+  progression_free = "PF",
+  progression = "PD",
+  death = "Death"
+  )
+
+# PFS distribution for SoC with Exp() distribution and mean of 50 weeks
+surv_pfs_soc <- heemod::define_surv_dist(
+  distribution = "exp",
+  rate = 1/50
+)
+
+# OS distribution for SoC with Lognorm() distribution, meanlog = 4.5, sdlog = 1
+# This implies a mean of exp(4 + 0.5 * 1^2) = exp(4.5) = 90 weeks
+surv_os_soc <- heemod::define_surv_dist(
+  distribution = "lnorm",
+  meanlog = 4,
+  sdlog = 1
+)
+
+# PFS and OS distributions for new
+surv_pfs_new <- heemod::apply_hr(surv_pfs_soc, hr=0.5)
+surv_os_new <- heemod::apply_hr(surv_os_soc, hr=0.6)
+
+# Define partitioned survival model, soc
+psm_soc <- heemod::define_part_surv(
+  pfs = surv_pfs_soc,
+  os = surv_os_soc,
+  terminal_state = FALSE,
+  state_names = state_names
+  )
+
+# Define partitioned survival model, soc
+psm_new <- heemod::define_part_surv(
+  pfs = surv_pfs_new,
+  os = surv_os_new,
+  terminal_state = FALSE,
+  state_names = state_names
+  )
+
+# Parameters
+params <- heemod::define_parameters(
+  # Discount rate
+  disc = disc_cycle,
+  # Disease management costs
+  cman_pf = 80,
+  cman_pd = 20,
+  # Drug acquisition costs - the SoC regime only uses SoC drug, the New regime only uses New drug
+  cdaq_soc = dispatch_strategy(
+    soc = 400,
+    new = 0
+  ),
+  cdaq_new = dispatch_strategy(
+    soc = 0,
+    new = 1500
+  ),
+  # Drug administration costs
+  cadmin = dispatch_strategy(
+    soc = 50,
+    new = 75
+  ),
+  # Adverse event risks
+  risk_ae = dispatch_strategy(
+    soc = 0.08,
+    new = 0.1
+  ),
+  # Adverse event average costs
+  uc_ae = 2000,
+  # Subsequent treatments
+  csubs = dispatch_strategy(
+    soc = 1200,
+    new = 300
+  ),
+  # Health state utilities
+  u_pf = 0.8,
+  u_pd = 0.6,
+)
+
+# Define PF states
+state_PF <- heemod::define_state(
+  # Costs for the state
+  cost_daq_soc = discount(cdaq_soc, disc_cycle),
+  cost_daq_new = discount(cdaq_new, disc_cycle),
+  cost_dadmin = discount(cadmin, disc_cycle),
+  cost_dman = discount(cman_pf, disc_cycle),  
+  cost_ae = risk_ae * uc_ae,
+  cost_subs = 0,
+  cost_total = cost_daq_soc + cost_daq_new + cost_dadmin + cost_dman + cost_ae + cost_subs,
+  # Health utility, QALYs and life years
+  pf_year = discount(cycle_years, disc_cycle),
+  life_year = discount(cycle_years, disc_cycle),
+  qaly = discount(cycle_years * u_pf, disc_cycle)
+  )
+
+# Define PD states
+state_PD <- heemod::define_state(
+  # Costs for the state
+  cost_daq_soc = 0,
+  cost_daq_new = 0,
+  cost_dadmin = 0,
+  cost_dman = discount(cman_pd, disc_cycle),  
+  cost_ae = 0,
+  cost_subs = discount(csubs, disc_cycle),
+  cost_total = cost_daq_soc + cost_daq_new + cost_dadmin + cost_dman + cost_ae + cost_subs,
+  # Health utility, QALYs and life years
+  pf_year = 0,
+  life_year = heemod::discount(cycle_years, disc_cycle),
+  qaly = heemod::discount(cycle_years * u_pd, disc_cycle)
+  )
+
+# Define Death state
+state_Death <- heemod::define_state(
+  # Costs are zero
+  cost_daq_soc = 0,
+  cost_daq_new = 0,
+  cost_dadmin = 0,
+  cost_dman = 0,
+  cost_ae = 0,
+  cost_subs = 0,
+  cost_total = cost_daq_soc + cost_daq_new + cost_dadmin + cost_dman + cost_ae + cost_subs,
+  # Health outcomes are zero
+  pf_year = 0,
+  life_year = 0,
+  qaly = 0,
+)
+
+# Define strategy for SoC
+strat_soc <- heemod::define_strategy(
+    transition = psm_soc,
+    "PF" = state_PF,
+    "PD" = state_PD,
+    "Death" = state_Death
+  )
+
+# Define strategy for new
+strat_new <- heemod::define_strategy(
+  transition = psm_new,
+  "PF" = state_PF,
+  "PD" = state_PD,
+  "Death" = state_Death
+)
+
+# Create heemod model
+oncpsm <- heemod::run_model(
+  soc = strat_soc,
+  new = strat_new,
+  parameters = params,
+  cycles = Ncycles,
+  cost = cost_total,
+  effect = qaly,
+  init = c(1, 0, 0),
+  method = "life-table"
+)
+```
+
+### Dynamic pricing
+
+Costs are assumed to increases in line with general inflation (2.5% per year), except for effects on drug acquisition costs due to LoEs. The date of calculation is 2025-09-01. The LoE for the SoC is assumed to occur first, at 2028-01-01, after which there is anticipated to be a 70% reduction in prices over one year. The new intervention has an LoE occuring three years later, at 2031-01-01, after which there would be a 50% reduction in prices over one year.
+
+```{r dynpricing}
+# Dates
+doc <- lubridate::ymd("20250901") # Date of calculation = 1 September 2025
+loe_soc_start <- lubridate::ymd("20280101") # Date of LOE for SoC = 1 January 2028
+loe_soc_end <- lubridate::ymd("20290101") # Maturation of SoC prices by LOE + 1 year, i.e. = 1 January 2029
+loe_new_start <- lubridate::ymd("20310101") # Date of LOE for new treatment = 1 January 2031
+loe_new_end <- lubridate::ymd("20320101") # Maturation of new treatment prices by LOE + 1 year, i.e. = 1 January 2032
+
+# Effect of LoEs on prices once mature
+loe_effect_soc <- 0.7
+loe_effect_new <- 0.5
+
+# Calculation of weeks since DoC for LoEs and price maturities
+wk_start_soc <- floor((loe_soc_start-doc) / lubridate::dweeks(1))
+wk_end_soc <- floor((loe_soc_end-doc) / lubridate::dweeks(1))
+wk_start_new <- floor((loe_new_start-doc) / lubridate::dweeks(1))
+wk_end_new <- floor((loe_new_end-doc) / lubridate::dweeks(1))
+
+# Price maturity times
+wk_mature_soc <- wk_end_soc - wk_start_soc
+wk_mature_new <- wk_end_new - wk_start_new
+
+# Create a tibble of price indices of length T, then pull out columns as needed
+pricetib <- dplyr::tibble(
+  model_time = 1:Ncycles,
+  model_year = model_time * cycle_years,
+  static = 1,
+  geninfl = (1 + infl_cycle)^(model_time - 1),
+  loef_soc = pmin(pmax(model_time - wk_start_soc, 0), wk_mature_soc-wk_start_soc) / (wk_mature_soc-wk_start_soc),
+  loef_new = pmin(pmax(model_time - wk_start_new, 0), wk_mature_new-wk_start_new) / (wk_mature_new-wk_start_new),
+  dyn_soc = geninfl * (1 - loe_effect_soc * loef_soc),
+  dyn_new = geninfl * (1 - loe_effect_new * loef_new)
+)
+
+# Price indices required for calculations
+prices_oth <- pricetib$geninfl
+prices_static <- pricetib$static
+prices_dyn_soc <- pricetib$dyn_soc
+prices_dyn_new <- pricetib$dyn_new
+```
+
+### Dynamic patient uptake
+
+A disease incidence of 1 patient per timestep is assumed, with zero prevalence for simplicity. Under the decision problem to be evaluated, when the new intervention is
+available, uptake is assumed to rise linearly from 0% to 100% after 2 years. In this way, uptake would be gradually increasing with time, accounting for disease epidemiology and the share of patients who receive the new intervention. 
+
+```{r dynuptake}
+# Time for uptake to occur
+uptake_years <- 2
+
+# Uptake vector for non-dynamic uptake
+uptake_single <- c(1, rep(0, Ncycles-1))
+
+# Uptake vector for dynamic uptake
+uptake_weeks <- round(uptake_years / cycle_years)
+share_multi <- c((1:uptake_weeks)/uptake_weeks, rep(1, Ncycles-uptake_weeks))
+uptake_multi <- rep(1, Ncycles) * share_multi
+```
+
+
+## Using *dynamicpv*
+
+### Without dynamic pricing or dynamic uptake
+
+The conventional cost-effectiveness model is static.
+
+```{r static1}
+oncpsm
+```
+
+Let's examine each payoff more closely.
+
+# Derive the dataset necessary for the dynamic pricing/uptake calculations
+```{r static2}
+# Pull out the payoffs of interest from oncpsm
+payoffs <- get_dynfields(
+    heemodel = oncpsm,
+    payoffs = c("cost_daq_new", "cost_daq_soc", "cost_total", "qaly", "life_year"),
+    discount = "disc"
+    ) |>
+    dplyr::mutate(
+      model_years = model_time * cycle_years,
+      cost_nondaq = cost_total - cost_daq_new - cost_daq_soc
+    )
+
+# Create and view dataset for SoC
+hemout_soc <- payoffs |> dplyr::filter(int=="soc")
+head(hemout_soc)
+
+# Create and view dataset for new intervention
+hemout_new <- payoffs |> dplyr::filter(int=="new")
+head(hemout_new)
+```
+
+### Scenario 1: No dynamic uptake or pricing
+
+```{r scen1}
+#| output: false
+#| echo: false
+
+# SOC
+s1_soc_othcost <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_soc$cost_nondaq,
+    prices = prices_oth,
+    discrate = nomdisc_cycle
+    )$results$total
+s1_soc_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_soc$cost_daq_soc,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+s1_soc_cost <- s1_soc_daqcost + s1_soc_othcost
+s1_soc_qaly <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_soc$qaly,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+
+# New intervention
+s1_new_othcost <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_new$cost_nondaq,
+    prices = prices_oth,
+    discrate = nomdisc_cycle
+    )$results$total
+s1_new_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_new$cost_daq_new,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+s1_new_cost <- s1_new_daqcost + s1_new_othcost
+s1_new_qaly <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_new$qaly,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+
+# Incrementals
+s1_icost <- s1_new_cost-s1_soc_cost
+s1_iqaly <- s1_new_qaly-s1_soc_qaly
+s1_icer <- s1_icost / s1_iqaly
+```
+
+These results show that the new intervention is associated with $`r s1_icost` incremental costs relative to the standard of care (including $`r s1_new_daqcost` of drug acquisition costs for the new intervention) and `r s1_iqaly` incremental QALYs. The cumulative ICER (incremental cost per QALY) starts high but decreases over time towards $`r s1_icer` per QALY at the 20 year time horizon.
+
+### Scenario 2: Dynamic pricing, no dynamic uptake
+
+```{r calc_scen2}
+#| output: false
+#| echo: false
+
+# SOC
+s2_soc_othcost <- s1_soc_othcost
+s2_soc_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_soc$cost_daq_soc,
+    prices = prices_dyn_soc,
+    discrate = nomdisc_cycle
+    )$results$total
+s2_soc_cost <- s2_soc_daqcost + s2_soc_othcost
+s2_soc_qaly <- s1_soc_qaly
+
+# New intervention
+s2_new_othcost <- s1_new_othcost
+s2_new_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_single,
+    payoffs = hemout_new$cost_daq_new,
+    prices = prices_dyn_new,
+    discrate = nomdisc_cycle
+    )$results$total
+s2_new_cost <- s2_new_daqcost + s2_new_othcost
+s2_new_qaly <- s1_new_qaly
+
+# Incrementals
+s2_icost <- s2_new_cost-s2_soc_cost
+s2_iqaly <- s2_new_qaly-s2_soc_qaly
+s2_icer <- s2_icost / s2_iqaly
+```
+
+Under scenario 2, the new intervention has an incremental cost-effectiveness of $`r s2_icer` per QALY (incremental costs of $`r s2_icost`, incremental QALYs of `r s2_iqaly`).
+
+## Scenario 3: Dynamic uptake, not dynamic pricing
+
+```{r calc_scen3}
+#| output: false
+#| echo: false
+
+# SOC
+s3_soc_othcost <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_soc$cost_nondaq,
+    prices = prices_oth,
+    discrate = nomdisc_cycle
+    )$results$total
+s3_soc_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_soc$cost_daq_soc,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+s3_soc_cost <- s3_soc_daqcost + s3_soc_othcost
+s3_soc_qaly <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_soc$qaly,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+
+# New intervention
+s3_new_othcost <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_new$cost_nondaq,
+    prices = prices_oth,
+    discrate = nomdisc_cycle
+    )$results$total
+s3_new_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_new$cost_daq_new,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+s3_new_cost <- s3_new_daqcost + s3_new_othcost
+s3_new_qaly <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_new$qaly,
+    prices = prices_static,
+    discrate = disc_cycle
+    )$results$total
+
+# Incrementals
+s3_icost <- s3_new_cost-s3_soc_cost
+s3_iqaly <- s3_new_qaly-s3_soc_qaly
+s3_icer <- s3_icost / s3_iqaly
+```
+
+Under scenario 3, the new intervention has an incremental cost-effectiveness of $`r s3_icer` per QALY (incremental costs of $`r s3_icost`, incremental QALYs of `r s3_iqaly` from a cohort comprising `r sum(uptake_multi)` patients).
+
+### Scenario 4: Dynamic pricing and uptake
+
+```{r calc_scen4}
+#| output: false
+#| echo: false
+
+# SOC
+s4_soc_othcost <- s3_soc_othcost
+s4_soc_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_soc$cost_daq_soc,
+    prices = prices_dyn_soc,
+    discrate = nomdisc_cycle
+    )$results$total
+s4_soc_cost <- s4_soc_daqcost + s4_soc_othcost
+s4_soc_qaly <- s3_soc_qaly
+
+# New intervention
+s4_new_othcost <- s3_new_othcost
+s4_new_daqcost <- dynamicpv::dynpv(
+    uptakes = uptake_multi,
+    payoffs = hemout_new$cost_daq_new,
+    prices = prices_dyn_new,
+    discrate = nomdisc_cycle
+    )$results$total
+s4_new_cost <- s4_new_daqcost + s4_new_othcost
+s4_new_qaly <- s3_new_qaly
+
+# Incrementals
+s4_icost <- s4_new_cost-s4_soc_cost
+s4_iqaly <- s4_new_qaly-s4_soc_qaly
+s4_icer <- s4_icost / s4_iqaly
+```
+
+Under scenario 4, the new intervention has an incremental cost-effectiveness of $`r s4_icer` per QALY (incremental costs of $`r s4_icost`, incremental QALYs of `r s4_iqaly` from a cohort comprising `r sum(uptake_multi)` patients).
+
+Total costs and QALYs for each scenario are summarized in @tbl-res1. The results above are skewed by the fact that some scenarios represent more than one patient cohort. Presenting results per patient, allows easier comparison between the scenarios.
+
+|    | | Scenario 1 | Scenario 2 | Scenario 3 | Scenario 4 |
+|----|-|------------|------------|------------|------------|
+| Dynamic pricing? || No | Yes | No | Yes |
+| Cohort modeling? || No | No | Yes | Yes |
+| Cohort size || 1 | 1 | `r sum(uptake_multi)` | `r sum(uptake_multi)` |
+| Total costs (cohort) | | ||||
+| | New intervention | `r s1_new_cost` | `r s2_new_cost` | `r s3_new_cost` | `r s4_new_cost` |
+| | Standard of care | `r s1_soc_cost` | `r s2_soc_cost` | `r s3_soc_cost` | `r s4_soc_cost` |
+| | Incremental | `r s1_icost` | `r s2_icost` | `r s3_icost` | `r s4_icost` |
+| Total costs (per patient) | | ||||
+| | New intervention | `r s1_new_cost` | `r s2_new_cost` | `r s3_new_cost/sum(uptake_multi)` | `r s4_new_cost/sum(uptake_multi)` |
+| | Standard of care | `r s1_soc_cost` | `r s2_soc_cost` | `r s3_soc_cost/sum(uptake_multi)` | `r s4_soc_cost/sum(uptake_multi)` |
+| | Incremental | `r s1_icost` | `r s2_icost` | `r s3_icost/sum(uptake_multi)` | `r s4_icost/sum(uptake_multi)` |
+| Total QALYs (cohort) | ||||
+| | New intervention | `r s1_new_qaly` | `r s2_new_qaly` | `r s3_new_qaly` | `r s4_new_qaly` |
+| | Standard of care | `r s1_soc_qaly` | `r s2_soc_qaly` | `r s3_soc_qaly` | `r s4_soc_qaly` |
+| | Incremental | `r s1_iqaly` | `r s2_iqaly` | `r s3_iqaly` | `r s4_iqaly` |
+| Total QALYs (per patient) | ||||
+| | New intervention | `r s1_new_qaly` | `r s2_new_qaly` | `r s3_new_qaly/sum(uptake_multi)` | `r s4_new_qaly/sum(uptake_multi)` |
+| | Standard of care | `r s1_soc_qaly` | `r s2_soc_qaly` | `r s3_soc_qaly/sum(uptake_multi)` | `r s4_soc_qaly/sum(uptake_multi)` |
+| | Incremental | `r s1_iqaly` | `r s2_iqaly` | `r s3_iqaly/sum(uptake_multi)` | `r s4_iqaly/sum(uptake_multi)` |
+| ICER | | `r s1_icer` | `r s2_icer` | `r s3_icer` | `r s4_icer` |
+
+: Cost-effectiveness model results by scenario {#tbl-res1}
+
+## Discussion
+
+The findings for this example model are as follows:
+
+- The effect of assuming dynamic pricing rather than flat pricing over time is shown in the difference between results of scenarios 1 and 2. Scenario 1 assumed no increases in drug acquisition costs, but inflationary increases in other costs. Scenario 2 additionally assumed that the price of the new intervention would be eroded by 70% by week 70. This has a material impact on costs per patient of the new intervention (reducing from $`r s1_new_cost` to $`r s2_new_cost`). Accordingly the ICER reduces from $`r s1_icer` to $`r s2_icer` per QALY.
+
+- The effect of modeling future cohorts rather than just the current cohort of patients is shown in the difference between results of scenarios 1 and 3. Scenario 3 assumed regular, flat incidence of new patients, with uptake increasing gradually to 100% over 60 weeks. This has the effect of weighting the costs and QALYs per patient in scenario 3 towards a later cohort of patients, where the accumulation of costs and QALYs over the payer's remaining 20 year time horizon will be less. The incremental costs per patient reduced from $`r s1_new_cost` in scenario 1 to $`r s3_new_cost/sum(uptake_multi)` in scenario 3, whereas the incremental QALYs reduced from `r s1_new_qaly` to `r s3_new_qaly/sum(uptake_multi)` per patient. Overall, the ICER increased slightly from $`r s1_icer` to $`r s3_icer` per QALY.
+
+- Scenario 4 illustrates the effects of both dynamic pricing and cohort modeling. The results per patient are identical to scenario 3, execpt that the cost per patient of the new intervention reduces from $`r s3_new_cost/sum(uptake_multi)` to $`r s4_new_cost/sum(uptake_multi)`, due to the impact of dynamic pricing. The ICER in this case is reduced considerably to $`r s4_icer` per QALY.

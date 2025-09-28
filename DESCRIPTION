@@ -12,19 +12,24 @@ URL: https://MSDLLCpapers.github.io/dynacem/, https://github.com/MSDLLCpapers/dy
 BugReports: https://github.com/MSDLLCpapers/dynacem/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
     dplyr,
     readr,
     rlang,
     tidyr
 Suggests: 
+    flexsurv,
     ggplot2,
     heemod,
+    knitr,
+    lubridate,
     purrr,
+    rmarkdown,
     testthat (>= 3.0.0),
     usethis
 Config/testthat/edition: 3
 Depends: 
     R (>= 3.5)
 LazyData: true
+VignetteBuilder: knitr
