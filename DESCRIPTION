@@ -22,6 +22,7 @@ Suggests:
     ggplot2,
     heemod,
     knitr,
+    lubridate,
     purrr,
     rmarkdown,
     testthat (>= 3.0.0),
