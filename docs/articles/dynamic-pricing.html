@@ -137,17 +137,7 @@ derivation of the (nominal) discount rate.</p>
 </h2>
 <p>First let us load the packages we will use for this vignette.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/" class="external-link">dynamicpv</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/" class="external-link">dynamicpv</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="cashflows-constant-in-real-terms">Cashflows constant in real terms<a class="anchor" aria-label="anchor" href="#cashflows-constant-in-real-terms"></a>
 </h3>
@@ -219,63 +209,57 @@ routes to doing this. However, let is start there.</p>
 <p>The calculation can be presented in a table as follows.</p>
 <table class="table">
 <caption>Table: Calculation of NPV from a simple cashflow and given
-discount rate</caption>
-<colgroup>
-<col width="14%">
-<col width="22%">
-<col width="50%">
-<col width="12%">
-</colgroup>
+discount rate {#tbl-simple}</caption>
 <thead><tr class="header">
-<th>Time,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
-</th>
-<th>Cashflow,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>t</mi></msub><annotation encoding="application/x-tex">c_t</annotation></semantics></math>
-</th>
-<th>Discount factor,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>v</mi><mi>t</mi></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">v^t = (1+i)^(-t)</annotation></semantics></math>
-</th>
+<th>Time</th>
+<th>Cashflow</th>
+<th>Discount factor</th>
 <th>Product</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>t</mi></msub><annotation encoding="application/x-tex">c_t</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>v</mi><mi>t</mi></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">v^t = (1+i)^{-t}</annotation></semantics></math></td>
+<td></td>
+</tr>
+<tr class="even">
 <td>1</td>
 <td><code>r{cashflow[1]}</code></td>
 <td><code>r{vt1[1]}</code></td>
 <td><code>r{cashflow[1] * vt1[1]}</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2</td>
 <td><code>r{cashflow[2]}</code></td>
 <td><code>r{vt1[2]}</code></td>
 <td><code>r{cashflow[2] * vt1[2]}</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>3</td>
 <td><code>r{cashflow[3]}</code></td>
 <td><code>r{vt1[3]}</code></td>
 <td><code>r{cashflow[3] * vt1[3]}</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>4</td>
 <td><code>r{cashflow[4]}</code></td>
 <td><code>r{vt1[4]}</code></td>
 <td><code>r{cashflow[4] * vt1[4]}</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>5</td>
 <td><code>r{cashflow[5]}</code></td>
 <td><code>r{vt1[5]}</code></td>
 <td><code>r{cashflow[5] * vt1[5]}</code></td>
 </tr>
-<tr class="even">
-<td>———–</td>
-<td>—————–</td>
-<td>————————————-</td>
+<tr class="odd">
+<td>——</td>
+<td>———-</td>
+<td>——————–</td>
 <td>———</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Total</td>
 <td><code>r{sum(cashflow)}</code></td>
 <td></td>

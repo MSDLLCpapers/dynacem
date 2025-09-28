@@ -35,8 +35,6 @@ When working with resources whose pricing is not dynamic, then calculations in r
 First let us load the packages we will use for this vignette.
 
 ```{r setup}
-library(dplyr)
-library(ggplot2)
 library(dynamicpv)
 ```
 
@@ -61,17 +59,18 @@ pv1$results$total
 
 The calculation can be presented in a table as follows.
 
-| Time, $t$ | Cashflow, $c_t$ | Discount factor, $v^t = (1+i)^(-t)$ | Product |
-|-----------|-----------------|-------------------------------------|---------|
+| Time | Cashflow | Discount factor    | Product |
+|------|----------|--------------------|---------|
+| $t$  | $c_t$    | $v^t = (1+i)^{-t}$ |         |
 | 1 | `r{cashflow[1]}` | `r{vt1[1]}` | `r{cashflow[1] * vt1[1]}` |
 | 2 | `r{cashflow[2]}` | `r{vt1[2]}` | `r{cashflow[2] * vt1[2]}` |
 | 3 | `r{cashflow[3]}` | `r{vt1[3]}` | `r{cashflow[3] * vt1[3]}` |
 | 4 | `r{cashflow[4]}` | `r{vt1[4]}` | `r{cashflow[4] * vt1[4]}` |
 | 5 | `r{cashflow[5]}` | `r{vt1[5]}` | `r{cashflow[5] * vt1[5]}` |
-|-----------|-----------------|-------------------------------------|---------|
+|------|----------|--------------------|---------|
 | Total | `r{sum(cashflow)}` | | `r{sum(vt1 * cashflow)` | 
 
-: Table: Calculation of NPV from a simple cashflow and given discount rate
+: Table: Calculation of NPV from a simple cashflow and given discount rate {#tbl-simple}
 
 The present value of this cashflow is `r{pv1$results$tota}`. The same result could have been found more easily than invoking this package.
 

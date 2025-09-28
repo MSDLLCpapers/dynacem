@@ -16,6 +16,122 @@ knitr::opts_chunk$set(
 
 ## What is dynamic uptake?
 
+The cashflows examined in the Dynamic Pricing vignette all began in the first timestep, and continued from there. Dynamic uptake occurs if the same cashflow series may begin at several different times. For example, suppose we are examining costs of treatment over the course of treatment. We might wish to summarize costs according to the time since beginning treatment. If we then wish to examine costs of treatment over a cohort of multiple patients, we will need to take account of the fact that different patients may begin treatment at different times.
+
+## Example
+
+### Set-up
+
+First let us load the packages we will use for this vignette.
+
 ```{r setup}
 library(dynamicpv)
 ```
+
+Let us work with the same cashflow as in the Dynamic Pricing vignette, but assume all costs/prices are constant in real terms.
+
+```{r demo1}
+# A simple cashflow
+cashflow <- c(110, 120, 130, 140, 150)
+
+# (Real) discount rate of 3\% per timestep (year)
+disc <- 0.03
+```
+
+### Non-dynamic uptake
+
+Uptake is not dynamic if the cashflow series begins at the same time for everyone.
+
+| Time | Cashflow 1 | Discount factor    | Product |
+|------|----------|--------------------|---------|
+| $t$  | $c_t$    | $v^t = (1+i)^{-t}$ |         |
+| 1 | `r{cashflow[1]}` | `r{vt1[1]}` | `r{cashflow[1] * vt1[1]}` |
+| 2 | `r{cashflow[2]}` | `r{vt1[2]}` | `r{cashflow[2] * vt1[2]}` |
+| 3 | `r{cashflow[3]}` | `r{vt1[3]}` | `r{cashflow[3] * vt1[3]}` |
+| 4 | `r{cashflow[4]}` | `r{vt1[4]}` | `r{cashflow[4] * vt1[4]}` |
+| 5 | `r{cashflow[5]}` | `r{vt1[5]}` | `r{cashflow[5] * vt1[5]}` |
+|------|----------|--------------------|---------|
+| Total | `r{sum(cashflow)}` | | `r{sum(vt1 * cashflow)` | 
+
+: Table: Calculation of NPV from a simple cashflow and given discount rate {#tbl-simple}
+
+In this case, all cashflow series start at timestep 1.
+
+```{r uptake1}
+# Uptake vector is simple
+uptakes <- 1
+
+# NPV calculation
+pv1 <- dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)
+pv1$results$total
+```
+
+The result is unchanged from the Dynamic Pricing vignette, where we also showed the function could be verified with some simple vector arithmetic.
+
+### Dynamic uptake, constant in time (unweighted)
+
+Suppose we have one new patient each year, and we wish to calculate the total NPV in a time horizon of 5 years. Now we have a payoff triangle. This is similar to the idea of run-off triangles that general insurance actuaries use to model the emergence of insurance claims over time.
+
+| Time | Cashflow 1 | Cashflow 2 | Cashflow 3 | Cashflow 4 | Cashflow 5 | Cashflow Sum | Discount factor | Product |
+|------|----------|--------------------|---------|
+| $t$  | $c_t$    | $v^t = (1+i)^{-t}$ |         |
+| 1 | `r{cashflow[1]}` | 0 | 0 | 0 | 0 | `r{cashflow[1]}` |`r{vt1[1]}` | `r{cashflow[1] * vt1[1]}` |
+| 2 | `r{cashflow[2]}` | `r{cashflow[1]}` | 0 | 0 | 0 | `r{sum(cashflow[1:2])}` |`r{vt1[2]}` | `r{sum(cashflow[1:2]) * vt1[2]}` |
+| 3 | `r{cashflow[3]}` | `r{cashflow[2]}` |`r{cashflow[1]}` | 0 | 0 | `r{sum(cashflow[1:3])}` | `r{vt1[3]}` | `r{sum(cashflow[1:3]) * vt1[3]}` |
+| 4 | `r{cashflow[4]}` | `r{cashflow[3]}` | `r{cashflow[2]}` |`r{cashflow[1]}` | 0 | `r{sum(cashflow[1:4])}` | `r{vt1[4]}` | `r{sum(cashflow[1:4]) * vt1[4]}` |
+| 5 | `r{cashflow[5]}` | `r{cashflow[4]}` | `r{cashflow[3]}` | `r{cashflow[2]}` |`r{cashflow[1]}` | `r{sum(cashflow[1:5])}` | `r{vt1[5]}` | `r{sum(cashflow[1:5]) * vt1[5]}` |
+|------|----------|--------------------|---------|
+| Total | `r{sum(cashflow)}` | | | | | | | `r{dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)$results$total}` | 
+
+: Table: Calculation of NPV from a simple cashflow and given discount rate {#tbl-trisimple}
+
+There are 5 patients with a total NPV of `r{dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)$results$total}`, which equates to `r{dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)$results$mean}` on average per patient.
+
+As before, using *dynamicpv* to calculate this simple example is rather overkill, but hopefully illustrates the value of the solution.
+
+```{r verify}
+vt <- (1 + disc)^(-1 * (0:4))
+sum(vt * cumsum(cashflow))
+```
+
+### Dynamic uptake, not constant in time
+
+In general, uptake will not be constant in time. Due to factors such as varying epidemiology (prevalence and incidence), prior treatment pathways (patient testing, patient diagnostics, prior treatment usage), as well as the specific uptake of the treatment of interest (patient share), uptake will also be highly variable over time. In this setting, the total and mean NPVs must reflect weightings applicable to each cashflow.
+
+For example, suppose the number of patients receiving treatment increases by one each year. The weighting given to cashflow 1 would then be $1/(1+2+3+4+5)=6.67$ \%.
+
+```{r uptake2}
+# Uptake vector is simple
+uptakes <- 1:5
+
+# NPV calculation
+pv2 <- dynpv(payoffs=cashflow, uptakes=uptakes, discrate=disc)
+pv2$results
+
+# Verify total NPV
+sum(vt * cumsum(cashflow) * uptakes)
+```
+
+### Dynamic pricing and uptake
+
+The package becomes most powerful when considering both dynamic uptake and dynamic pricing. A simple call to `dynamicpv::dynpv()` replaces what would be rather more complicated with base functions, even in this toy example.
+
+```{r uptake3}
+# Price index
+pinfl <- 0.01
+pindex <- (1+pinfl)^(0:4)
+pindex[4] <- 0.5
+
+# Nominal discount rate
+nomdisc <- (1+disc)*(1+pinfl)-1
+
+# NPV calculation
+pv2 <- dynpv(payoffs=cashflow, uptakes=uptakes, prices=pindex, discrate=nomdisc)
+pv2$results
+```
+
+## Summary
+
+- Dynamic uptake occurs if the same cashflow series may begin at several different times, as can occur when modeling costs of treatment to populations over time (where uptake of that treatment varies in time) or the run-off of insurance claims. This can complicate calculations of NPV.
+- The `dynamicpv::dynpv()` function can be used to calculate NPVs for arbitrary vectors of cashflows, at a given discount rate and a given expected uptake over time.
+- In this way, the function can accommodate both dynamic uptake and, as seen in the previous vignette, dynamic pricing.
