@@ -676,6 +676,63 @@ what <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> requi
 <div class="section level4">
 <h4 id="scenario-1-no-dynamic-uptake-or-pricing">Scenario 1: No dynamic uptake or pricing<a class="anchor" aria-label="anchor" href="#scenario-1-no-dynamic-uptake-or-pricing"></a>
 </h4>
+<p>With non-dynamic uptake, we use
+<code>uptakes</code>=<code>uptake_single</code>=1. Drug acquisition
+costs are constant in real terms (<code>prices=prices_static</code>) and
+are discounted at the risk-free real rate
+(<code>discrate=disc_cycle</code>). Other costs rise in line with
+general price inflation (<code>prices=prices_oth</code>) and are
+discounted at nominal discount rates
+(<code>discrate=nomdisc_cycle</code>). QALYs are not affected by price
+inflation (<code>prices=prices_static</code>) and are discounted at the
+risk-free real rate (<code>discrate=disc_cycle</code>).</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># SOC</span></span>
+<span><span class="va">s1_soc_othcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s1_soc_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s1_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s1_soc_daqcost</span> <span class="op">+</span> <span class="va">s1_soc_othcost</span></span>
+<span><span class="va">s1_soc_qaly</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span></span>
+<span><span class="co"># New intervention</span></span>
+<span><span class="va">s1_new_othcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s1_new_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s1_new_cost</span> <span class="op">&lt;-</span> <span class="va">s1_new_daqcost</span> <span class="op">+</span> <span class="va">s1_new_othcost</span></span>
+<span><span class="va">s1_new_qaly</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span></span>
+<span><span class="co"># Incrementals</span></span>
+<span><span class="va">s1_icost</span> <span class="op">&lt;-</span> <span class="va">s1_new_cost</span><span class="op">-</span><span class="va">s1_soc_cost</span></span>
+<span><span class="va">s1_iqaly</span> <span class="op">&lt;-</span> <span class="va">s1_new_qaly</span><span class="op">-</span><span class="va">s1_soc_qaly</span></span>
+<span><span class="va">s1_icer</span> <span class="op">&lt;-</span> <span class="va">s1_icost</span> <span class="op">/</span> <span class="va">s1_iqaly</span></span></code></pre></div>
 <p>These results show that the new intervention is associated with
 $117,034 incremental costs relative to the standard of care (including
 $141,997 of drug acquisition costs for the new intervention) and 0.926
@@ -685,6 +742,38 @@ $126,451 per QALY at the 20 year time horizon.</p>
 <div class="section level4">
 <h4 id="scenario-2-dynamic-pricing-no-dynamic-uptake">Scenario 2: Dynamic pricing, no dynamic uptake<a class="anchor" aria-label="anchor" href="#scenario-2-dynamic-pricing-no-dynamic-uptake"></a>
 </h4>
+<p>The costs of drug acquisition in each arm differ in Scenario 2
+through applying the relevant dynamic price index
+(<code>prices_dyn_soc</code> and <code>prices_dyn_new</code>), with
+discounting at nominal rates (<code>discrate = nomdisc_cycle</code>).
+Otherwise costs and QALYs are unchanged from Scenario 1.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># SOC</span></span>
+<span><span class="va">s2_soc_othcost</span> <span class="op">&lt;-</span> <span class="va">s1_soc_othcost</span></span>
+<span><span class="va">s2_soc_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s2_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s2_soc_daqcost</span> <span class="op">+</span> <span class="va">s2_soc_othcost</span></span>
+<span><span class="va">s2_soc_qaly</span> <span class="op">&lt;-</span> <span class="va">s1_soc_qaly</span></span>
+<span></span>
+<span><span class="co"># New intervention</span></span>
+<span><span class="va">s2_new_othcost</span> <span class="op">&lt;-</span> <span class="va">s1_new_othcost</span></span>
+<span><span class="va">s2_new_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_dyn_new</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s2_new_cost</span> <span class="op">&lt;-</span> <span class="va">s2_new_daqcost</span> <span class="op">+</span> <span class="va">s2_new_othcost</span></span>
+<span><span class="va">s2_new_qaly</span> <span class="op">&lt;-</span> <span class="va">s1_new_qaly</span></span>
+<span></span>
+<span><span class="co"># Incrementals</span></span>
+<span><span class="va">s2_icost</span> <span class="op">&lt;-</span> <span class="va">s2_new_cost</span><span class="op">-</span><span class="va">s2_soc_cost</span></span>
+<span><span class="va">s2_iqaly</span> <span class="op">&lt;-</span> <span class="va">s2_new_qaly</span><span class="op">-</span><span class="va">s2_soc_qaly</span></span>
+<span><span class="va">s2_icer</span> <span class="op">&lt;-</span> <span class="va">s2_icost</span> <span class="op">/</span> <span class="va">s2_iqaly</span></span></code></pre></div>
 <p>Under scenario 2, the new intervention has an incremental
 cost-effectiveness of $124,059 per QALY (incremental costs of $114,820,
 incremental QALYs of 0.926).</p>
@@ -692,6 +781,56 @@ incremental QALYs of 0.926).</p>
 <div class="section level4">
 <h4 id="scenario-3-dynamic-uptake-not-dynamic-pricing">Scenario 3: Dynamic uptake, not dynamic pricing<a class="anchor" aria-label="anchor" href="#scenario-3-dynamic-uptake-not-dynamic-pricing"></a>
 </h4>
+<p>The calculation for Scenario 3 is the same as for Scenario 1 except
+for dynamic uptake, which is handled by setting
+<code>uptakes = uptake_multi</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># SOC</span></span>
+<span><span class="va">s3_soc_othcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s3_soc_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s3_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s3_soc_daqcost</span> <span class="op">+</span> <span class="va">s3_soc_othcost</span></span>
+<span><span class="va">s3_soc_qaly</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span></span>
+<span><span class="co"># New intervention</span></span>
+<span><span class="va">s3_new_othcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s3_new_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s3_new_cost</span> <span class="op">&lt;-</span> <span class="va">s3_new_daqcost</span> <span class="op">+</span> <span class="va">s3_new_othcost</span></span>
+<span><span class="va">s3_new_qaly</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span></span>
+<span><span class="co"># Incrementals</span></span>
+<span><span class="va">s3_icost</span> <span class="op">&lt;-</span> <span class="va">s3_new_cost</span><span class="op">-</span><span class="va">s3_soc_cost</span></span>
+<span><span class="va">s3_iqaly</span> <span class="op">&lt;-</span> <span class="va">s3_new_qaly</span><span class="op">-</span><span class="va">s3_soc_qaly</span></span>
+<span><span class="va">s3_icer</span> <span class="op">&lt;-</span> <span class="va">s3_icost</span> <span class="op">/</span> <span class="va">s3_iqaly</span></span></code></pre></div>
 <p>Under scenario 3, the new intervention has an incremental
 cost-effectiveness of $149,782 per QALY (incremental costs of
 $78,010,854, incremental QALYs of 521 from a cohort comprising 992
@@ -700,10 +839,45 @@ patients).</p>
 <div class="section level4">
 <h4 id="scenario-4-dynamic-pricing-and-uptake">Scenario 4: Dynamic pricing and uptake<a class="anchor" aria-label="anchor" href="#scenario-4-dynamic-pricing-and-uptake"></a>
 </h4>
+<p>The costs of drug acquisition in each arm differ in Scenario 4 from
+Scenario 3 through applying the relevant dynamic price index
+(<code>prices_dyn_soc</code> and <code>prices_dyn_new</code>). Otherwise
+costs and QALYs are unchanged from Scenario 3.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># SOC</span></span>
+<span><span class="va">s4_soc_othcost</span> <span class="op">&lt;-</span> <span class="va">s3_soc_othcost</span></span>
+<span><span class="va">s4_soc_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s4_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s4_soc_daqcost</span> <span class="op">+</span> <span class="va">s4_soc_othcost</span></span>
+<span><span class="va">s4_soc_qaly</span> <span class="op">&lt;-</span> <span class="va">s3_soc_qaly</span></span>
+<span></span>
+<span><span class="co"># New intervention</span></span>
+<span><span class="va">s4_new_othcost</span> <span class="op">&lt;-</span> <span class="va">s3_new_othcost</span></span>
+<span><span class="va">s4_new_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
+<span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
+<span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
+<span>    prices <span class="op">=</span> <span class="va">prices_dyn_new</span>,</span>
+<span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s4_new_cost</span> <span class="op">&lt;-</span> <span class="va">s4_new_daqcost</span> <span class="op">+</span> <span class="va">s4_new_othcost</span></span>
+<span><span class="va">s4_new_qaly</span> <span class="op">&lt;-</span> <span class="va">s3_new_qaly</span></span>
+<span></span>
+<span><span class="co"># Incrementals</span></span>
+<span><span class="va">s4_icost</span> <span class="op">&lt;-</span> <span class="va">s4_new_cost</span><span class="op">-</span><span class="va">s4_soc_cost</span></span>
+<span><span class="va">s4_iqaly</span> <span class="op">&lt;-</span> <span class="va">s4_new_qaly</span><span class="op">-</span><span class="va">s4_soc_qaly</span></span>
+<span><span class="va">s4_icer</span> <span class="op">&lt;-</span> <span class="va">s4_icost</span> <span class="op">/</span> <span class="va">s4_iqaly</span></span></code></pre></div>
 <p>Under scenario 4, the new intervention has an incremental
 cost-effectiveness of $94,570 per QALY (incremental costs of
 $49,255,066, incremental QALYs of 521 from a cohort comprising 992
 patients).</p>
+</div>
+<div class="section level4">
+<h4 id="summary-of-results">Summary of results<a class="anchor" aria-label="anchor" href="#summary-of-results"></a>
+</h4>
 <p>Total costs and QALYs for each scenario are summarized in the table
 below. The results above are skewed by the fact that some scenarios
 represent more than one patient cohort. Presenting results per patient,
@@ -897,7 +1071,7 @@ from earlier.</p>
 <p>First, we calculate the costs at each time of interest. Then we
 calculate the ICER, given the incremental QALYs we have already observed
 - and which are immune from pricing effects.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Times at which to plot ICER</span></span>
 <span><span class="va">gtimes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">thoz</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="va">cycle_years</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co"># SOC drug acquisition costs</span></span>
@@ -973,7 +1147,7 @@ times, given the pricing, LoE and other assumptions. The horizontal
 dotted line confirms that the initial ICER matches the value from
 Scenario 2. The vertical dashed lines mark the timings of the LoEs of
 first the standard of care, and then the new treatment.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot real and nominal present value over time</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ds</span>,</span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">evaldate</span>, y <span class="op">=</span> <span class="va">ICER</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
