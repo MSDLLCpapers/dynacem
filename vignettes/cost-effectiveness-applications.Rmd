@@ -96,7 +96,7 @@ nomdisc_year <- (1+disc_year)*(1+infl_year) - 1
 nomdisc_cycle <- (1+nomdisc_year)^(cycle_years) - 1 # Per cycle
 ```
 
-This model may then be coded in *heemod* as follows.
+This model may then be coded in [heemod](https://cran.r-project.org/package=heemod) as follows.
 
 ```{r heemod}
 # State names
@@ -334,7 +334,20 @@ The conventional cost-effectiveness model is static.
 heemodel
 ```
 
-Let's examine each payoff more closely.
+Let's examine each payoff more closely. The next steps extract a payoff vector from the model object. The model/object contains several payoffs accumulated in each timestep, calculated as at time zero: 
+
+- drug acquisition cost of the standard of care (*cost_daq_soc*),
+- drug acquisition cost of the new intervention (*cost_daq_new*),
+- cost of drug administration (*cost_dadmin*),
+- cost of disease management (*cost_dman*),
+- cost of treating adverse events (*cost_ae*),
+- cost of subsequent lines of treatment (*cost_subs*),
+- total cost (*cost_total*),
+- progression-free life years (*pf_year*),
+- life years (*life_year*), and
+- QALYs (*qaly*).
+
+The `dynamicpv::get_dynfields()` function extracts these parameters from the [heemod](https://cran.r-project.org/package=heemod) model object, and calculates 'rolled-up' values as at the start of each timestep rather than discounted to time zero. The rolled-up values are what `dynamicpv::dynpv()` requires.
 
 ```{r static2}
 # Pull out the payoffs of interest from oncpsm
@@ -618,53 +631,53 @@ gc_new_oth <- gtimes |>
 )
 # Combine in a tibble
 ds <- tibble::tibble(
+    # Time in weeks and years
     time_weeks = gtimes,
     time_years = time_weeks * cycle_years,
+    # Evaluation date
     evaldate = doc + time_weeks * 7,
-    daqcost_new = gc_new_daq,
-    daqcost_soc = gc_soc_daq,
-    othcost_new = gc_new_oth,
-    othcost_soc = gc_soc_oth,
+    # Price/inflation index
+    pinfl = prices_oth[gtimes + 1],
+    # Total costs for each intervention
+    totcost_new = gc_new_daq + gc_new_oth,
+    totcost_soc = gc_soc_daq + gc_soc_oth,
+    # Scenario 1/2 QALYs
     qaly_soc = s1_soc_qaly,
     qaly_new = s1_new_qaly
   ) |>
   dplyr::mutate(
-    totcost_new = daqcost_new + othcost_new,
-    totcost_soc = daqcost_soc + othcost_soc,
+    # Incremental cost and QALYs
     icost = totcost_new-totcost_soc,
     iqaly = qaly_new-qaly_soc,
-    icer = icost/iqaly
+    # Nominal ICER, and real (inflation adjusted) ICER
+    Nominal = icost/iqaly,
+    Real = Nominal / pinfl
+  ) |>
+  # Pivot to long so can be used in a graphic
+  tidyr::pivot_longer(
+    cols = c("Nominal", "Real"),
+    names_to = "Type",
+    values_to = "ICER"
   )
 ```
 
 We should check at this point that the ICER we are starting at (`r ds$icer[1]`) matches the scenario 2 ICER from earlier (`r s2_icer`).
 
+The following plot shows the nominal ICER calculated at different times, given the pricing, LoE and other assumptions. The horizontal dotted line confirms that the initial ICER matches the value from Scenario 2. The vertical dashed lines mark the timings of the LoEs of first the standard of care, and then the new treatment.
+
 ```{r calc_future}
-# Graph of ICER vs incident cohort time
-g_icert <- ggplot2::ggplot(
-    data = ds,
-    aes(x=evaldate, y=icer)
-    ) +
+# Plot real and nominal present value over time
+ggplot2::ggplot(ds,
+  aes(x = evaldate, y = ICER, color=Type)) +
   geom_line() +
-  labs(
-    title = "",
-    x = "Evaluation date",
-    y = "ICER"
-    ) +
+  labs(x = "Evaluation date") +
   geom_hline(yintercept = ds$icer[1], linetype='dotted') +
   geom_vline(xintercept = loe_new_start, linetype='dashed') +
   geom_vline(xintercept = loe_soc_start, linetype='dashed') +
-  theme_minimal() +
   scale_y_continuous(
     labels = scales::comma,
     limits=c(0, 150000)
     )
-```
-
-The following plot shows the nominal ICER calculated at different times, given the pricing, LoE and other assumptions. The horizontal dotted line confirms that the initial ICER matches the value from Scenario 2. The vertical dashed lines mark the timings of the LoEs of first the standard of care, and then the new treatment.
-
-```{r graph_future, fig.width=9, fig.height=6, fig.cap="ICER over time", echo=FALSE}
-g_icert
 ```
 
 ## Discussion
@@ -676,4 +689,6 @@ The findings for this example model are as follows:
 - The effect of modeling uptake dynamically rather than just the current cohort of patients is shown in the difference between results of scenarios 1 and 3. Dynamic modeling of uptake has the effect of weighting the costs and QALYs per patient in scenario 3 towards a later cohort of patients, where the accumulation of costs and QALYs over the time remaining in the payer's 20 year time horizon will be less. The incremental costs per patient reduced from $`r s1_new_cost` in scenario 1 to $`r s3_new_cost/sum(uptake_multi)` in scenario 3, whereas the incremental QALYs reduced from `r s1_new_qaly` to `r s3_new_qaly/sum(uptake_multi)` per patient. Overall, the ICER increased slightly from $`r s1_icer` to $`r s3_icer` per QALY.
 
 - Scenario 4 illustrates the effects of both dynamic pricing and cohort modeling. The results per patient are identical to scenario 3, except that the cost per patient of the new intervention reduces from $`r s3_new_cost/sum(uptake_multi)` to $`r s4_new_cost/sum(uptake_multi)`, due to the impact of dynamic pricing. The ICER in this case is reduced considerably to $`r s4_icer` per QALY.
+
+- As shown in the Figure, the ICER increases a little at first, as we approach the LoE of the standard of care comparator. After all, a cheaper comparator will increase the incremental cost of the new treatment. However, this is soon dwarfed by the effect of the LoE of the new treatment, which occurs later. This reduces the ICER significantly as the LoE approaches. Thereafter, the ICER is constant in real terms (but increasing with price inflation in nominal terms).
 
