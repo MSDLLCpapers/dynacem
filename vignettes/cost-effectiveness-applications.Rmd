@@ -421,10 +421,9 @@ head(hemout_new)
 
 ### Scenario 1: No dynamic uptake or pricing
 
-```{r scen1}
-#| output: false
-#| echo: false
+With non-dynamic uptake, we use `uptakes`=`uptake_single`=1. Drug acquisition costs are constant in real terms (`prices=prices_static`) and are discounted at the risk-free real rate (`discrate=disc_cycle`). Other costs rise in line with general price inflation (`prices=prices_oth`) and are discounted at nominal discount rates (`discrate=nomdisc_cycle`). QALYs are not affected by price inflation (`prices=prices_static`) and are discounted at the risk-free real rate (`discrate=disc_cycle`).
 
+```{r scen1}
 # SOC
 s1_soc_othcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
@@ -477,10 +476,9 @@ These results show that the new intervention is associated with $`r s1_icost` in
 
 ### Scenario 2: Dynamic pricing, no dynamic uptake
 
-```{r calc_scen2}
-#| output: false
-#| echo: false
+The costs of drug acquisition in each arm differ in Scenario 2 through applying the relevant dynamic price index (`prices_dyn_soc` and `prices_dyn_new`), with discounting at nominal rates (`discrate = nomdisc_cycle`). Otherwise costs and QALYs are unchanged from Scenario 1.
 
+```{r calc_scen2}
 # SOC
 s2_soc_othcost <- s1_soc_othcost
 s2_soc_daqcost <- dynamicpv::dynpv(
@@ -513,10 +511,9 @@ Under scenario 2, the new intervention has an incremental cost-effectiveness of 
 
 ### Scenario 3: Dynamic uptake, not dynamic pricing
 
-```{r calc_scen3}
-#| output: false
-#| echo: false
+The calculation for Scenario 3 is the same as for Scenario 1 except for dynamic uptake, which is handled by setting `uptakes = uptake_multi`.
 
+```{r calc_scen3}
 # SOC
 s3_soc_othcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
@@ -569,10 +566,9 @@ Under scenario 3, the new intervention has an incremental cost-effectiveness of 
 
 ### Scenario 4: Dynamic pricing and uptake
 
-```{r calc_scen4}
-#| output: false
-#| echo: false
+The costs of drug acquisition in each arm differ in Scenario 4 from Scenario 3 through applying the relevant dynamic price index (`prices_dyn_soc` and `prices_dyn_new`). Otherwise costs and QALYs are unchanged from Scenario 3.
 
+```{r calc_scen4}
 # SOC
 s4_soc_othcost <- s3_soc_othcost
 s4_soc_daqcost <- dynamicpv::dynpv(
@@ -602,6 +598,8 @@ s4_icer <- s4_icost / s4_iqaly
 ```
 
 Under scenario 4, the new intervention has an incremental cost-effectiveness of $`r s4_icer` per QALY (incremental costs of $`r s4_icost`, incremental QALYs of `r s4_iqaly` from a cohort comprising `r sum(uptake_multi)` patients).
+
+### Summary of results
 
 Total costs and QALYs for each scenario are summarized in the table below. The results above are skewed by the fact that some scenarios represent more than one patient cohort. Presenting results per patient, allows easier comparison between the scenarios.
 
