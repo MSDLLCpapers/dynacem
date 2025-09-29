@@ -101,36 +101,28 @@
 <div class="section level2">
 <h2 id="what-is-dynamic-pricing">What is dynamic pricing?<a class="anchor" aria-label="anchor" href="#what-is-dynamic-pricing"></a>
 </h2>
-<p>Dynamic pricing is pricing of a resource (e.g. acquisition cost of
-some medicine, wages of a professional) that changes in time. Often, we
-might assume that prices are constant in real terms. In other words,
-were it not for price inflation, prices would be constant. This
-assumption provides a lot of mathematical convenience in that we can
-keep calculations of Net Present Value (NPV) a lot simpler.</p>
-<p>NPV of a cashflow
+<p>Dynamic pricing is pricing of a resource (e.g. acquisition cost of a
+medicine, wages of a professional) that changes in time. Often, we might
+assume that prices are constant in real terms. In other words, were it
+not for price inflation, prices would be constant. This assumption
+provides a lot of mathematical convenience in that we can keep
+calculations of Net Present Value (NPV) a lot simpler.</p>
+<p>The NPV of a cashflow
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>t</mi></msub><annotation encoding="application/x-tex">c_t</annotation></semantics></math>
 in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 years time, assuming prices constant in real terms and an annual
 discount rate of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>P</mi><mi>V</mi><mo>=</mo><mfrac><msub><mi>c</mi><mi>t</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">NPV = \frac{c_t}{(1+i)^{t}}</annotation></semantics></math></p>
-<p>If we cannot make that assumption, then we need an estimate of the
-future cashflow after allowing for inflation specific to that cashflow
-(nominal value), and we must discount by a nominal rather than real
-discount rate,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mi>′</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>r</mi><mi>g</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">i' = (1+i)(1+r_g) - 1</annotation></semantics></math>.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>P</mi><mi>V</mi><mo>=</mo><msub><mi>c</mi><mi>t</mi></msub><mo>×</mo><mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>r</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>r</mi><mi>g</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup></mrow></mfrac><mo>=</mo><msub><mi>c</mi><mi>t</mi></msub><mo>×</mo><mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>r</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">NPV = c_t \times \frac{(1+r_c)^t}{(1+r_g)^t (1+i)^t} = c_t \times \frac{(1+r_c)^t}{(1+i')^t} </annotation></semantics></math></p>
-<p>The values are only the same if the inflation specific to the
-cashflow is the same as the general rate of price inflation included in
-the nominal discount rate
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>c</mi></msub><mo>=</mo><msub><mi>r</mi><mi>g</mi></msub></mrow><annotation encoding="application/x-tex">r_c = r_g</annotation></semantics></math>).</p>
-<p>When working with resources whose pricing is not dynamic, then
-calculations in real terms is quite adequate. However, when working with
-resources whose prices may be dynamic, it can be clearer to work in
-nominal terms - requiring an explicit estimate of the cashflows in
-nominal terms, and including an explicit inflation term in the
-derivation of the (nominal) discount rate.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>i</mi><mrow><mi>r</mi><mi>e</mi><mi>a</mi><mi>l</mi></mrow></msub><annotation encoding="application/x-tex">i_{real}</annotation></semantics></math>
+is calculated as follows:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>P</mi><mi>V</mi><mo>=</mo><mfrac><msub><mi>c</mi><mi>t</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>i</mi><mrow><mi>r</mi><mi>e</mi><mi>a</mi><mi>l</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">NPV = \frac{c_t}{(1+i_{real})^{t}}</annotation></semantics></math></p>
+<p>Cashflows may not in general be expected to be constant in real
+terms. Accordingly it can be preferable to explicitly estimate the
+cashflow in nominal terms,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><msub><mi>′</mi><mi>t</mi></msub><mo>=</mo><msub><mi>c</mi><mi>t</mi></msub><mo>⋅</mo><msub><mi>R</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">c'_t = c_t \cdot R_t</annotation></semantics></math>,
+and discount with a nominal discount rate that includes expected
+inflation.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><msub><mi>i</mi><mrow><mi>n</mi><mi>o</mi><mi>m</mi></mrow></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>i</mi><mrow><mi>r</mi><mi>e</mi><mi>a</mi><mi>l</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>r</mi><mi>g</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> 1+i_{nom} = (1+i_{real})(1+r_g) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>P</mi><mi>V</mi><mo>=</mo><mfrac><mrow><mi>c</mi><msub><mi>′</mi><mi>t</mi></msub></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>i</mi><mrow><mi>n</mi><mi>o</mi><mi>m</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">NPV = \frac{c'_t}{(1+i_{nom})^t} </annotation></semantics></math></p>
 </div>
 <div class="section level2">
 <h2 id="using-dynamicpv">Using <em>dynamicpv</em><a class="anchor" aria-label="anchor" href="#using-dynamicpv"></a>
@@ -143,7 +135,8 @@ derivation of the (nominal) discount rate.</p>
 </h3>
 <p>It is overkill rather to use <em>dynamicpv</em> to calculate the NPV
 of a cashflow that is constant in real terms, since there are simpler
-routes to doing this. However, let us start there.</p>
+routes to doing this. Nevertheless, let us start there, since it helps
+understand functionality.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A simple cashflow</span></span>
 <span><span class="va">cashflow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">110</span>, <span class="fl">120</span>, <span class="fl">130</span>, <span class="fl">140</span>, <span class="fl">150</span><span class="op">)</span></span>
@@ -209,8 +202,8 @@ routes to doing this. However, let us start there.</p>
 <span><span class="co">#&gt; [1] 610.4352</span></span></code></pre></div>
 <p>The calculation can be presented in a table as follows.</p>
 <table class="table">
-<caption>Table: Calculation of NPV from a simple cashflow and given
-discount rate {#tbl-simple}</caption>
+<caption>Calculation of NPV from a simple cashflow and given discount
+rate</caption>
 <thead><tr class="header">
 <th>Time</th>
 <th>Cashflow</th>
@@ -277,27 +270,12 @@ price inflation one would include in a nominal discount rate. In this
 example, let us assume that the price of the cashflow increases at 1 %
 per year, but that general price inflation is 2.5 % per year. The real
 discount rate is unchanged at 3 % per year.</p>
-<p>We can perform this calculation in two ways. The first way would be
-to calculate an adjusted discount rate, equal to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>r</mi><mi>g</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><msub><mi>r</mi><mi>c</mi></msub></mrow></mfrac><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\frac{(1+r_g)(1+i)}{1+r_c}-1</annotation></semantics></math>
-in the equations above.</p>
+<p>First, we derive a price index to handle the changing price of the
+resource underlying the cashflow. Then we derive the nominal discount
+rate, incorporating the general rate of price inflation in the economy.
+We then combine these inputs with <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> to
+calculate the NPV.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Calculate adjusted nominal discount rate</span></span>
-<span><span class="va">adjdisc</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">disc</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.025</span> <span class="op">/</span> <span class="fl">1.01</span> <span class="op">-</span> <span class="fl">1</span></span>
-<span></span>
-<span><span class="co"># Use dynpv with adjusted discount rate</span></span>
-<span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, discrate<span class="op">=</span><span class="va">adjdisc</span><span class="op">)</span></span>
-<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
-<span><span class="co">#&gt; [1] 591.9954</span></span>
-<span></span>
-<span><span class="co"># Compare with more base calculations</span></span>
-<span><span class="va">vt2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">adjdisc</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">vt2</span> <span class="op">*</span> <span class="va">cashflow</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 591.9954</span></span></code></pre></div>
-<p>The present value of this cashflow is 592. The second way works more
-generally for dynamic pricing, and involves calculating a price index at
-each time.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set up price index</span></span>
 <span><span class="va">pinfl</span> <span class="op">&lt;-</span> <span class="fl">0.01</span></span>
 <span><span class="va">pindex</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">pinfl</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
@@ -308,24 +286,27 @@ each time.</p>
 <span><span class="va">nomdisc</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">disc</span><span class="op">)</span><span class="op">*</span><span class="fl">1.025</span><span class="op">-</span><span class="fl">1</span></span>
 <span></span>
 <span><span class="co"># Calculate present value</span></span>
-<span><span class="va">pv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
-<span><span class="va">pv3</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
-<span><span class="co">#&gt; [1] 591.9954</span></span>
-<span></span>
-<span><span class="co"># Compare with more base calculations</span></span>
-<span><span class="va">vt3</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">nomdisc</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">vt3</span> <span class="op">*</span> <span class="va">cashflow</span> <span class="op">*</span> <span class="va">pindex</span><span class="op">)</span></span>
+<span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
+<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="co">#&gt; [1] 591.9954</span></span></code></pre></div>
+<p>The NPV of 592 could still have been calculated using base R
+functions.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Compare with more base calculations</span></span>
+<span><span class="va">vt2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">nomdisc</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">vt2</span> <span class="op">*</span> <span class="va">cashflow</span> <span class="op">*</span> <span class="va">pindex</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 591.9954</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="cashflow-changing-irregularly">Cashflow changing irregularly<a class="anchor" aria-label="anchor" href="#cashflow-changing-irregularly"></a>
 </h3>
 <p>Where <em>dynamicpv</em> is most relevant is when the price index is
-more irregular. For example, one might anticipate a sudden future change
-in a price of a certain resource (e.g. drug price reduction on loss of
-exclusivity). This can be accommodated in the price index. In this
-simple example, let us assume that the underlying price of the resource
-reduces to half its original value from the fourth year.</p>
+more irregular, more dynamic. For example, one might anticipate a sudden
+future change in a price of a certain resource (e.g. drug price
+reduction on loss of exclusivity). This can be accommodated in the price
+index. In this simple example, let us assume that the underlying price
+of the resource reduces to half its original value from the fourth
+year.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Revise the price index to be 0.5 from year 4</span></span>
 <span><span class="va">pindex</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
@@ -333,15 +314,15 @@ reduces to half its original value from the fourth year.</p>
 <span><span class="co">#&gt; [1] 1.0000 1.0100 1.0201 0.5000 0.5000</span></span>
 <span></span>
 <span><span class="co"># Calculate present value</span></span>
-<span><span class="va">pv4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
-<span><span class="va">pv4</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
-<span><span class="co">#&gt; [1] 463.6326</span></span>
-<span></span>
-<span><span class="co"># Compare with more base calculations</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">vt3</span> <span class="op">*</span> <span class="va">cashflow</span> <span class="op">*</span> <span class="va">pindex</span><span class="op">)</span></span>
+<span><span class="va">pv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
+<span><span class="va">pv3</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="co">#&gt; [1] 463.6326</span></span></code></pre></div>
-<p>With this dynamic pricing change, the NPV has reduced by 128, from
-592 to 464.</p>
+<p>With this dynamic pricing change, the NPV has reduced by 0, from 464
+to 464. The corresponding base R code is shown below.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Compare with more base calculations</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">vt2</span> <span class="op">*</span> <span class="va">cashflow</span> <span class="op">*</span> <span class="va">pindex</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 463.6326</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -349,7 +330,7 @@ reduces to half its original value from the fourth year.</p>
 </h2>
 <ul>
 <li>Dynamic pricing is when pricing of a resource changes in time. This
-can complicate calculations of NPV.</li>
+can quickly complicate calculations of NPV.</li>
 <li>The <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> function can be used to
 calculate NPVs for arbitrary vectors of cashflows, at a given discount
 rate and a given underlying price index.</li>

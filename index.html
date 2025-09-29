@@ -95,7 +95,7 @@
 <!-- badges: start -->
 
 <p>The goal of <em>dynamicpv</em> is to evaluate present values and cost-effectiveness with dynamic pricing and uptake.</p>
-<p>Through the <em>dynpv()</em> function, the package provides for the present value of costs, life years, QALYs or other payoffs in the cost-effectiveness model to be recalculated so as to allow for dynamic uptake (also known as multiple cohorts) and dynamic (also known as life-cycle) pricing. The starting point is a conventional cohort cost-effectiveness model, such as one computed using the <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a> package.</p>
+<p>Through the <code><a href="reference/dynpv.html">dynamicpv::dynpv()</a></code> function, the package provides for the present value of costs, life years, QALYs or other payoffs in the cost-effectiveness model to be recalculated so as to allow for dynamic uptake (also known as multiple cohorts) and dynamic (also known as life-cycle) pricing. The starting point is a conventional cohort cost-effectiveness model, such as one computed using the <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a> package.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -113,14 +113,6 @@
 <span></span>
 <span><span class="co"># Recommended others</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://aphp.github.io/heemod/" class="external-link">heemod</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
@@ -130,9 +122,9 @@
 </h2>
 <p>There are three vignettes provided.</p>
 <ol style="list-style-type: decimal">
-<li>The <strong>Dynamic Pricing</strong> vignette (<code>vignette("Dynamic Pricing")</code>) describes how present values may be calculated in the package from a payoff vector, allowing for the prices of the resources costed to be dynamic.</li>
-<li>The <strong>Dynamic Uptake</strong> vignette (<code>vignette("Dynamic Uptake")</code>) explores further how present values can be derived allowing for dynamic uptake. This is in contrast to the non-dynamic approach of calculating a present value for a single cohort of patients. This is analogous to the use by general insurance actuaries of run-off triangles.</li>
-<li>Finally, the <strong>Cost-Effectiveness Applications</strong> (<code>vignette(Cost-Effectiveness Applications")</code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms), Incremental Cost-Effectiveness Ratios may be calculated that allow for dynamic pricing and/or dynamic uptake. This is illustrated by taking an example three-state partitioned survival model of a new intervention for an oncology indication compared to standard of care, with stated assumptions for how pricing and uptake may be dynamic. Nominal and Real ICERs are plotted over time, illustrating the impact of the loss of exclusivity points for each intervention.</li>
+<li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/dynamic-pricing.html" class="external-link">Dynamic Pricing</a> vignette (<code>vignette("Dynamic Pricing")</code>) describes how present values may be calculated in the package from a payoff vector, allowing for the prices of the resources costed to be dynamic.</p></li>
+<li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/dynamic-uptake.html" class="external-link">Dynamic Uptake</a> vignette (<code>vignette("Dynamic Uptake")</code>) explores further how present values can be derived allowing for dynamic uptake. This is in contrast to the non-dynamic approach of calculating a present value for a single cohort of patients. This is analogous to the use by general insurance actuaries of run-off triangles.</p></li>
+<li><p>Finally, the <a href="https://msdllcpapers.github.io/dynacem/articles/cost-effectiveness-applications.html" class="external-link">Cost-Effectiveness Applications</a> (<code>vignette(Cost-Effectiveness Applications")</code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms), Incremental Cost-Effectiveness Ratios may be calculated that allow for dynamic pricing and/or dynamic uptake. This is illustrated by taking an example three-state partitioned survival model of a new intervention for an oncology indication compared to standard of care, with stated assumptions for how pricing and uptake may be dynamic. Nominal and Real ICERs are plotted over time, illustrating the impact of the loss of exclusivity points for each intervention.</p></li>
 </ol>
 </div>
 </div>
