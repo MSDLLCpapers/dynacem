@@ -220,7 +220,8 @@ inflation rates first.</p>
 <span><span class="co"># Nominal discounting</span></span>
 <span><span class="va">nomdisc_year</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">disc_year</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">infl_year</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
 <span><span class="va">nomdisc_cycle</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">nomdisc_year</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="va">cycle_years</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span> <span class="co"># Per cycle</span></span></code></pre></div>
-<p>This model may then be coded in <em>heemod</em> as follows.</p>
+<p>This model may then be coded in <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a> as
+follows.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># State names</span></span>
 <span><span class="va">state_names</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -491,7 +492,28 @@ the share of patients who receive the new intervention.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     Cost Diff. Effect Diff.   ICER Ref.</span></span>
 <span><span class="co">#&gt; new   117033.5    0.9255249 126451  soc</span></span></code></pre></div>
-<p>Let’s examine each payoff more closely.</p>
+<p>Let’s examine each payoff more closely. The next steps extract a
+payoff vector from the model object. The model/object contains several
+payoffs accumulated in each timestep, calculated as at time zero:</p>
+<ul>
+<li>drug acquisition cost of the standard of care
+(<em>cost_daq_soc</em>),</li>
+<li>drug acquisition cost of the new intervention
+(<em>cost_daq_new</em>),</li>
+<li>cost of drug administration (<em>cost_dadmin</em>),</li>
+<li>cost of disease management (<em>cost_dman</em>),</li>
+<li>cost of treating adverse events (<em>cost_ae</em>),</li>
+<li>cost of subsequent lines of treatment (<em>cost_subs</em>),</li>
+<li>total cost (<em>cost_total</em>),</li>
+<li>progression-free life years (<em>pf_year</em>),</li>
+<li>life years (<em>life_year</em>), and</li>
+<li>QALYs (<em>qaly</em>).</li>
+</ul>
+<p>The <code><a href="../reference/get_dynfields.html">dynamicpv::get_dynfields()</a></code> function extracts these
+parameters from the <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a> model
+object, and calculates ‘rolled-up’ values as at the start of each
+timestep rather than discounted to time zero. The rolled-up values are
+what <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> requires.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pull out the payoffs of interest from oncpsm</span></span>
 <span><span class="va">payoffs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dynfields.html">get_dynfields</a></span><span class="op">(</span></span>
@@ -805,55 +827,56 @@ calculate the ICER, given the incremental QALYs we have already observed
 <span><span class="op">)</span></span>
 <span><span class="co"># Combine in a tibble</span></span>
 <span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Time in weeks and years</span></span>
 <span>    time_weeks <span class="op">=</span> <span class="va">gtimes</span>,</span>
 <span>    time_years <span class="op">=</span> <span class="va">time_weeks</span> <span class="op">*</span> <span class="va">cycle_years</span>,</span>
+<span>    <span class="co"># Evaluation date</span></span>
 <span>    evaldate <span class="op">=</span> <span class="va">doc</span> <span class="op">+</span> <span class="va">time_weeks</span> <span class="op">*</span> <span class="fl">7</span>,</span>
-<span>    daqcost_new <span class="op">=</span> <span class="va">gc_new_daq</span>,</span>
-<span>    daqcost_soc <span class="op">=</span> <span class="va">gc_soc_daq</span>,</span>
-<span>    othcost_new <span class="op">=</span> <span class="va">gc_new_oth</span>,</span>
-<span>    othcost_soc <span class="op">=</span> <span class="va">gc_soc_oth</span>,</span>
+<span>    <span class="co"># Price/inflation index</span></span>
+<span>    pinfl <span class="op">=</span> <span class="va">prices_oth</span><span class="op">[</span><span class="va">gtimes</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>,</span>
+<span>    <span class="co"># Total costs for each intervention</span></span>
+<span>    totcost_new <span class="op">=</span> <span class="va">gc_new_daq</span> <span class="op">+</span> <span class="va">gc_new_oth</span>,</span>
+<span>    totcost_soc <span class="op">=</span> <span class="va">gc_soc_daq</span> <span class="op">+</span> <span class="va">gc_soc_oth</span>,</span>
+<span>    <span class="co"># Scenario 1/2 QALYs</span></span>
 <span>    qaly_soc <span class="op">=</span> <span class="va">s1_soc_qaly</span>,</span>
 <span>    qaly_new <span class="op">=</span> <span class="va">s1_new_qaly</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    totcost_new <span class="op">=</span> <span class="va">daqcost_new</span> <span class="op">+</span> <span class="va">othcost_new</span>,</span>
-<span>    totcost_soc <span class="op">=</span> <span class="va">daqcost_soc</span> <span class="op">+</span> <span class="va">othcost_soc</span>,</span>
+<span>    <span class="co"># Incremental cost and QALYs</span></span>
 <span>    icost <span class="op">=</span> <span class="va">totcost_new</span><span class="op">-</span><span class="va">totcost_soc</span>,</span>
 <span>    iqaly <span class="op">=</span> <span class="va">qaly_new</span><span class="op">-</span><span class="va">qaly_soc</span>,</span>
-<span>    icer <span class="op">=</span> <span class="va">icost</span><span class="op">/</span><span class="va">iqaly</span></span>
+<span>    <span class="co"># Nominal ICER, and real (inflation adjusted) ICER</span></span>
+<span>    Nominal <span class="op">=</span> <span class="va">icost</span><span class="op">/</span><span class="va">iqaly</span>,</span>
+<span>    Real <span class="op">=</span> <span class="va">Nominal</span> <span class="op">/</span> <span class="va">pinfl</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Pivot to long so can be used in a graphic</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nominal"</span>, <span class="st">"Real"</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"Type"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"ICER"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p>We should check at this point that the ICER we are starting at
-(124,059) matches the scenario 2 ICER from earlier (124,059).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Graph of ICER vs incident cohort time</span></span>
-<span><span class="va">g_icert</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">ds</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">evaldate</span>, y<span class="op">=</span><span class="va">icer</span><span class="op">)</span></span>
-<span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    x <span class="op">=</span> <span class="st">"Evaluation date"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"ICER"</span></span>
-<span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">ds</span><span class="op">$</span><span class="va">icer</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, linetype<span class="op">=</span><span class="st">'dotted'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_new_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_soc_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
-<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span>,</span>
-<span>    limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150000</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
+<p>We should check at this point that the ICER we are starting at ()
+matches the scenario 2 ICER from earlier (124,059).</p>
 <p>The following plot shows the nominal ICER calculated at different
 times, given the pricing, LoE and other assumptions. The horizontal
 dotted line confirms that the initial ICER matches the value from
 Scenario 2. The vertical dashed lines mark the timings of the LoEs of
 first the standard of care, and then the new treatment.</p>
-<div class="figure">
-<img src="cost-effectiveness-applications_files/figure-html/graph_future-1.png" alt="ICER over time" width="864"><p class="caption">
-ICER over time
-</p>
-</div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Plot real and nominal present value over time</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ds</span>,</span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">evaldate</span>, y <span class="op">=</span> <span class="va">ICER</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Evaluation date"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">ds</span><span class="op">$</span><span class="va">icer</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, linetype<span class="op">=</span><span class="st">'dotted'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_new_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_soc_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span>,</span>
+<span>    limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150000</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `icer`.</span></span></code></pre></div>
+<p><img src="cost-effectiveness-applications_files/figure-html/calc_future-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
@@ -884,6 +907,13 @@ cohort modeling. The results per patient are identical to scenario 3,
 except that the cost per patient of the new intervention reduces from
 $130,380 to $92,391, due to the impact of dynamic pricing. The ICER in
 this case is reduced considerably to $94,570 per QALY.</p></li>
+<li><p>As shown in the Figure, the ICER increases a little at first, as
+we approach the LoE of the standard of care comparator. After all, a
+cheaper comparator will increase the incremental cost of the new
+treatment. However, this is soon dwarfed by the effect of the LoE of the
+new treatment, which occurs later. This reduces the ICER significantly
+as the LoE approaches. Thereafter, the ICER is constant in real terms
+(but increasing with price inflation in nominal terms).</p></li>
 </ul>
 </div>
   </div>

@@ -1,4 +1,6 @@
-# dynamicpv (development version)
+# dynamicpv 0.2.1
+
+* Vignettes added, readme updated
 
 # dynamicpv 0.2.0
 
