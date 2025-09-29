@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Cost-Effectiveness Applications}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: bibliography.bib
 ---
 
 ```{r, include = FALSE}
@@ -28,17 +29,50 @@ knitr::knit_hooks$set(
 )
 ```
 
-## Motivation
+## Introduction
 
-Cost-efffectiveness models evaluate the costs and health outcomes associated with a decision, such as treating a patient with a particular intervention, as compared with another. Such analyses depend on measuring the incremental costs and health outcomes between the different decisions, and considering which decision would be most efficient, given the decision-maker's economic perspective, time horizon, and willingness-to-pay for any improvement in health outcomes. Key to such analysis are the calculation of discounted (net) present values of costs and health outcomes associated with each decision option. Decisions about access to health care innovations are routinely made by health technology assessment (HTA) bodies on the basis of analyses in this form.
+Single cohort cost-effectiveness models are routinely used in the decision making of Health Technology Assessment (HTA) bodies, and are widely published in the scientific literature.[@espinosa_2024; @enright_2025; @do_2021] Despite their utility, such models have been criticised as overly limited in scope, omitting important elements of value[@breslau_2023; @shafrin_2024]] and health equity[@avancena_2021]. Anticipated pricing dynamics (life cycle drug pricing) are routinely ignored, meaning that the long run opportunity cost for drugs may be misrepresented,[@neumann_2022] and single cohort modeling is criticized as not tailored to properly inform decision-making that will impact future cohorts of patients[@hoyle_anderson_2010]. Case studies have shown how dynamic (or ‘life cycle’) pricing and multi-cohort modeling can have substantial effects on reported Incremental Cost-Effectiveness Ratio (ICER) values and that, without accounting for these effects, ICERs are overstated and unrepresentative.[@schottler_2023; @whittington_2025a; @moreno_2016]
 
-One of the problems with such analyses is that they are static in terms of pricing and uptake assumptions. Uptake is static because the analyses are conducted in respect of a single cohort of patients for whom the decision must be made today. In contrast, the decision-maker is likely to be making decisions on behalf of a gradual influx of patients for whom the decision is relevant. That influx may be dependent on disease prevalence, disease incidence, diagnosis patterns, progression of disease, prior treatment patterns - any number of the factors that health economists routinely consider in budget impact models, but not cost-effectiveness modeling.
+In a recent review, Puls et al listed four challenges in modeling life cycle drug pricing and offered some proposals.[@puls_2024] Pricing changes before Loss of Exclusivity (LoE) events are ‘usually small’ but local pricing data can be informative, whereas after LoE, changes to pricing ‘should be informed by country-specific and historical estimates of average price reductions’, such as may be found in recent reviews.[@lin_2025; @bonet_2025; @serra_2024; @laube_2024] Following earlier recommendations by by Hoyle and Anderson, cost-effectiveness evaluations should include future incident cohorts in addition to the present, prevalent cohort,[@hoyle_anderson_2010] though assumptions may need to be simplified to facilitate calculation. Reporting should include individual and multiple cohorts, assuming uniform or utilization-informed weightings.[@puls_2024]
 
-Pricing is static because the analyses typically assume that costs will remain constant in real terms. When considering the cost-effectiveness of medicines, the acquisition cost of those medicines is a key component of the total cost. One thing we know about drug acquisition costs is that they do not remain constant in real terms. In the United States, companies often raise the Wholesale Acquisition Cost (WAC) prices of branded medicines once or twice a year, and this can be greater than inflation rates in the economy. After the exclusivity period of those branded medicines, generics or biosimilars may become available, and this wider supply can force down prices dramatically. In Europe and elsewhere, companies are often prevented - either directly in law or indirectly through HTA processes - from raising prices on branded medicines. Therefore assuming static prices is often a highly flawed assumption when using these analyses to make decisions about branded medicines, whose price may vary in future years - but absolutely not remain constant in real terms.
+There are now a growing number of publications in which multi-cohort cost-effectiveness evaluations with life cycle pricing have been presented.[@puls_2024; @schottler_2023; @whittington_2025a; @shafrin_2024; @moreno_2016] The purpose of this R package is to provide a simple tool to conduct calculations of present values that allow for dynamic pricing and dynamic uptake. This vignette aims to illustrate how computations may be performed. It is intended to be read after `vignette("Dynamic Pricing")` and `vignette("Dynamic Uptake")`. A mathematical framework presented here formalizes what others have developed and applied,[@hoyle_anderson_2010;@shafrin_2024] and provides the technical basis of the calculations within the package.
 
-This vignette describes how to use *dynamicpv* to evaluate cost-effectiveness with and without dynamic pricing and dynamic uptake. It is intended to be read after `vignette("Dynamic Pricing")` and `vignette("Dynamic Uptake")`.
+## Mathematical framework
 
-Before we begin, let us load the packages we need.
+Let us partition time as follows. Suppose $j=1, ..., T$ indexes the time at which the patient begins treatment (with either the new intervention of Standard of Care, SoC), where $T$ is the time horizon of the decision-maker. Suppose $k=1, ..., T$ indexes time since initiating treatment.
+
+This can be illustrated through an example. Suppose then we are considering a cashflow in timestep 3. This will comprise:
+
+- patients who are in the third timestep of treatment that began in timestep 1, $(j,k) = (1, 3)$;
+- patients who are in the second timestep of treatment that began in timestep 2, $(j,k) = (2, 2)$; and
+- patients who are in the first timestep of treatment that began in timestep 3, $(j,k) = (3, 1)$.
+
+In general, $t=j+k-1$, and we are interested in $t=1,...,T$.
+
+The Present Value of a cashflow $p_k$ for the $u_j$ patients who began treatment at time $j$ and who are in their $k$th timestep of treatment is as follows
+
+$$ PV(j,k) = u_j \cdot p_k \cdot R_{j+k-1} \cdot (1+i)^{2-j-k} $$
+
+where $i$ is the risk-free discount rate per timestep, and $p_k$ is the cashflow amount in today's money, and $p_k \cdot R_{j+k-1}$ is the nominal amount of the cashflow at the time it is incurred.
+
+The total present value is therefore the sum over all $j$ and $k$ within the time horizon $T$, namely:
+
+$$ TPV = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j, k) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{j+k-1} \cdot (1+i)^{2-j-k} $$
+
+The `dynamicpv::dynpv()` function operationalizes this calculation with arguments:
+
+- `payoffs` $= {p_k}$
+- `uptakes` $= {u_j}$
+- `horizon` $= T$, defaulting to the length of `payoffs`
+- `prices` $= {R_t}$, where $t=j+k-1+t_0$
+- `discrate` $= i$
+- `tzero` $= t_0$, defaulting to zero
+
+The `tzero` argument is a time offset useful to be able to calculate present values into the future, which can be performed for single cohorts by `dynamicpv::futurepv()`.
+
+## Set-up
+
+First we load the packages necessary for this vignette.
 
 ```{r setup, echo=TRUE, message=FALSE}
 library(dplyr)
@@ -257,7 +291,14 @@ heemodel <- heemod::run_model(
 
 ### Dynamic pricing
 
-Costs are assumed to increases in line with general inflation (2.5% per year), except for effects on drug acquisition costs due to LoEs. The date of calculation is 2025-09-01. The LoE for the SoC is assumed to occur first, at 2028-01-01, after which there is anticipated to be a 70% reduction in prices over one year. The new intervention has an LoE occuring three years later, at 2031-01-01, after which there would be a 50% reduction in prices over one year.
+Let us suppose the following assumptions concerning pricing:
+
+- Costs are assumed to increases in line with general inflation (2.5% per year), except for effects on drug acquisition costs due to LoEs.
+- The date of calculation is 2025-09-01.
+- The LoE for the SoC is assumed to occur first, at 2028-01-01, after which there is anticipated to be a 70% reduction in prices over one year.
+- The new intervention has an LoE occuring three years later, at 2031-01-01, after which there would be a 50% reduction in prices over one year.
+
+The assumptions can be codified as follows.
 
 ```{r dynpricing}
 # Dates
@@ -308,8 +349,13 @@ prices_dyn_new <- pricetib$dyn_new
 
 ### Dynamic patient uptake
 
-A disease incidence of 1 patient per timestep is assumed, with zero prevalence for simplicity. Under the decision problem to be evaluated, when the new intervention is
-available, uptake is assumed to rise linearly from 0% to 100% after 2 years. In this way, uptake would be gradually increasing with time, accounting for disease epidemiology and the share of patients who receive the new intervention. 
+Let us suppose the following assumptions concerning patient uptake. The aim here is to estimate the incidence of patients for whom the decision problem applies, i.e. the patients who would receive the new intervention, were it made available.
+
+- Only newly incident patients with the cancer being modeled would be eligible for the new treatment. Existing/prevalent patients with the condition would not be eligible.
+- The disease incidence is 1 patient per week.
+- Among these patients, were the new intervention to be made available, uptake of the new intervention would be expected to rise linearly from 0% to 100% after 2 years.
+
+In this way, uptake would be gradually increasing with time, accounting for disease epidemiology and the share of patients who receive the new intervention. The assumptions can be codified as follows.
 
 ```{r dynuptake}
 # Time for uptake to occur
@@ -557,7 +603,7 @@ s4_icer <- s4_icost / s4_iqaly
 
 Under scenario 4, the new intervention has an incremental cost-effectiveness of $`r s4_icer` per QALY (incremental costs of $`r s4_icost`, incremental QALYs of `r s4_iqaly` from a cohort comprising `r sum(uptake_multi)` patients).
 
-Total costs and QALYs for each scenario are summarized in @tbl-res1. The results above are skewed by the fact that some scenarios represent more than one patient cohort. Presenting results per patient, allows easier comparison between the scenarios.
+Total costs and QALYs for each scenario are summarized in the table below. The results above are skewed by the fact that some scenarios represent more than one patient cohort. Presenting results per patient, allows easier comparison between the scenarios.
 
 |    |  | Scenario 1 | Scenario 2 | Scenario 3 | Scenario 4 |
 |:---|:--|------------|------------|------------|------------|
@@ -582,7 +628,7 @@ Total costs and QALYs for each scenario are summarized in @tbl-res1. The results
 | | Incremental | `r s1_iqaly` | `r s2_iqaly` | `r s3_iqaly/sum(uptake_multi)` | `r s4_iqaly/sum(uptake_multi)` |
 | ICER | | `r s1_icer` | `r s2_icer` | `r s3_icer` | `r s4_icer` |
 
-: Cost-effectiveness model results by scenario {#tbl-res1}
+: Cost-effectiveness model results by scenario
 
 ## Future single cohort ICER
 
@@ -661,7 +707,7 @@ ds <- tibble::tibble(
   )
 ```
 
-We should check at this point that the ICER we are starting at (`r ds$icer[1]`) matches the scenario 2 ICER from earlier (`r s2_icer`).
+We should check at this point that the ICER we are starting at (`r ds$ICER[1]`) matches the scenario 2 ICER from earlier (`r s2_icer`).
 
 The following plot shows the nominal ICER calculated at different times, given the pricing, LoE and other assumptions. The horizontal dotted line confirms that the initial ICER matches the value from Scenario 2. The vertical dashed lines mark the timings of the LoEs of first the standard of care, and then the new treatment.
 
@@ -688,7 +734,8 @@ The findings for this example model are as follows:
 
 - The effect of modeling uptake dynamically rather than just the current cohort of patients is shown in the difference between results of scenarios 1 and 3. Dynamic modeling of uptake has the effect of weighting the costs and QALYs per patient in scenario 3 towards a later cohort of patients, where the accumulation of costs and QALYs over the time remaining in the payer's 20 year time horizon will be less. The incremental costs per patient reduced from $`r s1_new_cost` in scenario 1 to $`r s3_new_cost/sum(uptake_multi)` in scenario 3, whereas the incremental QALYs reduced from `r s1_new_qaly` to `r s3_new_qaly/sum(uptake_multi)` per patient. Overall, the ICER increased slightly from $`r s1_icer` to $`r s3_icer` per QALY.
 
-- Scenario 4 illustrates the effects of both dynamic pricing and cohort modeling. The results per patient are identical to scenario 3, except that the cost per patient of the new intervention reduces from $`r s3_new_cost/sum(uptake_multi)` to $`r s4_new_cost/sum(uptake_multi)`, due to the impact of dynamic pricing. The ICER in this case is reduced considerably to $`r s4_icer` per QALY.
+- The effects of dynamic pricing and dynamic uptake are extremely synergistic. Scenario 4 illustrates the effects of both dynamic pricing and cohort modeling. The results per patient are identical to scenario 3, except that the cost per patient of the new intervention reduces from $`r s3_new_cost/sum(uptake_multi)` to $`r s4_new_cost/sum(uptake_multi)`, due to the impact of dynamic pricing. The ICER in this case is reduced considerably to $`r s4_icer` per QALY.
 
 - As shown in the Figure, the ICER increases a little at first, as we approach the LoE of the standard of care comparator. After all, a cheaper comparator will increase the incremental cost of the new treatment. However, this is soon dwarfed by the effect of the LoE of the new treatment, which occurs later. This reduces the ICER significantly as the LoE approaches. Thereafter, the ICER is constant in real terms (but increasing with price inflation in nominal terms).
 
+# References

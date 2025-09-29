@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dynamicpv</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -101,15 +101,18 @@
 <div class="section level2">
 <h2 id="what-is-dynamic-uptake">What is dynamic uptake?<a class="anchor" aria-label="anchor" href="#what-is-dynamic-uptake"></a>
 </h2>
-<p>The cashflows examined in the
-<code>vignette("Dynamic Pricing")</code> all began in the first
-timestep, and continued from there. Dynamic uptake occurs if the same
-cashflow series may begin at several different times. For example,
-suppose we are examining costs of treatment over the course of
-treatment. We might wish to summarize costs according to the time since
-beginning treatment. If we then wish to examine costs of treatment over
-a cohort of multiple patients, we will need to take account of the fact
-that different patients may begin treatment at different times.</p>
+<p>Dynamic uptake refers to the modeling of multiple series of
+payoffs/cashflows over time, rather than the modeling of just one series
+of payoffs/cashflows at a time. This may arise, for example, in
+considering the treatment costs of multiple cohorts of patients
+beginning their treatment courses at different times. There are also
+analogies to ‘run-off triangles’ used by general insurance actuaries to
+model the emergence of insurance claims over time following claim
+events.</p>
+<p>This package is designed to be able to calculate presente values with
+dynamic uptake/multiple cohorts. This can be coupled with considerations
+of dynamic pricing, as covered in
+<code>vignette("Dynamic Pricing")</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="using-dynamicpv">Using <em>dynamicpv</em><a class="anchor" aria-label="anchor" href="#using-dynamicpv"></a>
@@ -132,11 +135,11 @@ are constant in real terms. The discount rate is 3 % per year, real.</p>
 <div class="section level3">
 <h3 id="non-dynamic-uptake">Non-dynamic uptake<a class="anchor" aria-label="anchor" href="#non-dynamic-uptake"></a>
 </h3>
-<p>Uptake is not dynamic if the cashflow series begins at the same time
-for everyone.</p>
+<p>First let us consider non-dynamic uptake, as covered in
+<code>vignette("Dynamic Pricing")</code>.</p>
 <table class="table">
-<caption>Table: Calculation of NPV from a simple cashflow and given
-discount rate {#tbl-onecash}</caption>
+<caption>Calculation of NPV from a simple cashflow and given discount
+rate</caption>
 <thead><tr class="header">
 <th>Time</th>
 <th>Cashflow 1</th>
@@ -188,7 +191,10 @@ discount rate {#tbl-onecash}</caption>
 </tr>
 </tbody>
 </table>
-<p>In this case, all cashflow series start at timestep 1.</p>
+<p>In this case, there is a single cashflow series starting at timestep
+1. This time, we will use the <code>uptakes</code> argument for
+<code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> - although this is unnecessary since its
+default is also 1.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Uptake vector is simple</span></span>
 <span><span class="va">uptakes1</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -205,63 +211,11 @@ function could be verified with some simple vector arithmetic.</p>
 <h3 id="dynamic-uptake-constant-in-time-unweighted">Dynamic uptake, constant in time (unweighted)<a class="anchor" aria-label="anchor" href="#dynamic-uptake-constant-in-time-unweighted"></a>
 </h3>
 <p>Suppose we have one new patient each year, and we wish to calculate
-the total NPV in a time horizon of 5 years. With
-<code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code>, we just update the <code>uptakes</code>
-argument.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Uptake vector is simple</span></span>
-<span><span class="va">uptakes2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># NPV calculation</span></span>
-<span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes2</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
-<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; $ncoh</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $uptake</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $calc</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 9</span></span></span>
-<span><span class="co">#&gt;        j     k     l     t    uj    pk     R     v    pv</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1     1     0     1     1   110     1 1     110  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1     2     0     2     1   120     1 0.971 117. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1     3     0     3     1   130     1 0.943 123. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1     4     0     4     1   140     1 0.915 128. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1     5     0     5     1   150     1 0.888 133. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     2     1     0     2     1   110     1 0.971 107. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     2     2     0     3     1   120     1 0.943 113. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     2     3     0     4     1   130     1 0.915 119. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     2     4     0     5     1   140     1 0.888 124. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     3     1     0     3     1   110     1 0.943 104. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     3     2     0     4     1   120     1 0.915 110. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     3     3     0     5     1   130     1 0.888 116. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span>     4     1     0     4     1   110     1 0.915 101. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span>     4     2     0     5     1   120     1 0.888 107. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span>     5     1     0     5     1   110     1 0.888  97.7</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $cohpv</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
-<span><span class="co">#&gt;       j tzero   spv</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1     0 610. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2     0 463. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3     0 329. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4     0 207. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5     0  97.7</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $total</span></span>
-<span><span class="co">#&gt; [1] 1707.723</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $mean</span></span>
-<span><span class="co">#&gt; [1] 341.5446</span></span></code></pre></div>
-<p>Now we have a payoff triangle. This is similar to the idea of run-off
-triangles that general insurance actuaries use to model the emergence of
-insurance claims over time.</p>
+the total NPV in a time horizon of 5 years. Now we have a payoff
+triangle as follows.</p>
 <table class="table">
-<caption>Table: Calculation of NPV from a simple cashflow and given
-discount rate {#tbl-tri}</caption>
+<caption>Calculation of NPV from a simple cashflow and given discount
+rate</caption>
 <colgroup>
 <col width="9%">
 <col width="15%">
@@ -364,8 +318,60 @@ discount rate {#tbl-tri}</caption>
 </tr>
 </tbody>
 </table>
+<p>With <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code>, we just update the
+<code>uptakes</code> argument.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Uptake vector is simple</span></span>
+<span><span class="va">uptakes2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">uptakes2</span></span>
+<span><span class="co">#&gt; [1] 1 1 1 1 1</span></span>
+<span></span>
+<span><span class="co"># NPV calculation</span></span>
+<span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes2</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
+<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span></span>
+<span><span class="co">#&gt; $ncoh</span></span>
+<span><span class="co">#&gt; [1] 5</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $uptake</span></span>
+<span><span class="co">#&gt; [1] 5</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $calc</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 9</span></span></span>
+<span><span class="co">#&gt;        j     k     l     t    uj    pk     R     v    pv</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1     1     0     1     1   110     1 1     110  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1     2     0     2     1   120     1 0.971 117. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1     3     0     3     1   130     1 0.943 123. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1     4     0     4     1   140     1 0.915 128. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1     5     0     5     1   150     1 0.888 133. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     2     1     0     2     1   110     1 0.971 107. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     2     2     0     3     1   120     1 0.943 113. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     2     3     0     4     1   130     1 0.915 119. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     2     4     0     5     1   140     1 0.888 124. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     3     1     0     3     1   110     1 0.943 104. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     3     2     0     4     1   120     1 0.915 110. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     3     3     0     5     1   130     1 0.888 116. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span>     4     1     0     4     1   110     1 0.915 101. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span>     4     2     0     5     1   120     1 0.888 107. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span>     5     1     0     5     1   110     1 0.888  97.7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cohpv</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt;       j tzero   spv</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1     0 610. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2     0 463. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3     0 329. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4     0 207. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5     0  97.7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $total</span></span>
+<span><span class="co">#&gt; [1] 1707.723</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mean</span></span>
+<span><span class="co">#&gt; [1] 341.5446</span></span></code></pre></div>
 <p>There are 5 patients with a total NPV of 1,708, which equates to 342
-on average per patient.</p>
+on average per patient. This can also be calculated in base R.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">vt1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="va">cashflow</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1707.723</span></span></code></pre></div>
@@ -432,17 +438,18 @@ be
 <span><span class="co">#&gt; [1] 3841.785</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $mean</span></span>
-<span><span class="co">#&gt; [1] 256.119</span></span>
-<span></span>
-<span><span class="co"># Verifying total NPV is now more complicated</span></span>
+<span><span class="co">#&gt; [1] 256.119</span></span></code></pre></div>
+<p>There are 15 patients with a total NPV of 3,842, which equates to 256
+on average per patient. Verifying this result in base R also becomes
+more complicated.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Verifying total NPV is now more complicated</span></span>
 <span><span class="va">checkpv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">checkpv</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">cashflow</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">uptakes3</span><span class="op">[</span><span class="va">i</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="va">vt1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">checkpv</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 3841.785</span></span></code></pre></div>
-<p>There are 15 patients with a total NPV of 3,842, which equates to 256
-on average per patient.</p>
 </div>
 <div class="section level3">
 <h3 id="dynamic-pricing-and-uptake">Dynamic pricing and uptake<a class="anchor" aria-label="anchor" href="#dynamic-pricing-and-uptake"></a>
@@ -451,7 +458,7 @@ on average per patient.</p>
 uptake and dynamic pricing. A simple call to
 <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> replaces what would be rather more
 complicated with base functions, even in this toy example.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Price index</span></span>
 <span><span class="va">pinfl</span> <span class="op">&lt;-</span> <span class="fl">0.01</span></span>
 <span><span class="va">pindex</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">pinfl</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
@@ -504,6 +511,8 @@ complicated with base functions, even in this toy example.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $mean</span></span>
 <span><span class="co">#&gt; [1] 161.5089</span></span></code></pre></div>
+<p>There are 15 patients with a total NPV of 2,423, which equates to 162
+on average per patient.</p>
 </div>
 </div>
 <div class="section level2">
@@ -518,8 +527,9 @@ NPV.</li>
 <li>The <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> function can be used to
 calculate NPVs for arbitrary vectors of cashflows, at a given discount
 rate and a given expected uptake over time.</li>
-<li>In this way, the function can accommodate both dynamic uptake and,
-as seen in the <code>vignette("Dynamic Pricing")</code>.</li>
+<li>In this way, the function can accommodate both dynamic uptake and
+dynamic pricing, as seen in the
+<code>vignette("Dynamic Pricing")</code>.</li>
 </ul>
 </div>
   </div>
