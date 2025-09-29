@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dynamicpv</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -98,52 +98,146 @@
 
     
     
-<div class="section level2">
-<h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
-</h2>
-<p>Cost-efffectiveness models evaluate the costs and health outcomes
-associated with a decision, such as treating a patient with a particular
-intervention, as compared with another. Such analyses depend on
-measuring the incremental costs and health outcomes between the
-different decisions, and considering which decision would be most
-efficient, given the decision-maker’s economic perspective, time
-horizon, and willingness-to-pay for any improvement in health outcomes.
-Key to such analysis are the calculation of discounted (net) present
-values of costs and health outcomes associated with each decision
-option. Decisions about access to health care innovations are routinely
-made by health technology assessment (HTA) bodies on the basis of
-analyses in this form.</p>
-<p>One of the problems with such analyses is that they are static in
-terms of pricing and uptake assumptions. Uptake is static because the
-analyses are conducted in respect of a single cohort of patients for
-whom the decision must be made today. In contrast, the decision-maker is
-likely to be making decisions on behalf of a gradual influx of patients
-for whom the decision is relevant. That influx may be dependent on
-disease prevalence, disease incidence, diagnosis patterns, progression
-of disease, prior treatment patterns - any number of the factors that
-health economists routinely consider in budget impact models, but not
-cost-effectiveness modeling.</p>
-<p>Pricing is static because the analyses typically assume that costs
-will remain constant in real terms. When considering the
-cost-effectiveness of medicines, the acquisition cost of those medicines
-is a key component of the total cost. One thing we know about drug
-acquisition costs is that they do not remain constant in real terms. In
-the United States, companies often raise the Wholesale Acquisition Cost
-(WAC) prices of branded medicines once or twice a year, and this can be
-greater than inflation rates in the economy. After the exclusivity
-period of those branded medicines, generics or biosimilars may become
-available, and this wider supply can force down prices dramatically. In
-Europe and elsewhere, companies are often prevented - either directly in
-law or indirectly through HTA processes - from raising prices on branded
-medicines. Therefore assuming static prices is often a highly flawed
-assumption when using these analyses to make decisions about branded
-medicines, whose price may vary in future years - but absolutely not
-remain constant in real terms.</p>
-<p>This vignette describes how to use <em>dynamicpv</em> to evaluate
-cost-effectiveness with and without dynamic pricing and dynamic uptake.
-It is intended to be read after <code>vignette("Dynamic Pricing")</code>
-and <code>vignette("Dynamic Uptake")</code>.</p>
-<p>Before we begin, let us load the packages we need.</p>
+<div class="section level3">
+<h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h3>
+<p>Single cohort cost-effectiveness models are routinely used in the
+decision making of Health Technology Assessment (HTA) bodies, and are
+widely published in the scientific literature.<span class="citation">(Espinosa et al. 2024; Enright et al. 2025; Do et al.
+2021)</span> Despite their utility, such models have been criticised as
+overly limited in scope, omitting important elements of value<span class="citation">(Breslau et al. 2023; Shafrin et al. 2024)</span>] and
+health equity<span class="citation">(Avanceña and Prosser 2021)</span>.
+Anticipated pricing dynamics (life cycle drug pricing) are routinely
+ignored, meaning that the long run opportunity cost for drugs may be
+misrepresented,<span class="citation">(Neumann et al. 2022)</span> and
+single cohort modeling is criticized as not tailored to properly inform
+decision-making that will impact future cohorts of patients<span class="citation">(Hoyle and Anderson 2010)</span>. Case studies have
+shown how dynamic (or ‘life cycle’) pricing and multi-cohort modeling
+can have substantial effects on reported Incremental Cost-Effectiveness
+Ratio (ICER) values and that, without accounting for these effects,
+ICERs are overstated and unrepresentative.<span class="citation">(Schöttler et al. 2023; Whittington et al. 2025; Moreno
+and Ray 2016)</span></p>
+<p>In a recent review, Puls et al listed four challenges in modeling
+life cycle drug pricing and offered some proposals.<span class="citation">(Puls et al. 2024)</span> Pricing changes before Loss
+of Exclusivity (LoE) events are ‘usually small’ but local pricing data
+can be informative, whereas after LoE, changes to pricing ‘should be
+informed by country-specific and historical estimates of average price
+reductions’, such as may be found in recent reviews.<span class="citation">(Lin et al. 2025; Jofre-Bonet et al. 2025;
+Serra-Burriel et al. 2024; Laube et al. 2024)</span> Following earlier
+recommendations by by Hoyle and Anderson, cost-effectiveness evaluations
+should include future incident cohorts in addition to the present,
+prevalent cohort,<span class="citation">(Hoyle and Anderson 2010)</span>
+though assumptions may need to be simplified to facilitate calculation.
+Reporting should include individual and multiple cohorts, assuming
+uniform or utilization-informed weightings.<span class="citation">(Puls
+et al. 2024)</span></p>
+<p>There are now a growing number of publications in which multi-cohort
+cost-effectiveness evaluations with life cycle pricing have been
+presented.<span class="citation">(Puls et al. 2024; Schöttler et al.
+2023; Whittington et al. 2025; Shafrin et al. 2024; Moreno and Ray
+2016)</span> The purpose of this R package is to provide a simple tool
+to conduct calculations of present values that allow for dynamic pricing
+and dynamic uptake. This vignette aims to illustrate how computations
+may be performed. It is intended to be read after
+<code>vignette("Dynamic Pricing")</code> and
+<code>vignette("Dynamic Uptake")</code>. A mathematical framework
+presented here formalizes what others have developed and applied,<span class="citation">(Hoyle and Anderson 2010; Shafrin et al. 2024)</span>
+and provides the technical basis of the calculations within the
+package.</p>
+</div>
+<div class="section level3">
+<h3 id="mathematical-framework">Mathematical framework<a class="anchor" aria-label="anchor" href="#mathematical-framework"></a>
+</h3>
+<p>Let us partition time as follows. Suppose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">j=1, ..., T</annotation></semantics></math>
+indexes the time at which the patient begins treatment (with either the
+new intervention of Standard of Care, SoC), where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+is the time horizon of the decision-maker. Suppose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">k=1, ..., T</annotation></semantics></math>
+indexes time since initiating treatment.</p>
+<p>This can be illustrated through an example. Suppose then we are
+considering a cashflow in timestep 3. This will comprise:</p>
+<ul>
+<li>patients who are in the third timestep of treatment that began in
+timestep 1,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(j,k) = (1, 3)</annotation></semantics></math>;</li>
+<li>patients who are in the second timestep of treatment that began in
+timestep 2,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(j,k) = (2, 2)</annotation></semantics></math>;
+and</li>
+<li>patients who are in the first timestep of treatment that began in
+timestep 3,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(j,k) = (3, 1)</annotation></semantics></math>.</li>
+</ul>
+<p>In general,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mi>j</mi><mo>+</mo><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=j+k-1</annotation></semantics></math>,
+and we are interested in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">t=1,...,T</annotation></semantics></math>.</p>
+<p>The Present Value of a cashflow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>k</mi></msub><annotation encoding="application/x-tex">p_k</annotation></semantics></math>
+for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>u</mi><mi>j</mi></msub><annotation encoding="application/x-tex">u_j</annotation></semantics></math>
+patients who began treatment at time
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+and who are in their
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>th
+timestep of treatment is as follows</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>u</mi><mi>j</mi></msub><mo>⋅</mo><msub><mi>p</mi><mi>k</mi></msub><mo>⋅</mo><msub><mi>R</mi><mrow><mi>j</mi><mo>+</mo><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>2</mn><mo>−</mo><mi>j</mi><mo>−</mo><mi>k</mi></mrow></msup></mrow><annotation encoding="application/x-tex"> PV(j,k) = u_j \cdot p_k \cdot R_{j+k-1} \cdot (1+i)^{2-j-k} </annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+is the risk-free discount rate per timestep, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>k</mi></msub><annotation encoding="application/x-tex">p_k</annotation></semantics></math>
+is the cashflow amount in today’s money, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>k</mi></msub><mo>⋅</mo><msub><mi>R</mi><mrow><mi>j</mi><mo>+</mo><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">p_k \cdot R_{j+k-1}</annotation></semantics></math>
+is the nominal amount of the cashflow at the time it is incurred.</p>
+<p>The total present value is therefore the sum over all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+within the time horizon
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>,
+namely:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>P</mi><mi>V</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>T</mi><mo>−</mo><mi>j</mi><mo>+</mo><mn>1</mn></mrow></munderover><mi>P</mi><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>T</mi><mo>−</mo><mi>j</mi><mo>+</mo><mn>1</mn></mrow></munderover><msub><mi>u</mi><mi>j</mi></msub><mo>⋅</mo><msub><mi>p</mi><mi>k</mi></msub><mo>⋅</mo><msub><mi>R</mi><mrow><mi>j</mi><mo>+</mo><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>2</mn><mo>−</mo><mi>j</mi><mo>−</mo><mi>k</mi></mrow></msup></mrow><annotation encoding="application/x-tex"> TPV = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j, k) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{j+k-1} \cdot (1+i)^{2-j-k} </annotation></semantics></math></p>
+<p>The <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> function operationalizes this
+calculation with arguments:</p>
+<ul>
+<li>
+<code>payoffs</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msub><mi>p</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">= {p_k}</annotation></semantics></math>
+</li>
+<li>
+<code>uptakes</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msub><mi>u</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">= {u_j}</annotation></semantics></math>
+</li>
+<li>
+<code>horizon</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">= T</annotation></semantics></math>,
+defaulting to the length of <code>payoffs</code>
+</li>
+<li>
+<code>prices</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msub><mi>R</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">= {R_t}</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mi>j</mi><mo>+</mo><mi>k</mi><mo>−</mo><mn>1</mn><mo>+</mo><msub><mi>t</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">t=j+k-1+t_0</annotation></semantics></math>
+</li>
+<li>
+<code>discrate</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">= i</annotation></semantics></math>
+</li>
+<li>
+<code>tzero</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msub><mi>t</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">= t_0</annotation></semantics></math>,
+defaulting to zero</li>
+</ul>
+<p>The <code>tzero</code> argument is a time offset useful to be able to
+calculate present values into the future, which can be performed for
+single cohorts by <code><a href="../reference/futurepv.html">dynamicpv::futurepv()</a></code>.</p>
+</div>
+<div class="section level3">
+<h3 id="set-up">Set-up<a class="anchor" aria-label="anchor" href="#set-up"></a>
+</h3>
+<p>First we load the packages necessary for this vignette.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -152,9 +246,9 @@ and <code>vignette("Dynamic Uptake")</code>.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://aphp.github.io/heemod/" class="external-link">heemod</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/" class="external-link">dynamicpv</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="assumptions">Assumptions<a class="anchor" aria-label="anchor" href="#assumptions"></a>
-</h2>
+<div class="section level3">
+<h3 id="assumptions">Assumptions<a class="anchor" aria-label="anchor" href="#assumptions"></a>
+</h3>
 <p>Before we start, we need to outline our assumptions. These
 concern:</p>
 <ul>
@@ -163,9 +257,9 @@ analysis</li>
 <li>dynamic patient uptake</li>
 <li>dynamic pricing</li>
 </ul>
-<div class="section level3">
-<h3 id="decision-problem-we-are-modeling">Decision problem we are modeling<a class="anchor" aria-label="anchor" href="#decision-problem-we-are-modeling"></a>
-</h3>
+<div class="section level4">
+<h4 id="decision-problem-we-are-modeling">Decision problem we are modeling<a class="anchor" aria-label="anchor" href="#decision-problem-we-are-modeling"></a>
+</h4>
 <p>We wish to evaluate the cost-effectiveness, measured as incremental
 cost per QALY, of a new intervention compared to the standard of care
 (SoC). The model is a partitioned survival analysis typical in oncology
@@ -378,16 +472,23 @@ follows.</p>
 <span>  method <span class="op">=</span> <span class="st">"life-table"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="dynamic-pricing">Dynamic pricing<a class="anchor" aria-label="anchor" href="#dynamic-pricing"></a>
-</h3>
-<p>Costs are assumed to increases in line with general inflation (2.5%
-per year), except for effects on drug acquisition costs due to LoEs. The
-date of calculation is 2025-09-01. The LoE for the SoC is assumed to
-occur first, at 2028-01-01, after which there is anticipated to be a 70%
-reduction in prices over one year. The new intervention has an LoE
-occuring three years later, at 2031-01-01, after which there would be a
-50% reduction in prices over one year.</p>
+<div class="section level4">
+<h4 id="dynamic-pricing">Dynamic pricing<a class="anchor" aria-label="anchor" href="#dynamic-pricing"></a>
+</h4>
+<p>Let us suppose the following assumptions concerning pricing:</p>
+<ul>
+<li>Costs are assumed to increases in line with general inflation (2.5%
+per year), except for effects on drug acquisition costs due to
+LoEs.</li>
+<li>The date of calculation is 2025-09-01.</li>
+<li>The LoE for the SoC is assumed to occur first, at 2028-01-01, after
+which there is anticipated to be a 70% reduction in prices over one
+year.</li>
+<li>The new intervention has an LoE occuring three years later, at
+2031-01-01, after which there would be a 50% reduction in prices over
+one year.</li>
+</ul>
+<p>The assumptions can be codified as follows.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Dates</span></span>
 <span><span class="co"># Date of calculation = 1 September 2025</span></span>
@@ -434,15 +535,26 @@ occuring three years later, at 2031-01-01, after which there would be a
 <span><span class="va">prices_dyn_soc</span> <span class="op">&lt;-</span> <span class="va">pricetib</span><span class="op">$</span><span class="va">dyn_soc</span></span>
 <span><span class="va">prices_dyn_new</span> <span class="op">&lt;-</span> <span class="va">pricetib</span><span class="op">$</span><span class="va">dyn_new</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="dynamic-patient-uptake">Dynamic patient uptake<a class="anchor" aria-label="anchor" href="#dynamic-patient-uptake"></a>
-</h3>
-<p>A disease incidence of 1 patient per timestep is assumed, with zero
-prevalence for simplicity. Under the decision problem to be evaluated,
-when the new intervention is available, uptake is assumed to rise
-linearly from 0% to 100% after 2 years. In this way, uptake would be
-gradually increasing with time, accounting for disease epidemiology and
-the share of patients who receive the new intervention.</p>
+<div class="section level4">
+<h4 id="dynamic-patient-uptake">Dynamic patient uptake<a class="anchor" aria-label="anchor" href="#dynamic-patient-uptake"></a>
+</h4>
+<p>Let us suppose the following assumptions concerning patient uptake.
+The aim here is to estimate the incidence of patients for whom the
+decision problem applies, i.e. the patients who would receive the new
+intervention, were it made available.</p>
+<ul>
+<li>Only newly incident patients with the cancer being modeled would be
+eligible for the new treatment. Existing/prevalent patients with the
+condition would not be eligible.</li>
+<li>The disease incidence is 1 patient per week.</li>
+<li>Among these patients, were the new intervention to be made
+available, uptake of the new intervention would be expected to rise
+linearly from 0% to 100% after 2 years.</li>
+</ul>
+<p>In this way, uptake would be gradually increasing with time,
+accounting for disease epidemiology and the share of patients who
+receive the new intervention. The assumptions can be codified as
+follows.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time for uptake to occur</span></span>
 <span><span class="va">uptake_years</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
@@ -456,12 +568,12 @@ the share of patients who receive the new intervention.</p>
 <span><span class="va">uptake_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">Ncycles</span><span class="op">)</span> <span class="op">*</span> <span class="va">share_multi</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level2">
-<h2 id="using-dynamicpv">Using <em>dynamicpv</em><a class="anchor" aria-label="anchor" href="#using-dynamicpv"></a>
-</h2>
 <div class="section level3">
-<h3 id="without-dynamic-pricing-or-dynamic-uptake">Without dynamic pricing or dynamic uptake<a class="anchor" aria-label="anchor" href="#without-dynamic-pricing-or-dynamic-uptake"></a>
+<h3 id="using-dynamicpv">Using <em>dynamicpv</em><a class="anchor" aria-label="anchor" href="#using-dynamicpv"></a>
 </h3>
+<div class="section level4">
+<h4 id="without-dynamic-pricing-or-dynamic-uptake">Without dynamic pricing or dynamic uptake<a class="anchor" aria-label="anchor" href="#without-dynamic-pricing-or-dynamic-uptake"></a>
+</h4>
 <p>The conventional cost-effectiveness model is static.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heemodel</span></span>
@@ -561,44 +673,43 @@ what <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> requi
 <span><span class="co">#&gt; <span style="color: #949494;">#   cost_total_rup &lt;dbl&gt;, qaly_rup &lt;dbl&gt;, life_year_rup &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   model_years &lt;dbl&gt;, cost_nondaq &lt;dbl&gt;, cost_nondaq_rup &lt;dbl&gt;</span></span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="scenario-1-no-dynamic-uptake-or-pricing">Scenario 1: No dynamic uptake or pricing<a class="anchor" aria-label="anchor" href="#scenario-1-no-dynamic-uptake-or-pricing"></a>
-</h3>
+<div class="section level4">
+<h4 id="scenario-1-no-dynamic-uptake-or-pricing">Scenario 1: No dynamic uptake or pricing<a class="anchor" aria-label="anchor" href="#scenario-1-no-dynamic-uptake-or-pricing"></a>
+</h4>
 <p>These results show that the new intervention is associated with
 $117,034 incremental costs relative to the standard of care (including
 $141,997 of drug acquisition costs for the new intervention) and 0.926
 incremental QALYs. The cumulative ICER (incremental cost per QALY) is
 $126,451 per QALY at the 20 year time horizon.</p>
 </div>
-<div class="section level3">
-<h3 id="scenario-2-dynamic-pricing-no-dynamic-uptake">Scenario 2: Dynamic pricing, no dynamic uptake<a class="anchor" aria-label="anchor" href="#scenario-2-dynamic-pricing-no-dynamic-uptake"></a>
-</h3>
+<div class="section level4">
+<h4 id="scenario-2-dynamic-pricing-no-dynamic-uptake">Scenario 2: Dynamic pricing, no dynamic uptake<a class="anchor" aria-label="anchor" href="#scenario-2-dynamic-pricing-no-dynamic-uptake"></a>
+</h4>
 <p>Under scenario 2, the new intervention has an incremental
 cost-effectiveness of $124,059 per QALY (incremental costs of $114,820,
 incremental QALYs of 0.926).</p>
 </div>
-<div class="section level3">
-<h3 id="scenario-3-dynamic-uptake-not-dynamic-pricing">Scenario 3: Dynamic uptake, not dynamic pricing<a class="anchor" aria-label="anchor" href="#scenario-3-dynamic-uptake-not-dynamic-pricing"></a>
-</h3>
+<div class="section level4">
+<h4 id="scenario-3-dynamic-uptake-not-dynamic-pricing">Scenario 3: Dynamic uptake, not dynamic pricing<a class="anchor" aria-label="anchor" href="#scenario-3-dynamic-uptake-not-dynamic-pricing"></a>
+</h4>
 <p>Under scenario 3, the new intervention has an incremental
 cost-effectiveness of $149,782 per QALY (incremental costs of
 $78,010,854, incremental QALYs of 521 from a cohort comprising 992
 patients).</p>
 </div>
-<div class="section level3">
-<h3 id="scenario-4-dynamic-pricing-and-uptake">Scenario 4: Dynamic pricing and uptake<a class="anchor" aria-label="anchor" href="#scenario-4-dynamic-pricing-and-uptake"></a>
-</h3>
+<div class="section level4">
+<h4 id="scenario-4-dynamic-pricing-and-uptake">Scenario 4: Dynamic pricing and uptake<a class="anchor" aria-label="anchor" href="#scenario-4-dynamic-pricing-and-uptake"></a>
+</h4>
 <p>Under scenario 4, the new intervention has an incremental
 cost-effectiveness of $94,570 per QALY (incremental costs of
 $49,255,066, incremental QALYs of 521 from a cohort comprising 992
 patients).</p>
-<p>Total costs and QALYs for each scenario are summarized in <span class="citation">@tbl-res1</span>. The results above are skewed by the
-fact that some scenarios represent more than one patient cohort.
-Presenting results per patient, allows easier comparison between the
-scenarios.</p>
+<p>Total costs and QALYs for each scenario are summarized in the table
+below. The results above are skewed by the fact that some scenarios
+represent more than one patient cohort. Presenting results per patient,
+allows easier comparison between the scenarios.</p>
 <table class="table">
-<caption>Cost-effectiveness model results by scenario
-{#tbl-res1}</caption>
+<caption>Cost-effectiveness model results by scenario</caption>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="left"></th>
@@ -772,9 +883,9 @@ scenarios.</p>
 </table>
 </div>
 </div>
-<div class="section level2">
-<h2 id="future-single-cohort-icer">Future single cohort ICER<a class="anchor" aria-label="anchor" href="#future-single-cohort-icer"></a>
-</h2>
+<div class="section level3">
+<h3 id="future-single-cohort-icer">Future single cohort ICER<a class="anchor" aria-label="anchor" href="#future-single-cohort-icer"></a>
+</h3>
 <p>The table above presents the cost-effectiveness results as of the
 date of calculation, 2025-09-01. However, it is interesting to explore
 how the ICER will change over time, given the expected evolution of
@@ -855,8 +966,8 @@ calculate the ICER, given the incremental QALYs we have already observed
 <span>    names_to <span class="op">=</span> <span class="st">"Type"</span>,</span>
 <span>    values_to <span class="op">=</span> <span class="st">"ICER"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p>We should check at this point that the ICER we are starting at ()
-matches the scenario 2 ICER from earlier (124,059).</p>
+<p>We should check at this point that the ICER we are starting at
+(124,059) matches the scenario 2 ICER from earlier (124,059).</p>
 <p>The following plot shows the nominal ICER calculated at different
 times, given the pricing, LoE and other assumptions. The horizontal
 dotted line confirms that the initial ICER matches the value from
@@ -878,9 +989,9 @@ first the standard of care, and then the new treatment.</p>
 <span><span class="co">#&gt; Warning: Unknown or uninitialised column: `icer`.</span></span></code></pre></div>
 <p><img src="cost-effectiveness-applications_files/figure-html/calc_future-1.png" width="700"></p>
 </div>
-<div class="section level2">
-<h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
-</h2>
+<div class="section level3">
+<h3 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
+</h3>
 <p>The findings for this example model are as follows:</p>
 <ul>
 <li><p>The effect of assuming dynamic pricing rather than flat pricing
@@ -902,9 +1013,10 @@ incremental costs per patient reduced from $194,157 in scenario 1 to
 $130,380 in scenario 3, whereas the incremental QALYs reduced from 2.08
 to 1.319 per patient. Overall, the ICER increased slightly from $126,451
 to $149,782 per QALY.</p></li>
-<li><p>Scenario 4 illustrates the effects of both dynamic pricing and
-cohort modeling. The results per patient are identical to scenario 3,
-except that the cost per patient of the new intervention reduces from
+<li><p>The effects of dynamic pricing and dynamic uptake are extremely
+synergistic. Scenario 4 illustrates the effects of both dynamic pricing
+and cohort modeling. The results per patient are identical to scenario
+3, except that the cost per patient of the new intervention reduces from
 $130,380 to $92,391, due to the impact of dynamic pricing. The ICER in
 this case is reduced considerably to $94,570 per QALY.</p></li>
 <li><p>As shown in the Figure, the ICER increases a little at first, as
@@ -915,6 +1027,132 @@ new treatment, which occurs later. This reduces the ICER significantly
 as the LoE approaches. Thereafter, the ICER is constant in real terms
 (but increasing with price inflation in nominal terms).</p></li>
 </ul>
+</div>
+<div class="section level2">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-avancena_2021" class="csl-entry">
+Avanceña, Anton L. V., and Lisa A. Prosser. 2021. <span>“Examining
+<span>Equity</span> <span>Effects</span> of <span>Health</span>
+<span>Interventions</span> in
+<span>Cost</span>-<span>Effectiveness</span> <span>Analysis</span>:
+<span>A</span> <span>Systematic</span> <span>Review</span>.”</span>
+<em>Value in Health</em> 24 (1): 136–43. <a href="https://doi.org/10.1016/j.jval.2020.10.010" class="external-link">https://doi.org/10.1016/j.jval.2020.10.010</a>.
+</div>
+<div id="ref-breslau_2023" class="csl-entry">
+Breslau, Rachel Milstein, Joshua T. Cohen, Jose Diaz, Bill Malcolm, and
+Peter J. Neumann. 2023. <span>“A Review of <span>HTA</span> Guidelines
+on Societal and Novel Value Elements.”</span> <em>International Journal
+of Technology Assessment in Health Care</em> 39 (1): e31. <a href="https://doi.org/10.1017/S026646232300017X" class="external-link">https://doi.org/10.1017/S026646232300017X</a>.
+</div>
+<div id="ref-do_2021" class="csl-entry">
+Do, Lauren A, Patricia G Synnott, Siyu Ma, and Daniel A Ollendorf. 2021.
+<span>“Bridging the Gap: Aligning Economic Research with Disease
+Burden.”</span> <em>BMJ Global Health</em> 6 (6): e005673. <a href="https://doi.org/10.1136/bmjgh-2021-005673" class="external-link">https://doi.org/10.1136/bmjgh-2021-005673</a>.
+</div>
+<div id="ref-enright_2025" class="csl-entry">
+Enright, Daniel E., Emma G. van Duijnhoven, Daniel A. Ollendorf, and
+James D. Chambers. 2025. <span>“Use of Health Technology Assessments in
+Specialty Drug Coverage Decisions by <span>US</span> Commercial Health
+Plans.”</span> <em>Journal of Managed Care &amp; Specialty Pharmacy</em>
+31 (3): 289–95. <a href="https://doi.org/10.18553/jmcp.2025.31.3.289" class="external-link">https://doi.org/10.18553/jmcp.2025.31.3.289</a>.
+</div>
+<div id="ref-espinosa_2024" class="csl-entry">
+Espinosa, Oscar, Paul Rodríguez-Lesmes, Giancarlo Romano, Esteban
+Orozco, Sergio Basto, Diego Ávila, Lorena Mesa, and Hernán Enríquez.
+2024. <span>“Use of <span>Cost</span>-<span>Effectiveness</span>
+<span>Thresholds</span> in <span>Healthcare</span> <span>Public</span>
+<span>Policy</span>: <span>Progress</span> and
+<span>Challenges</span>.”</span> <em>Applied Health Economics and Health
+Policy</em> 22 (6): 797–804. <a href="https://doi.org/10.1007/s40258-024-00900-5" class="external-link">https://doi.org/10.1007/s40258-024-00900-5</a>.
+</div>
+<div id="ref-hoyle_anderson_2010" class="csl-entry">
+Hoyle, Martin, and Rob Anderson. 2010. <span>“Whose <span>Costs</span>
+and <span>Benefits</span>? <span>Why</span> <span>Economic</span>
+<span>Evaluations</span> <span>Should</span> <span>Simulate</span>
+<span>Both</span> <span>Prevalent</span> and <span>All</span>
+<span>Future</span> <span>Incident</span> <span>Patient</span>
+<span>Cohorts</span>.”</span> <em>Medical Decision Making</em> 30 (4):
+426–37. <a href="https://doi.org/10.1177/0272989X09353946" class="external-link">https://doi.org/10.1177/0272989X09353946</a>.
+</div>
+<div id="ref-bonet_2025" class="csl-entry">
+Jofre-Bonet, Mireia, Alistair McGuire, Victoria Dayer, Joshua A. Roth,
+and Sean D. Sullivan. 2025. <span>“The <span>Price</span>
+<span>Effects</span> of <span>Biosimilars</span> in the
+<span>United</span> <span>States</span>.”</span> <em>Value in
+Health</em> 28 (March): 742–50. <a href="https://doi.org/10.1016/j.jval.2025.02.008" class="external-link">https://doi.org/10.1016/j.jval.2025.02.008</a>.
+</div>
+<div id="ref-laube_2024" class="csl-entry">
+Laube, Y., M. Serra-Burriel, C. C. E. G. Glaus, and K. N. Vokinger.
+2024. <span>“Launch and Postlaunch Price Developments of New Drugs in
+the US, Germany, and Switzerland.”</span> <em>JAMA Health Forum</em> 5
+(11): e244461. <a href="https://doi.org/10.1001/jamahealthforum.2024.446" class="external-link">https://doi.org/10.1001/jamahealthforum.2024.446</a>.
+</div>
+<div id="ref-lin_2025" class="csl-entry">
+Lin, Ching-Hsuan, Jonathan D. Campbell, James Motyka, and Joshua T.
+Cohen. 2025. <span>“<span>US</span> <span>Drug</span>
+<span>Pricing</span> <span>Patterns</span> <span>Before</span>
+<span>Loss</span> of <span>Exclusivity</span>.”</span> <em>Value in
+Health</em> 28 (6): 907–14. <a href="https://doi.org/10.1016/j.jval.2025.03.008" class="external-link">https://doi.org/10.1016/j.jval.2025.03.008</a>.
+</div>
+<div id="ref-moreno_2016" class="csl-entry">
+Moreno, Santiago G, and Joshua A Ray. 2016. <span>“The Value of
+Innovation Under Value-Based Pricing.”</span> <em>Journal of Market
+Access and Health Policy</em> 7 (4). <a href="https://doi.org/10.3402/jmahp.v4.30754" class="external-link">https://doi.org/10.3402/jmahp.v4.30754</a>.
+</div>
+<div id="ref-neumann_2022" class="csl-entry">
+Neumann, Peter J., Meghan I. Podolsky, Anirban Basu, Daniel A.
+Ollendorf, and Joshua T. Cohen. 2022. <span>“Do
+<span>Cost</span>-<span>Effectiveness</span> <span>Analyses</span>
+<span>Account</span> for <span>Drug</span> <span>Genericization</span>?
+<span>A</span> <span>Literature</span> <span>Review</span> and
+<span>Assessment</span> of <span>Implications</span>.”</span> <em>Value
+in Health</em> 25 (1): 59–68. <a href="https://doi.org/10.1016/j.jval.2021.06.014" class="external-link">https://doi.org/10.1016/j.jval.2021.06.014</a>.
+</div>
+<div id="ref-puls_2024" class="csl-entry">
+Puls, Mathilde, James Horscroft, Benjamin Kearns, Daniel Gladwell,
+Edward Church, Kasper Johannesen, Bill Malcolm, and John Borrill. 2024.
+<span>“Challenges of <span>Incorporating</span> <span>Life</span>
+<span>Cycle</span> <span>Drug</span> <span>Pricing</span> in
+<span>Cost</span>-<span>Effectiveness</span> <span>Models</span>:
+<span>A</span> <span>Review</span> of <span>Methods</span> and
+<span>Modeling</span> <span>Suggestions</span>.”</span> <em>Value in
+Health</em> 27 (7): 978–85. <a href="https://doi.org/10.1016/j.jval.2024.03.006" class="external-link">https://doi.org/10.1016/j.jval.2024.03.006</a>.
+</div>
+<div id="ref-schottler_2023" class="csl-entry">
+Schöttler, Marcel H., Friso B. Coerts, Maarten J. Postma, Cornelis
+Boersma, and Mark H. Rozenbaum. 2023. <span>“The <span>Effect</span> of
+the <span>Drug</span> <span>Life</span> <span>Cycle</span>
+<span>Price</span> on <span>Cost</span>-<span>Effectiveness</span>:
+<span>Case</span> <span>Studies</span> <span>Using</span>
+<span>Real</span>-<span>World</span> <span>Pricing</span>
+<span>Data</span>.”</span> <em>Value in Health</em> 26 (1): 91–98. <a href="https://doi.org/10.1016/j.jval.2022.06.007" class="external-link">https://doi.org/10.1016/j.jval.2022.06.007</a>.
+</div>
+<div id="ref-serra_2024" class="csl-entry">
+Serra-Burriel, M., N. Martin-Bassols, G. Perényi, and K. N. Vokinger.
+2024. <span>“Drug Prices After Patent Expirations in High-Income
+Countries and Implications for Cost-Effectiveness Analyses.”</span>
+<em>JAMA Health Forum</em> 5 (8): e242530. <a href="https://doi.org/10.1001/jamahealthforum.2024.2530" class="external-link">https://doi.org/10.1001/jamahealthforum.2024.2530</a>.
+</div>
+<div id="ref-shafrin_2024" class="csl-entry">
+Shafrin, Jason, Jaehong Kim, Joshua T. Cohen, Louis P. Garrison, Dana A.
+Goldman, Jalpa A. Doshi, Joshua Krieger, et al. 2024. <span>“Valuing the
+<span>Societal</span> <span>Impact</span> of <span>Medicines</span> and
+<span>Other</span> <span>Health</span> <span>Technologies</span>:
+<span>A</span> <span>User</span> <span>Guide</span> to
+<span>Current</span> <span>Best</span> <span>Practices</span>.”</span>
+<em>Forum for Health Economics &amp; Policy</em> 27 (1): 29–116. <a href="https://doi.org/10.1515/fhep-2024-0014" class="external-link">https://doi.org/10.1515/fhep-2024-0014</a>.
+</div>
+<div id="ref-whittington_2025a" class="csl-entry">
+Whittington, Melanie D., Joshua T. Cohen, Peter J. Neumann, Tyler D.
+Wagner, and Jonathan D. Campbell. 2025. <span>“Identifying the
+<span>Influential</span> <span>Dynamic</span> <span>Inputs</span> in
+<span>Cost</span>-<span>Effectiveness</span>
+<span>Analyses</span>.”</span> <em>Value in Health</em>, April,
+S1098301525022867. <a href="https://doi.org/10.1016/j.jval.2025.03.016" class="external-link">https://doi.org/10.1016/j.jval.2025.03.016</a>.
+</div>
+</div>
 </div>
   </div>
 
