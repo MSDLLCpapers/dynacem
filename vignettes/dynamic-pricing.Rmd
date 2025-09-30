@@ -140,6 +140,6 @@ sum(vt2 * cashflow * pindex)
 
 ## Summary
 
-- Dynamic pricing is when pricing of a resource changes in time. This can quickly complicate calculations of NPV.
+- Dynamic pricing is when pricing of a resource changes in time. Although the examples in this vignette can be calculated with base R functions relatively easily, it is evident how calculations of NPV can quickly become complicated.
 - The `dynamicpv::dynpv()` function can be used to calculate NPVs for arbitrary vectors of cashflows, at a given discount rate and a given underlying price index.
 - In this way, the function can accommodate as needed irregular prices changes, regular price changes, or no price change at all.
