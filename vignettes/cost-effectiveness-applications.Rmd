@@ -705,7 +705,7 @@ ds <- tibble::tibble(
   )
 ```
 
-We should check at this point that the ICER we are starting at (`r ds$ICER[1]`) matches the scenario 2 ICER from earlier (`r s2_icer`).
+We should check at this point that the ICER we are starting at ($`r ds$ICER[1]`) matches the scenario 2 ICER from earlier ($`r s2_icer`).
 
 The following plot shows the nominal ICER calculated at different times, given the pricing, LoE and other assumptions. The horizontal dotted line confirms that the initial ICER matches the value from Scenario 2. The vertical dashed lines mark the timings of the LoEs of first the standard of care, and then the new treatment.
 
@@ -715,7 +715,7 @@ ggplot2::ggplot(ds,
   aes(x = evaldate, y = ICER, color=Type)) +
   geom_line() +
   labs(x = "Evaluation date") +
-  geom_hline(yintercept = ds$icer[1], linetype='dotted') +
+  geom_hline(yintercept = ds$ICER[1], linetype='dotted') +
   geom_vline(xintercept = loe_new_start, linetype='dashed') +
   geom_vline(xintercept = loe_soc_start, linetype='dashed') +
   scale_y_continuous(

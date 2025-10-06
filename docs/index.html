@@ -6,11 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Evaluates Present Values and Cost-Effectiveness With Dynamic Pricing And Uptake • dynamicpv</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
-<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" sizes="any" href="favicon.ico">
-<link rel="manifest" href="site.webmanifest">
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -56,6 +57,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/budget-impact-applications.html">Budget Impact Applications</a>
+    </li>
+    <li>
       <a href="articles/cost-effectiveness-applications.html">Cost-Effectiveness Applications</a>
     </li>
     <li>
@@ -124,7 +128,8 @@
 <ol style="list-style-type: decimal">
 <li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/dynamic-pricing.html" class="external-link">Dynamic Pricing</a> vignette (<code>vignette("Dynamic Pricing")</code>) describes how present values may be calculated in the package from a payoff vector, allowing for the prices of the resources costed to be dynamic.</p></li>
 <li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/dynamic-uptake.html" class="external-link">Dynamic Uptake</a> vignette (<code>vignette("Dynamic Uptake")</code>) explores further how present values can be derived allowing for dynamic uptake. This is in contrast to the non-dynamic approach of calculating a present value for a single cohort of patients. This is analogous to the use by general insurance actuaries of run-off triangles.</p></li>
-<li><p>Finally, the <a href="https://msdllcpapers.github.io/dynacem/articles/cost-effectiveness-applications.html" class="external-link">Cost-Effectiveness Applications</a> (<code>vignette(Cost-Effectiveness Applications")</code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms), Incremental Cost-Effectiveness Ratios may be calculated that allow for dynamic pricing and/or dynamic uptake. This is illustrated by taking an example three-state partitioned survival model of a new intervention for an oncology indication compared to standard of care, with stated assumptions for how pricing and uptake may be dynamic. Nominal and Real ICERs are plotted over time, illustrating the impact of the loss of exclusivity points for each intervention.</p></li>
+<li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/cost-effectiveness-applications.html" class="external-link">Cost-Effectiveness Applications</a> (<code>vignette(Cost-Effectiveness Applications")</code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms), Incremental Cost-Effectiveness Ratios may be calculated that allow for dynamic pricing and/or dynamic uptake. This is illustrated by taking an example three-state partitioned survival model of a new intervention for an oncology indication compared to standard of care, with stated assumptions for how pricing and uptake may be dynamic. Nominal and Real ICERs are plotted over time, illustrating the impact of the loss of exclusivity points for each intervention.</p></li>
+<li><p>The Budget Impact Applications (<code>vignette(Budget Impact Applications")</code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms) and dynamic uptake, a budget impact can be readily calculated. The calculations are repeated with the dynamic pricing assumptions to illustrate how easily this can be done, and examine the differences between a budget impact assessment with and without dynamic pricing.</p></li>
 </ol>
 </div>
 </div>
@@ -158,8 +163,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Dominic Muston <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4876-7940" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Merck &amp; Co., Inc., Rahway, NJ, USA and its affiliates <br><small class="roles"> Copyright holder, funder </small>   </li>
+<li>Dominic Muston <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4876-7940" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Merck &amp; Co., Inc., Rahway, NJ, USA and its affiliates <br><small class="roles"> Copyright holder, funder </small>  </li>
 </ul>
 </div>
 
@@ -183,7 +188,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

@@ -61,7 +61,7 @@ First let us consider non-dynamic uptake, as covered in `vignette("Dynamic Prici
 
 | Time | Cashflow 1 | Discount factor    | Product |
 |------|----------|--------------------|---------|
-| $t$  | $c_t$    | $v^t = (1+i)^{-t}$ |         |
+| $t$  | $c_t$    | $v^t = (1+i)^{1-t}$ |         |
 | 1 | `r cashflow[1]` | `r vt1[1]` | `r cashflow[1] * vt1[1]` |
 | 2 | `r cashflow[2]` | `r vt1[2]` | `r cashflow[2] * vt1[2]` |
 | 3 | `r cashflow[3]` | `r vt1[3]` | `r cashflow[3] * vt1[3]` |
@@ -90,7 +90,7 @@ Suppose we have one new patient each year, and we wish to calculate the total NP
 
 | Time | Cashflow 1 | Cashflow 2 | Cashflow 3 | Cashflow 4 | Cashflow 5 | Cashflow Sum | Discount factor | Product |
 |------|----------|--------------------|---------|----|-----|----|----|----|
-| $t$  | $c_t$    | $c_{t-1}$ | $c_{t-2}$ | $c_{t-3}$ | $c_{t-4}$ |   | $v^t = (1+i)^{-t}$ |         |
+| $t$  | $c_t$    | $c_{t-1}$ | $c_{t-2}$ | $c_{t-3}$ | $c_{t-4}$ |   | $v^t = (1+i)^{1-t}$ |         |
 | 1 | `r cashflow[1]` | - | - | - | - | `r cashflow[1]` |`r vt1[1]` | `r cashflow[1] * vt1[1]` |
 | 2 | `r cashflow[2]` | `r cashflow[1]` | - | - | - | `r sum(cashflow[1:2])` |`r vt1[2]` | `r sum(cashflow[1:2]) * vt1[2]` |
 | 3 | `r cashflow[3]` | `r cashflow[2]` |`r cashflow[1]` | - | - | `r sum(cashflow[1:3])` | `r vt1[3]` | `r sum(cashflow[1:3]) * vt1[3]` |

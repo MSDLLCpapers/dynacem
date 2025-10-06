@@ -1,0 +1,527 @@
+---
+title: "Budget Impact Applications"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Budget Impact Applications}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+# Numeric notation in this document
+# With thanks to https://stackoverflow.com/questions/18965637/set-global-thousand-separator-on-knitr/18967590#18967590
+knitr::knit_hooks$set(
+    inline = function(x) {
+        if(!is.numeric(x)){
+            x
+        } else if(x<100) {
+            prettyNum(round(x, 3), big.mark=",")
+        } else {
+            prettyNum(round(x, 0), big.mark=",")
+        }
+    }
+)
+```
+
+## Set-up
+
+First we load the packages necessary for this vignette.
+
+```{r setup, echo=TRUE, message=FALSE}
+library(dplyr)
+library(lubridate)
+library(flexsurv)
+library(heemod)
+library(dynamicpv)
+```
+
+```{r constants, include=FALSE}
+# Time constants
+days_in_year <- 365.25
+days_in_week <- 7
+cycle_years <- days_in_week / days_in_year # Duration of a one week cycle in years
+
+# Time horizon (years) and number of cycles
+thoz <- 20
+Ncycles <- ceiling(thoz/cycle_years)
+
+# Real discounting
+disc_year <- 0.03 # Per year
+disc_cycle <- (1+disc_year)^(cycle_years) - 1 # Per cycle
+
+# Price inflation
+infl_year <- 0.025 # Per year
+infl_cycle <- (1+infl_year)^(cycle_years) - 1 # Per cycle
+
+# Nominal discounting
+nomdisc_year <- (1+disc_year)*(1+infl_year) - 1
+nomdisc_cycle <- (1+nomdisc_year)^(cycle_years) - 1 # Per cycle
+```
+
+```{r heemod, include=FALSE}
+# State names
+state_names = c(
+  progression_free = "PF",
+  progression = "PD",
+  death = "Death"
+  )
+
+# PFS distribution for SoC with Exp() distribution and mean of 50 weeks
+surv_pfs_soc <- heemod::define_surv_dist(
+  distribution = "exp",
+  rate = 1/50
+)
+
+# OS distribution for SoC with Lognorm() distribution, meanlog = 4.5, sdlog = 1
+# This implies a mean of exp(4 + 0.5 * 1^2) = exp(4.5) = 90 weeks
+surv_os_soc <- heemod::define_surv_dist(
+  distribution = "lnorm",
+  meanlog = 4,
+  sdlog = 1
+)
+
+# PFS and OS distributions for new
+surv_pfs_new <- heemod::apply_hr(surv_pfs_soc, hr=0.5)
+surv_os_new <- heemod::apply_hr(surv_os_soc, hr=0.6)
+
+# Define partitioned survival model, soc
+psm_soc <- heemod::define_part_surv(
+  pfs = surv_pfs_soc,
+  os = surv_os_soc,
+  terminal_state = FALSE,
+  state_names = state_names
+  )
+
+# Define partitioned survival model, soc
+psm_new <- heemod::define_part_surv(
+  pfs = surv_pfs_new,
+  os = surv_os_new,
+  terminal_state = FALSE,
+  state_names = state_names
+  )
+
+# Parameters
+params <- heemod::define_parameters(
+  # Discount rate
+  disc = disc_cycle,
+  # Disease management costs
+  cman_pf = 80,
+  cman_pd = 20,
+  # Drug acquisition costs - the SoC regime only uses SoC drug, the New regime only uses New drug
+  cdaq_soc = dispatch_strategy(
+    soc = 400,
+    new = 0
+  ),
+  cdaq_new = dispatch_strategy(
+    soc = 0,
+    new = 1500
+  ),
+  # Drug administration costs
+  cadmin = dispatch_strategy(
+    soc = 50,
+    new = 75
+  ),
+  # Adverse event risks
+  risk_ae = dispatch_strategy(
+    soc = 0.08,
+    new = 0.1
+  ),
+  # Adverse event average costs
+  uc_ae = 2000,
+  # Subsequent treatments
+  csubs = dispatch_strategy(
+    soc = 1200,
+    new = 300
+  ),
+  # Health state utilities
+  u_pf = 0.8,
+  u_pd = 0.6,
+)
+
+# Define PF states
+state_PF <- heemod::define_state(
+  # Costs for the state
+  cost_daq_soc = discount(cdaq_soc, disc_cycle),
+  cost_daq_new = discount(cdaq_new, disc_cycle),
+  cost_dadmin = discount(cadmin, disc_cycle),
+  cost_dman = discount(cman_pf, disc_cycle),  
+  cost_ae = risk_ae * uc_ae,
+  cost_subs = 0,
+  cost_total = cost_daq_soc + cost_daq_new + cost_dadmin + cost_dman + cost_ae + cost_subs,
+  # Health utility, QALYs and life years
+  pf_year = discount(cycle_years, disc_cycle),
+  life_year = discount(cycle_years, disc_cycle),
+  qaly = discount(cycle_years * u_pf, disc_cycle)
+  )
+
+# Define PD states
+state_PD <- heemod::define_state(
+  # Costs for the state
+  cost_daq_soc = 0,
+  cost_daq_new = 0,
+  cost_dadmin = 0,
+  cost_dman = discount(cman_pd, disc_cycle),  
+  cost_ae = 0,
+  cost_subs = discount(csubs, disc_cycle),
+  cost_total = cost_daq_soc + cost_daq_new + cost_dadmin + cost_dman + cost_ae + cost_subs,
+  # Health utility, QALYs and life years
+  pf_year = 0,
+  life_year = heemod::discount(cycle_years, disc_cycle),
+  qaly = heemod::discount(cycle_years * u_pd, disc_cycle)
+  )
+
+# Define Death state
+state_Death <- heemod::define_state(
+  # Costs are zero
+  cost_daq_soc = 0,
+  cost_daq_new = 0,
+  cost_dadmin = 0,
+  cost_dman = 0,
+  cost_ae = 0,
+  cost_subs = 0,
+  cost_total = cost_daq_soc + cost_daq_new + cost_dadmin + cost_dman + cost_ae + cost_subs,
+  # Health outcomes are zero
+  pf_year = 0,
+  life_year = 0,
+  qaly = 0,
+)
+
+# Define strategy for SoC
+strat_soc <- heemod::define_strategy(
+    transition = psm_soc,
+    "PF" = state_PF,
+    "PD" = state_PD,
+    "Death" = state_Death
+  )
+
+# Define strategy for new
+strat_new <- heemod::define_strategy(
+  transition = psm_new,
+  "PF" = state_PF,
+  "PD" = state_PD,
+  "Death" = state_Death
+)
+
+# Create heemod model
+heemodel <- heemod::run_model(
+  soc = strat_soc,
+  new = strat_new,
+  parameters = params,
+  cycles = Ncycles,
+  cost = cost_total,
+  effect = qaly,
+  init = c(1, 0, 0),
+  method = "life-table"
+)
+```
+
+```{r dynpricing, include=FALSE}
+# Dates
+# Date of calculation = 1 September 2025
+doc <- lubridate::ymd("20250901")
+# Date of LOE for SoC = 1 January 2028
+loe_soc_start <- lubridate::ymd("20280101")
+# Maturation of SoC prices by LOE + 1 year, i.e. = 1 January 2029
+loe_soc_end <- lubridate::ymd("20290101") 
+# Date of LOE for new treatment = 1 January 2031
+loe_new_start <- lubridate::ymd("20310101")
+# Maturation of new treatment prices by LOE + 1 year, i.e. = 1 January 2032
+loe_new_end <- lubridate::ymd("20320101") 
+
+# Effect of LoEs on prices once mature
+loe_effect_soc <- 0.7
+loe_effect_new <- 0.5
+
+# Calculation of weeks since DoC for LoEs and price maturities
+wk_start_soc <- floor((loe_soc_start-doc) / lubridate::dweeks(1))
+wk_end_soc <- floor((loe_soc_end-doc) / lubridate::dweeks(1))
+wk_start_new <- floor((loe_new_start-doc) / lubridate::dweeks(1))
+wk_end_new <- floor((loe_new_end-doc) / lubridate::dweeks(1))
+
+# Price maturity times
+wk_mature_soc <- wk_end_soc - wk_start_soc
+wk_mature_new <- wk_end_new - wk_start_new
+
+# Create a tibble of price indices of length 2T, then pull out columns as needed
+# We only need of length T for now, but need of length 2T for future calculations later
+pricetib <- dplyr::tibble(
+  model_time = 1:(2*Ncycles),
+  model_year = model_time * cycle_years,
+  static = 1,
+  geninfl = (1 + infl_cycle)^(model_time - 1),
+  loef_soc = pmin(pmax(model_time - wk_start_soc, 0), wk_mature_soc) / wk_mature_soc,
+  loef_new = pmin(pmax(model_time - wk_start_new, 0), wk_mature_new) / wk_mature_new,
+  dyn_soc = geninfl * (1 - loe_effect_soc * loef_soc),
+  dyn_new = geninfl * (1 - loe_effect_new * loef_new)
+)
+
+# Price indices required for calculations
+prices_oth <- pricetib$geninfl
+prices_static <- pricetib$static
+prices_dyn_soc <- pricetib$dyn_soc
+prices_dyn_new <- pricetib$dyn_new
+```
+
+
+```{r dynuptake, include=FALSE}
+# Time for uptake to occur
+uptake_years <- 2
+
+# Uptake vector for non-dynamic uptake
+uptake_single <- c(1, rep(0, Ncycles-1))
+
+# Uptake vector for dynamic uptake
+uptake_weeks <- round(uptake_years / cycle_years)
+share_multi <- c((1:uptake_weeks)/uptake_weeks, rep(1, Ncycles-uptake_weeks))
+uptake_multi <- rep(1, Ncycles) * share_multi
+```
+
+```{r static2, include=FALSE}
+# Pull out the payoffs of interest from oncpsm
+payoffs <- get_dynfields(
+    heemodel = heemodel,
+    payoffs = c("cost_daq_new", "cost_daq_soc", "cost_total", "qaly", "life_year"),
+    discount = "disc"
+    ) |>
+    dplyr::mutate(
+      model_years = model_time * cycle_years,
+      # Derive costs other than drug acquisition, as at time zero
+      cost_nondaq = cost_total - cost_daq_new - cost_daq_soc,
+      # ... and at the start of each timestep
+      cost_nondaq_rup = cost_total_rup - cost_daq_new_rup - cost_daq_soc_rup
+    )
+
+# Create and view dataset for SoC
+hemout_soc <- payoffs |> dplyr::filter(int=="soc")
+head(hemout_soc)
+
+# Create and view dataset for new intervention
+hemout_new <- payoffs |> dplyr::filter(int=="new")
+head(hemout_new)
+```
+
+Then let us suppose we have the same cost-effectiveness model and variables as set-up in `vignette("Cost Effectiveness Applications")`.
+
+## Methods
+
+The package allows us the ability to derive budget impact model calculations consistent with the cost-effectiveness model shown previously.
+
+To recap, we had the following assumptions concerning pricing, with a date of calculation of 2025-09-01.
+
+- Costs are assumed to increases in line with general inflation (2.5% per year), except for effects on drug acquisition costs due to LoEs.
+- The LoE for the SoC is assumed to occur first, at 2028-01-01, after which there is anticipated to be a 70% reduction in prices over one year.
+- The new intervention has an LoE occuring three years later, at 2031-01-01, after which there would be a 50% reduction in prices over one year.
+
+We had the following assumptions concerning patient uptake.
+
+- Only newly incident patients with the cancer being modeled would be eligible for the new treatment. Existing/prevalent patients with the condition would not be eligible.
+- The disease incidence is 1 patient per week.
+- Among these patients, were the new intervention to be made available, uptake of the new intervention would be expected to rise linearly from 0% to 100% after 2 years.
+
+Budget impact models conventionally have no discounting and a shorter time horizon than cost-effectiveness models, so we will use a time horizon of 5 years here and a discount rate of 0\%. We will compute a budget impact model using current pricing (per convention) as well as by using dynamic pricing according to the assumptions previously set.
+
+```{r bimshare}
+# BIM settings
+bi_horizon_yrs <- 5
+bi_horizon_wks <- round(bi_horizon_yrs / cycle_years)
+bi_discount <- 0
+
+# Newly eligible patients
+newly_eligible <- rep(1, Ncycles)
+
+# Time for uptake to occur
+uptake_years <- 2
+uptake_weeks <- round(uptake_years / cycle_years)
+
+# Market share of new intervention
+share_multi <- c((1:uptake_weeks)/uptake_weeks, rep(1, Ncycles-uptake_weeks))
+
+# Newly eligible patients receiving each intervention, "world with"
+uptake_new <- newly_eligible * share_multi
+uptake_soc <- newly_eligible - uptake_new
+```
+
+## Results
+
+### Static prices
+
+First we consider static prices, i.e. we assume the prices of existing resources remain unchanged from now in the horizon of the budget impact model. Let us use that function to calculate budgetary costs for the world without the new intervention.
+
+```{r bim_wout1}
+# World without new intervention
+
+# SoC, drug acquisition costs
+wout1_soc_daqcost <- dynpv(
+    uptakes = newly_eligible,
+    payoffs = hemout_soc$cost_daq_soc_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_static,
+    discrate = bi_discount
+    )
+# SoC, other costs
+wout1_soc_othcost <- dynpv(
+    uptakes = newly_eligible,
+    payoffs = hemout_soc$cost_nondaq_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_static,
+    discrate = bi_discount
+    )
+# Total budgetary costs
+budget_wout1_soc <- wout1_soc_daqcost$results$total + wout1_soc_othcost$results$total
+budget_wout1_new <- 0
+budget_wout1 <- budget_wout1_soc + budget_wout1_new
+# Total patient uptake
+wout1_uptake <- wout1_soc_daqcost$results$uptake
+```
+
+The total budgetary costs in the world without are $`r budget_wout1` in respect of `r wout1_uptake` patients.
+
+Let us now calculate the budgetary costs in the world with the new intervention.
+
+```{r bim_with1}
+# World with
+
+# SoC, drug acquisition costs
+with1_soc_daqcost <- dynpv(
+    uptakes = uptake_soc,
+    payoffs = hemout_soc$cost_daq_soc_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_static,
+    discrate = bi_discount
+    )
+# SoC, other costs
+with1_soc_othcost <- dynpv(
+    uptakes = uptake_soc,
+    payoffs = hemout_soc$cost_nondaq_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_static,
+    discrate = bi_discount
+    )
+# New intervention, drug acquisition costs
+with1_new_daqcost <- dynpv(
+    uptakes = uptake_new,
+    payoffs = hemout_new$cost_daq_new_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_static,
+    discrate = bi_discount
+    )
+# New intervention, other costs
+with1_new_othcost <- dynpv(
+    uptakes = uptake_new,
+    payoffs = hemout_new$cost_nondaq_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_static,
+    discrate = bi_discount
+    )
+# Total
+budget_with1_soc <- with1_soc_daqcost$results$total + with1_soc_othcost$results$total
+budget_with1_new <- with1_new_daqcost$results$total + with1_new_othcost$results$total
+budget_with1 <- budget_with1_soc + budget_with1_new
+# Uptake
+uptake_soc1 <- with1_soc_daqcost$results$uptake
+uptake_new1 <- with1_new_daqcost$results$uptake
+# Budget impact
+bi1_soc <- budget_with1_soc - budget_wout1_soc
+bi1_new <- budget_with1_new - budget_wout1_new
+bi1 <- budget_with1 - budget_wout1
+```
+
+The budgetary costs in the world with the new intervention are $`r budget_with1`, comprising $`r with1_soc_daqcost$results$total + with1_soc_othcost$results$total` in respect of the costs of `r uptake_soc1` patients being treated with the SoC, and $`r with1_new_daqcost$results$total + with1_new_othcost$results$total` in respect of the costs of `r uptake_new1` patients being treated with the SoC. The total budget impact is $`r bi1`, representing an increase of `r bi1/budget_wout1*100`%.
+
+### Dynamic prices
+
+Now let us recalculate the budget impact, assuming dynamic pricing in drug acquisition costs. This is simple with `dynamicpv():dynpv()` because we just change the `prices` argument from `prices_static` to either `prices_dyn_soc` or `prices_dyn_new` for the drug acquisition costs. We will keep other costs unchanged.
+
+```{r bim_wout2}
+# World without new intervention
+
+# SoC, drug acquisition costs
+wout2_soc_daqcost <- dynpv(
+    uptakes = newly_eligible,
+    payoffs = hemout_soc$cost_daq_soc_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_dyn_soc,
+    discrate = bi_discount
+    )
+# SoC, other costs - unchanged from static calculations
+wout2_soc_othcost <- wout1_soc_othcost
+# Total budgetary costs
+budget_wout2_soc <- wout2_soc_daqcost$results$total + wout2_soc_othcost$results$total
+budget_wout2_new <- 0
+budget_wout2 <- budget_wout2_soc + budget_wout2_new
+# Total patient uptake
+wout2_uptake <- wout2_soc_daqcost$results$uptake
+```
+
+The total budgetary costs in the world without are $`r budget_wout2` in respect of `r wout2_uptake` patients.
+
+Let us now calculate the budgetary costs in the world with the new intervention.
+
+```{r bim_with2}
+# World with
+
+# SoC, drug acquisition costs
+with2_soc_daqcost <- dynpv(
+    uptakes = uptake_soc,
+    payoffs = hemout_soc$cost_daq_soc_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_dyn_soc,
+    discrate = bi_discount
+    )
+# SoC, other costs
+with2_soc_othcost <- with1_soc_othcost
+# New intervention, drug acquisition costs
+with2_new_daqcost <- dynpv(
+    uptakes = uptake_new,
+    payoffs = hemout_new$cost_daq_new_rup,
+    horizon = bi_horizon_wks,
+    prices = prices_dyn_new,
+    discrate = bi_discount
+    )
+# New intervention, other costs
+with2_new_othcost <- with1_new_othcost
+# Total
+budget_with2_soc <- with2_soc_daqcost$results$total + with2_soc_othcost$results$total
+budget_with2_new <-with2_new_daqcost$results$total + with2_new_othcost$results$total
+budget_with2 <- budget_with2_soc + budget_with2_new
+# Uptake
+uptake_soc2 <- with2_soc_daqcost$results$uptake
+uptake_new2 <- with2_new_daqcost$results$uptake
+# Budget impact
+bi2_soc <- budget_with2_soc - budget_wout2_soc
+bi2_new <- budget_with2_new - budget_wout2_new
+bi2 <- budget_with2 - budget_wout2
+```
+
+The budgetary costs in the world with the new intervention are $`r budget_with2`, comprising $`r budget_with2_soc` in respect of the costs of `r uptake_soc2` patients being treated with the SoC, and $`r budget_with2_new` in respect of the costs of `r uptake_new2` patients being treated with the SoC. The total budget impact is $`r bi2`, representing an increase of `r bi2/budget_wout2*100`%.
+
+### Summary
+
+|    |  | Static drug pricing | Dynamic drug pricing |
+|:---|:--|------------|------------|
+| World without new intervention ||  |  |
+| | Standard of Care | `r budget_wout1_soc` | `r budget_wout2_soc`  |
+| | New intervention | `r budget_wout1_new`  | `r budget_wout2_new`  |
+| | Total | `r budget_wout1` | `r budget_wout2` |
+| World with new intervention ||  |  |
+| | Standard of Care | `r budget_with1_soc`  | `r budget_with2_soc`  |
+| | New intervention | `r budget_with1_new` | `r budget_with2_new` |
+| | Total | `r budget_with1` | `r budget_with2_new`  |
+| Budget impact ||  |  |
+| | Standard of Care | `r bi1_soc` | `r bi2_soc`  |
+| | New intervention | `r bi1_new` | `r bi2_new`  |
+| | Absolute impact | `r bi1` | `r bi2`  |
+| | Relative impact (%) | `r bi1/budget_wout1*100`% | `r bi2/budget_wout2*100`%  |
+
+: Budget Impact model results with and without dynamic drug pricing
+
+## Discussion
+
+- In both cases, the budget impact is large, with budgetary costs more than doubling with the introduction of the new intervention, over the time horizon of interest (`r bi_horizon_yrs` years).
+- Dynamic pricing leads to greater anticipated costs of the new intervention and lower expected budgetary costs of the SoC, over the time horizon of interest. Accordingly, in this example, the budget impact is greater in the dynamic pricing scenario.
+- Further stratification of the results, by intervention received, time period, cost component etc may reveal further insights. These are possible from the results calculated and presented by `dynamicpv::dynpv()` but not shown in this simple illustration.
