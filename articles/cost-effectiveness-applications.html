@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/budget-impact-applications.html">Budget Impact Applications</a>
+    </li>
+    <li>
       <a href="../articles/cost-effectiveness-applications.html">Cost-Effectiveness Applications</a>
     </li>
     <li>
@@ -1141,7 +1144,7 @@ calculate the ICER, given the incremental QALYs we have already observed
 <span>    values_to <span class="op">=</span> <span class="st">"ICER"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p>We should check at this point that the ICER we are starting at
-(124,059) matches the scenario 2 ICER from earlier (124,059).</p>
+($124,059) matches the scenario 2 ICER from earlier ($124,059).</p>
 <p>The following plot shows the nominal ICER calculated at different
 times, given the pricing, LoE and other assumptions. The horizontal
 dotted line confirms that the initial ICER matches the value from
@@ -1153,14 +1156,13 @@ first the standard of care, and then the new treatment.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">evaldate</span>, y <span class="op">=</span> <span class="va">ICER</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Evaluation date"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">ds</span><span class="op">$</span><span class="va">icer</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, linetype<span class="op">=</span><span class="st">'dotted'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">ds</span><span class="op">$</span><span class="va">ICER</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, linetype<span class="op">=</span><span class="st">'dotted'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_new_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">loe_soc_start</span>, linetype<span class="op">=</span><span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
 <span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span>,</span>
 <span>    limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150000</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `icer`.</span></span></code></pre></div>
+<span>    <span class="op">)</span></span></code></pre></div>
 <p><img src="cost-effectiveness-applications_files/figure-html/calc_future-1.png" width="700"></p>
 </div>
 <div class="section level3">
