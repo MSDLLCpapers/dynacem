@@ -82,8 +82,9 @@ There are three vignettes provided.
     plotted over time, illustrating the impact of the loss of
     exclusivity points for each intervention.
 
-4.  The Budget Impact Applications
-    (`vignette(Budget Impact Applications")`) vignette describes how,
+4.  The [Budget Impact
+    Applications](https://msdllcpapers.github.io/dynacem/articles/budget-impact-applications.html)
+    (`vignette("Budget Impact Applications")`) vignette describes how,
     given a static cost-effectiveness model (single cohort, prices
     constant in real terms) and dynamic uptake, a budget impact can be
     readily calculated. The calculations are repeated with the dynamic
