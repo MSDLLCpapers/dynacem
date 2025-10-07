@@ -73,7 +73,7 @@ The calculation can be presented in a table as follows.
 
 | Time | Cashflow | Discount factor    | Product |
 |------|----------|--------------------|---------|
-| $t$  | $c_t$    | $v^t = (1+i)^{-t}$ |         |
+| $t$  | $c_t$    | $v^t = (1+i)^{1-t}$ |         |
 | 1 | `r cashflow[1]` | `r vt1[1]` | `r cashflow[1] * vt1[1]` |
 | 2 | `r cashflow[2]` | `r vt1[2]` | `r cashflow[2] * vt1[2]` |
 | 3 | `r cashflow[3]` | `r vt1[3]` | `r cashflow[3] * vt1[3]` |

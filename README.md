@@ -69,7 +69,7 @@ There are three vignettes provided.
     for a single cohort of patients. This is analogous to the use by
     general insurance actuaries of run-off triangles.
 
-3.  Finally, the [Cost-Effectiveness
+3.  The [Cost-Effectiveness
     Applications](https://msdllcpapers.github.io/dynacem/articles/cost-effectiveness-applications.html)
     (`vignette(Cost-Effectiveness Applications")`) vignette describes
     how, given a static cost-effectiveness model (single cohort, prices
@@ -81,3 +81,13 @@ There are three vignettes provided.
     pricing and uptake may be dynamic. Nominal and Real ICERs are
     plotted over time, illustrating the impact of the loss of
     exclusivity points for each intervention.
+
+4.  The [Budget Impact
+    Applications](https://msdllcpapers.github.io/dynacem/articles/budget-impact-applications.html)
+    (`vignette("Budget Impact Applications")`) vignette describes how,
+    given a static cost-effectiveness model (single cohort, prices
+    constant in real terms) and dynamic uptake, a budget impact can be
+    readily calculated. The calculations are repeated with the dynamic
+    pricing assumptions to illustrate how easily this can be done, and
+    examine the differences between a budget impact assessment with and
+    without dynamic pricing.
