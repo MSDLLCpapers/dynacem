@@ -363,6 +363,7 @@ wout1_soc_daqcost <- dynpv(
     prices = prices_static,
     discrate = bi_discount
     )
+
 # SoC, other costs
 wout1_soc_othcost <- dynpv(
     uptakes = newly_eligible,
@@ -371,12 +372,13 @@ wout1_soc_othcost <- dynpv(
     prices = prices_static,
     discrate = bi_discount
     )
+
 # Total budgetary costs
-budget_wout1_soc <- wout1_soc_daqcost$results$total + wout1_soc_othcost$results$total
+budget_wout1_soc <- wout1_soc_daqcost$results@total + wout1_soc_othcost$results@total
 budget_wout1_new <- 0
 budget_wout1 <- budget_wout1_soc + budget_wout1_new
 # Total patient uptake
-wout1_uptake <- wout1_soc_daqcost$results$uptake
+wout1_uptake <- wout1_soc_daqcost$results@uptake
 ```
 
 The total budgetary costs in the world without are $`r budget_wout1` in respect of `r wout1_uptake` patients.
@@ -394,6 +396,7 @@ with1_soc_daqcost <- dynpv(
     prices = prices_static,
     discrate = bi_discount
     )
+
 # SoC, other costs
 with1_soc_othcost <- dynpv(
     uptakes = uptake_soc,
@@ -402,6 +405,7 @@ with1_soc_othcost <- dynpv(
     prices = prices_static,
     discrate = bi_discount
     )
+
 # New intervention, drug acquisition costs
 with1_new_daqcost <- dynpv(
     uptakes = uptake_new,
@@ -410,6 +414,7 @@ with1_new_daqcost <- dynpv(
     prices = prices_static,
     discrate = bi_discount
     )
+
 # New intervention, other costs
 with1_new_othcost <- dynpv(
     uptakes = uptake_new,
@@ -418,20 +423,21 @@ with1_new_othcost <- dynpv(
     prices = prices_static,
     discrate = bi_discount
     )
+
 # Total
-budget_with1_soc <- with1_soc_daqcost$results$total + with1_soc_othcost$results$total
-budget_with1_new <- with1_new_daqcost$results$total + with1_new_othcost$results$total
+budget_with1_soc <- with1_soc_daqcost$results@total + with1_soc_othcost$results@total
+budget_with1_new <- with1_new_daqcost$results@total + with1_new_othcost$results@total
 budget_with1 <- budget_with1_soc + budget_with1_new
 # Uptake
-uptake_soc1 <- with1_soc_daqcost$results$uptake
-uptake_new1 <- with1_new_daqcost$results$uptake
+uptake_soc1 <- with1_soc_daqcost$results@uptake
+uptake_new1 <- with1_new_daqcost$results@uptake
 # Budget impact
 bi1_soc <- budget_with1_soc - budget_wout1_soc
 bi1_new <- budget_with1_new - budget_wout1_new
 bi1 <- budget_with1 - budget_wout1
 ```
 
-The budgetary costs in the world with the new intervention are $`r budget_with1`, comprising $`r with1_soc_daqcost$results$total + with1_soc_othcost$results$total` in respect of the costs of `r uptake_soc1` patients being treated with the SoC, and $`r with1_new_daqcost$results$total + with1_new_othcost$results$total` in respect of the costs of `r uptake_new1` patients being treated with the SoC. The total budget impact is $`r bi1`, representing an increase of `r bi1/budget_wout1*100`%.
+The budgetary costs in the world with the new intervention are $`r budget_with1`, comprising $`r with1_soc_daqcost$results@total + with1_soc_othcost$results@total` in respect of the costs of `r uptake_soc1` patients being treated with the SoC, and $`r with1_new_daqcost$results@total + with1_new_othcost$results@total` in respect of the costs of `r uptake_new1` patients being treated with the SoC. The total budget impact is $`r bi1`, representing an increase of `r bi1/budget_wout1*100`%.
 
 ### Dynamic prices
 
@@ -448,14 +454,17 @@ wout2_soc_daqcost <- dynpv(
     prices = prices_dyn_soc,
     discrate = bi_discount
     )
+
 # SoC, other costs - unchanged from static calculations
 wout2_soc_othcost <- wout1_soc_othcost
+
 # Total budgetary costs
-budget_wout2_soc <- wout2_soc_daqcost$results$total + wout2_soc_othcost$results$total
+budget_wout2_soc <- wout2_soc_daqcost$results@total + wout2_soc_othcost$results@total
 budget_wout2_new <- 0
 budget_wout2 <- budget_wout2_soc + budget_wout2_new
+
 # Total patient uptake
-wout2_uptake <- wout2_soc_daqcost$results$uptake
+wout2_uptake <- wout2_soc_daqcost$results@uptake
 ```
 
 The total budgetary costs in the world without are $`r budget_wout2` in respect of `r wout2_uptake` patients.
@@ -473,8 +482,10 @@ with2_soc_daqcost <- dynpv(
     prices = prices_dyn_soc,
     discrate = bi_discount
     )
+
 # SoC, other costs
 with2_soc_othcost <- with1_soc_othcost
+
 # New intervention, drug acquisition costs
 with2_new_daqcost <- dynpv(
     uptakes = uptake_new,
@@ -483,15 +494,19 @@ with2_new_daqcost <- dynpv(
     prices = prices_dyn_new,
     discrate = bi_discount
     )
+
 # New intervention, other costs
 with2_new_othcost <- with1_new_othcost
+
 # Total
-budget_with2_soc <- with2_soc_daqcost$results$total + with2_soc_othcost$results$total
-budget_with2_new <-with2_new_daqcost$results$total + with2_new_othcost$results$total
+budget_with2_soc <- with2_soc_daqcost$results@total + with2_soc_othcost$results@total
+budget_with2_new <-with2_new_daqcost$results@total + with2_new_othcost$results@total
 budget_with2 <- budget_with2_soc + budget_with2_new
+
 # Uptake
-uptake_soc2 <- with2_soc_daqcost$results$uptake
-uptake_new2 <- with2_new_daqcost$results$uptake
+uptake_soc2 <- with2_soc_daqcost$results@uptake
+uptake_new2 <- with2_new_daqcost$results@uptake
+
 # Budget impact
 bi2_soc <- budget_with2_soc - budget_wout2_soc
 bi2_new <- budget_with2_new - budget_wout2_new

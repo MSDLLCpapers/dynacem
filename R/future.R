@@ -70,7 +70,7 @@ futurepv <- function(tzero=0, payoffs, prices, discrate){
   # Only return useful outputs
   list(
     inputs = dpv$inputs,
-    calc = dpv$results$calc,
-    pv = dpv$results$mean
+    results = dpv$results,
+    pv = dpv$results@mean
   )
 }

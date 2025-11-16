@@ -17,6 +17,8 @@ Imports:
     dplyr,
     readr,
     rlang,
+    S7,
+    tibble,
     tidyr
 Suggests: 
     flexsurv,

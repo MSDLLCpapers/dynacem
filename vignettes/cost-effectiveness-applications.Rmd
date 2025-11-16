@@ -430,41 +430,48 @@ s1_soc_othcost <- dynamicpv::dynpv(
     payoffs = hemout_soc$cost_nondaq_rup,
     prices = prices_oth,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s1_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_soc$cost_daq_soc_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
+
 s1_soc_cost <- s1_soc_daqcost + s1_soc_othcost
+
 s1_soc_qaly <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_soc$qaly_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
 
 # New intervention
+
 s1_new_othcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$cost_nondaq_rup,
     prices = prices_oth,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s1_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$cost_daq_new_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
+
 s1_new_cost <- s1_new_daqcost + s1_new_othcost
+
 s1_new_qaly <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$qaly_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
 
 # Incrementals
 s1_icost <- s1_new_cost-s1_soc_cost
@@ -481,23 +488,28 @@ The costs of drug acquisition in each arm differ in Scenario 2 through applying 
 ```{r calc_scen2}
 # SOC
 s2_soc_othcost <- s1_soc_othcost
+
 s2_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_soc$cost_daq_soc_rup,
     prices = prices_dyn_soc,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s2_soc_cost <- s2_soc_daqcost + s2_soc_othcost
 s2_soc_qaly <- s1_soc_qaly
 
 # New intervention
+
 s2_new_othcost <- s1_new_othcost
+
 s2_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$cost_daq_new_rup,
     prices = prices_dyn_new,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s2_new_cost <- s2_new_daqcost + s2_new_othcost
 s2_new_qaly <- s1_new_qaly
 
@@ -520,20 +532,23 @@ s3_soc_othcost <- dynamicpv::dynpv(
     payoffs = hemout_soc$cost_nondaq_rup,
     prices = prices_oth,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s3_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_soc$cost_daq_soc_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
+
 s3_soc_cost <- s3_soc_daqcost + s3_soc_othcost
+
 s3_soc_qaly <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_soc$qaly_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
 
 # New intervention
 s3_new_othcost <- dynamicpv::dynpv(
@@ -541,20 +556,23 @@ s3_new_othcost <- dynamicpv::dynpv(
     payoffs = hemout_new$cost_nondaq_rup,
     prices = prices_oth,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s3_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_new$cost_daq_new_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
+
 s3_new_cost <- s3_new_daqcost + s3_new_othcost
+
 s3_new_qaly <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_new$qaly_rup,
     prices = prices_static,
     discrate = disc_cycle
-    )$results$total
+    )$results@total
 
 # Incrementals
 s3_icost <- s3_new_cost-s3_soc_cost
@@ -571,23 +589,29 @@ The costs of drug acquisition in each arm differ in Scenario 4 from Scenario 3 t
 ```{r calc_scen4}
 # SOC
 s4_soc_othcost <- s3_soc_othcost
+
 s4_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_soc$cost_daq_soc_rup,
     prices = prices_dyn_soc,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s4_soc_cost <- s4_soc_daqcost + s4_soc_othcost
+
 s4_soc_qaly <- s3_soc_qaly
 
 # New intervention
+
 s4_new_othcost <- s3_new_othcost
+
 s4_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_new$cost_daq_new_rup,
     prices = prices_dyn_new,
     discrate = nomdisc_cycle
-    )$results$total
+    )$results@total
+
 s4_new_cost <- s4_new_daqcost + s4_new_othcost
 s4_new_qaly <- s3_new_qaly
 
