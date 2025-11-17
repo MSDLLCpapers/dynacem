@@ -50,7 +50,7 @@ fpv <- futurepv(
   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3\% every 52 steps
   discrate = 0.001 + discrate
 )
-fpv$calc
+fpv$results
 fpv$pv
 }
 \seealso{

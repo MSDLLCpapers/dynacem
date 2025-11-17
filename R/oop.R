@@ -31,14 +31,20 @@ class_dynpv <- new_class(
     ),
     # Size of the cohort = sum(uptakes) = sum of uj such that k==1
     uptake = new_property(
-      getter = function(self) sum(self@data$uj[self@data$k==1])
+      getter = function(self) {
+        outuptake <- self@data |>
+          dplyr::summarize(mean=mean(uj), sd=sd(uj), .by=c(j, l)) |>
+          dplyr::rename(tzero = l) |>
+          dplyr::summarize(uptake=sum(mean), .by=tzero)
+        if (nrow(outuptake)==1) outuptake$uptake else outuptake
+      }
     ),
     # Sum PVs by cohort and tzero
     sum_by_coh = new_property(
       getter = function(self) {
         self@data |>
           # Summing over k, where uj does not vary by k
-          dplyr::summarize(muj=mean(uj), spv = sum(pv), .by=c(j, l)) |>
+          dplyr::summarize(spv = sum(pv), .by=c(j, l)) |>
           dplyr::rename(tzero = l)
       }
     ),
@@ -54,12 +60,12 @@ class_dynpv <- new_class(
     # Mean present value, by tzero - a bit duplicative of total
     mean = new_property(
       getter = function(self) {
-        outpv<- self@sum_by_coh |>
-          dplyr::summarize(m2uj = mean(muj), total = sum(spv), .by=c(tzero)) |>
-          dplyr::mutate(mean = total/m2uj) |>
-          dplyr::select(tzero, mean)
-        if (nrow(outpv)==1) outpv$mean else outpv
-      }
+        if (length(self@total)==1) (self@total/self@uptake) else {
+          dplyr::left_join(self@total, self@uptake, dplyr::join_by(tzero)) |>
+            dplyr::mutate(mean=total/uptake) |>
+            dplyr::select(-total, -uptake)
+          }
+     }
     )
   ),
   # Validation of properties
@@ -71,3 +77,50 @@ class_dynpv <- new_class(
     }
   }
 )
+
+# Method to add two Dynamic PV objects together
+method(add, list(class_dynpv, class_dynpv)) <- function(e1, e2) {
+  # Pull out xdata and subset of ydata
+  xdata <- e1@data
+  ydata <- e2@data |> dplyr::select(j, k, l, uj, pv)
+  # Check that j, k and l vectors align
+  stopifnot(all.equal(xdata$j, ydata$j))
+  stopifnot(all.equal(xdata$k, ydata$k))
+  stopifnot(all.equal(xdata$l, ydata$l))
+  # Join ydata subset to xdata
+  jdata <- dplyr::left_join(xdata, ydata, by=dplyr::join_by(j, k, l)) |>
+    # Sum the present values from both objects
+    dplyr::mutate(
+      uj = uj.x + uj.y,
+      pv = pv.x + pv.y
+    ) |>
+    dplyr::select(-uj.x, -uj.y, -pv.x, -pv.y) |>
+    tibble::as_tibble()
+  # Create the resulting object
+  class_dynpv(
+    name = paste0(e1@name, " plus ", e2@name),
+    data = jdata
+  )
+}
+
+# Method to derive the difference between two Dynamic PV objects
+method(minus, list(class_dynpv, class_dynpv)) <- function(e1, e2) {
+  # Pull out xdata and subset of ydata
+  xdata <- e1@data
+  ydata <- e2@data |> dplyr::select(j, k, l, pv)
+  # Check that j, k and l vectors align
+  stopifnot(all.equal(xdata$j, ydata$j))
+  stopifnot(all.equal(xdata$k, ydata$k))
+  stopifnot(all.equal(xdata$l, ydata$l))
+  # Join ydata subset to xdata
+  jdata <- dplyr::left_join(xdata, ydata, by=dplyr::join_by(j, k, l)) |>
+    # Sum the present values from both objects
+    dplyr::mutate(pv = pv.x - pv.y) |>
+    dplyr::select(-pv.x, -pv.y) |>
+    tibble::as_tibble()
+  # Create the resulting object
+  class_dynpv(
+    name = paste0(e1@name, " minus ", e2@name),
+    data = jdata
+  )
+}

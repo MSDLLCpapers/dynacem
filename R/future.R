@@ -55,7 +55,7 @@
 #'   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3% every 52 steps
 #'   discrate = 0.001 + discrate
 #' )
-#' fpv$calc
+#' fpv$results
 #' fpv$pv
 futurepv <- function(tzero=0, payoffs, prices, discrate){
   # Wrapper for dynpv with uptakes=1 and horizon=length(payoffs)
