@@ -187,7 +187,7 @@ test_that("Addition of two dynamic pv's", {
     prices = rep(1, Nt),
     discrate = 0
     )
-  act_add <- add(act_dval8a$results, act_dval8b$results)
+  act_add <- act_dval8a$results + act_dval8b$results
   # Expected
   exp_dval8a <- sum(payoffs$cost_oth * (1:Nt))
   exp_dval8b <- sum(payoffs$cost_oth)
@@ -213,7 +213,7 @@ test_that("Subtraction of two pv's", {
     prices = rep(1, Nt),
     discrate = 0
     )
-  act_sub <- minus(act_dval8a$results, act_dval8b$results)
+  act_sub <- act_dval8a$results - act_dval8b$results
   # Expected
   exp_dval8a <- 2 * sum(payoffs$cost_oth * (1:Nt))
   exp_dval8b <- sum(payoffs$cost_oth)
