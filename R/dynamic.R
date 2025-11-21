@@ -45,9 +45,10 @@ trim_vec <- function(vec){
 #' @param payoffs Vector of payoffs of interest (numeric vector) 
 #' @param prices Vector of price indices through the time horizon of interest
 #' @param discrate Discount rate per timestep, corresponding to price index
+#' @param dpv_name Name to be given to Dynamic Present Value object created by this function call
 #' @returns Two lists named `inputs` and `results`.
 #' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' The `results` list contains the following elements:
+#' The `results` output is a `DynPV` object that contains the following elements:
 #' - `ncoh`: Number of cohorts of uptaking patients
 #' - `uptake`: Total number of uptaking patients
 #' - `calc`: Tibble of calculation results
@@ -83,7 +84,8 @@ dynpv <- function(
     horizon = length(payoffs),
     tzero = 0,
     prices = rep(1, length(payoffs)+tzero),
-    discrate = 0
+    discrate = 0,
+    dpv_name = NA_character_
     ){
   # Avoid no visible binding note
   j <- k <- l <- uj <- pk <- R <- v <- pv <- spv <- total <- suptakes <- NULL
@@ -91,7 +93,7 @@ dynpv <- function(
   uptakes <- trim_vec(uptakes)
   payoffs <- trim_vec(payoffs)
   # Create a dataset for each combination of time
-  ds <- tidyr::expand_grid(j=1:length(uptakes), k=1:length(payoffs), l=tzero) |>
+  df <- tidyr::expand_grid(j=1:length(uptakes), k=1:length(payoffs), l=tzero) |>
     dplyr::mutate(t= j + k - 1) |>
     # Remove time entries that are outside the time horizon
     dplyr::filter(t <= horizon) |>
@@ -102,24 +104,8 @@ dynpv <- function(
       v = (1+discrate)^(1 - t),
       pv = uj * pk * R * v
     )
-  # Summarize over each cohort (sum over k)
-  sds <- ds |>
-    dplyr::summarize(spv = sum(pv), .by=c(j, l)) |>
-    dplyr::rename(tzero = l)
-  # Summarize again by tzero / l
-  ssds <- sds |>
-    dplyr::summarize(total = sum(spv), .by=c(tzero)) |>
-    dplyr::mutate(
-      suptakes = sum(uptakes),
-      mean = total/suptakes
-      )
-  # Total and mean
-  restot <- ssds |> dplyr::select(tzero, total)
-  resmean <- ssds |> dplyr::select(tzero, mean)
-  if (length(tzero)==1) {
-    restot <- restot$total
-    resmean <- resmean$mean
-    }
+  # Put dataset into a dynpv_class object
+  cds <- class_dynpv(name = dpv_name, df = df)  
   # Return
   return(list(
     inputs = list(
@@ -130,14 +116,7 @@ dynpv <- function(
       prices = prices,
       discrate = discrate
     ),
-    results = list(
-      ncoh = length(uptakes),
-      uptake = sum(uptakes),
-      calc = ds,
-      cohpv = sds,
-      total = restot,
-      mean = resmean
-    )
+    results = cds
   ))
 }
 

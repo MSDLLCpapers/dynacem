@@ -10,7 +10,8 @@ dynpv(
   horizon = length(payoffs),
   tzero = 0,
   prices = rep(1, length(payoffs) + tzero),
-  discrate = 0
+  discrate = 0,
+  dpv_name = NA_character_
 )
 }
 \arguments{
@@ -25,11 +26,13 @@ dynpv(
 \item{prices}{Vector of price indices through the time horizon of interest}
 
 \item{discrate}{Discount rate per timestep, corresponding to price index}
+
+\item{dpv_name}{Name to be given to Dynamic Present Value object created by this function call}
 }
 \value{
 Two lists named \code{inputs} and \code{results}.
 The \code{inputs} list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
-The \code{results} list contains the following elements:
+The \code{results} output is a \code{DynPV} object that contains the following elements:
 \itemize{
 \item \code{ncoh}: Number of cohorts of uptaking patients
 \item \code{uptake}: Total number of uptaking patients
