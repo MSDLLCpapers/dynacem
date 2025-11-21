@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dynamicpv</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -204,7 +204,7 @@ default is also 1.</p>
 <span></span>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes1</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
-<span><span class="va">pv1</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">pv1</span><span class="op">$</span><span class="va">results</span><span class="op">@</span><span class="va">total</span></span>
 <span><span class="co">#&gt; [1] 610.4352</span></span></code></pre></div>
 <p>The result is unchanged from the
 <code>vignette("Dynamic Pricing")</code>, where we also showed the
@@ -332,47 +332,26 @@ rate</caption>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes2</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
 <span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; $ncoh</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $uptake</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $calc</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 9</span></span></span>
-<span><span class="co">#&gt;        j     k     l     t    uj    pk     R     v    pv</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1     1     0     1     1   110     1 1     110  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1     2     0     2     1   120     1 0.971 117. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1     3     0     3     1   130     1 0.943 123. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1     4     0     4     1   140     1 0.915 128. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1     5     0     5     1   150     1 0.888 133. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     2     1     0     2     1   110     1 0.971 107. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     2     2     0     3     1   120     1 0.943 113. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     2     3     0     4     1   130     1 0.915 119. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     2     4     0     5     1   140     1 0.888 124. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     3     1     0     3     1   110     1 0.943 104. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     3     2     0     4     1   120     1 0.915 110. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     3     3     0     5     1   130     1 0.888 116. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span>     4     1     0     4     1   110     1 0.915 101. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span>     4     2     0     5     1   120     1 0.888 107. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span>     5     1     0     5     1   110     1 0.888  97.7</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $cohpv</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
-<span><span class="co">#&gt;       j tzero   spv</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1     0 610. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2     0 463. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3     0 329. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4     0 207. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5     0  97.7</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $total</span></span>
-<span><span class="co">#&gt; [1] 1707.723</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $mean</span></span>
-<span><span class="co">#&gt; [1] 341.5446</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;dynamicpv::class_dynpv&gt;</span></span>
+<span><span class="co">#&gt;  @ name      : chr NA</span></span>
+<span><span class="co">#&gt;  @ df        : tibble [15 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ j : int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
+<span><span class="co">#&gt;  $ k : int [1:15] 1 2 3 4 5 1 2 3 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ l : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ t : num [1:15] 1 2 3 4 5 2 3 4 5 3 ...</span></span>
+<span><span class="co">#&gt;  $ uj: num [1:15] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ pk: num [1:15] 110 120 130 140 150 110 120 130 140 110 ...</span></span>
+<span><span class="co">#&gt;  $ R : num [1:15] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ v : num [1:15] 1 0.971 0.943 0.915 0.888 ...</span></span>
+<span><span class="co">#&gt;  $ pv: num [1:15] 110 117 123 128 133 ...</span></span>
+<span><span class="co">#&gt;  @ ncoh      : int 5</span></span>
+<span><span class="co">#&gt;  @ uptake    : num 5</span></span>
+<span><span class="co">#&gt;  @ sum_by_coh: tibble [5 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ j    : int [1:5] 1 2 3 4 5</span></span>
+<span><span class="co">#&gt;  $ tzero: num [1:5] 0 0 0 0 0</span></span>
+<span><span class="co">#&gt;  $ spv  : num [1:5] 610.4 463.3 329 207.3 97.7</span></span>
+<span><span class="co">#&gt;  @ total     : num 1708</span></span>
+<span><span class="co">#&gt;  @ mean      : num 342</span></span></code></pre></div>
 <p>There are 5 patients with a total NPV of 1,708, which equates to 342
 on average per patient. This can also be calculated in base R.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -401,47 +380,26 @@ be
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes3</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
 <span><span class="va">pv3</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; $ncoh</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $uptake</span></span>
-<span><span class="co">#&gt; [1] 15</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $calc</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 9</span></span></span>
-<span><span class="co">#&gt;        j     k     l     t    uj    pk     R     v    pv</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1     1     0     1     1   110     1 1      110 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1     2     0     2     1   120     1 0.971  117.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1     3     0     3     1   130     1 0.943  123.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1     4     0     4     1   140     1 0.915  128.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1     5     0     5     1   150     1 0.888  133.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     2     1     0     2     2   110     1 0.971  214.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     2     2     0     3     2   120     1 0.943  226.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     2     3     0     4     2   130     1 0.915  238.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     2     4     0     5     2   140     1 0.888  249.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     3     1     0     3     3   110     1 0.943  311.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     3     2     0     4     3   120     1 0.915  329.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     3     3     0     5     3   130     1 0.888  347.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span>     4     1     0     4     4   110     1 0.915  403.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span>     4     2     0     5     4   120     1 0.888  426.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span>     5     1     0     5     5   110     1 0.888  489.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $cohpv</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
-<span><span class="co">#&gt;       j tzero   spv</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1     0  610.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2     0  927.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3     0  987.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4     0  829.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5     0  489.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $total</span></span>
-<span><span class="co">#&gt; [1] 3841.785</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $mean</span></span>
-<span><span class="co">#&gt; [1] 256.119</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;dynamicpv::class_dynpv&gt;</span></span>
+<span><span class="co">#&gt;  @ name      : chr NA</span></span>
+<span><span class="co">#&gt;  @ df        : tibble [15 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ j : int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
+<span><span class="co">#&gt;  $ k : int [1:15] 1 2 3 4 5 1 2 3 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ l : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ t : num [1:15] 1 2 3 4 5 2 3 4 5 3 ...</span></span>
+<span><span class="co">#&gt;  $ uj: int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
+<span><span class="co">#&gt;  $ pk: num [1:15] 110 120 130 140 150 110 120 130 140 110 ...</span></span>
+<span><span class="co">#&gt;  $ R : num [1:15] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ v : num [1:15] 1 0.971 0.943 0.915 0.888 ...</span></span>
+<span><span class="co">#&gt;  $ pv: num [1:15] 110 117 123 128 133 ...</span></span>
+<span><span class="co">#&gt;  @ ncoh      : int 5</span></span>
+<span><span class="co">#&gt;  @ uptake    : num 15</span></span>
+<span><span class="co">#&gt;  @ sum_by_coh: tibble [5 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ j    : int [1:5] 1 2 3 4 5</span></span>
+<span><span class="co">#&gt;  $ tzero: num [1:5] 0 0 0 0 0</span></span>
+<span><span class="co">#&gt;  $ spv  : num [1:5] 610 927 987 829 489</span></span>
+<span><span class="co">#&gt;  @ total     : num 3842</span></span>
+<span><span class="co">#&gt;  @ mean      : num 256</span></span></code></pre></div>
 <p>There are 15 patients with a total NPV of 3,842, which equates to 256
 on average per patient. Verifying this result in base R also becomes
 more complicated.</p>
@@ -473,47 +431,26 @@ complicated with base functions, even in this toy example.</p>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes3</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
 <span><span class="va">pv4</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; $ncoh</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $uptake</span></span>
-<span><span class="co">#&gt; [1] 15</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $calc</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 9</span></span></span>
-<span><span class="co">#&gt;        j     k     l     t    uj    pk     R     v    pv</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1     1     0     1     1   110  1    1     110  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1     2     0     2     1   120  1.01 0.961 117. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1     3     0     3     1   130  1.02 0.924 123. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1     4     0     4     1   140  0.5  0.888  62.2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1     5     0     5     1   150  0.5  0.854  64.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     2     1     0     2     2   110  1.01 0.961 214. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     2     2     0     3     2   120  1.02 0.924 226. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     2     3     0     4     2   130  0.5  0.888 115. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     2     4     0     5     2   140  0.5  0.854 120. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     3     1     0     3     3   110  1.02 0.924 311. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     3     2     0     4     3   120  0.5  0.888 160. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     3     3     0     5     3   130  0.5  0.854 166. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span>     4     1     0     4     4   110  0.5  0.888 195. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span>     4     2     0     5     4   120  0.5  0.854 205. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span>     5     1     0     5     5   110  0.5  0.854 235. </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $cohpv</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
-<span><span class="co">#&gt;       j tzero   spv</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1     0  475.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2     0  675.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3     0  637.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4     0  400.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5     0  235.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $total</span></span>
-<span><span class="co">#&gt; [1] 2422.633</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $mean</span></span>
-<span><span class="co">#&gt; [1] 161.5089</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;dynamicpv::class_dynpv&gt;</span></span>
+<span><span class="co">#&gt;  @ name      : chr NA</span></span>
+<span><span class="co">#&gt;  @ df        : tibble [15 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ j : int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
+<span><span class="co">#&gt;  $ k : int [1:15] 1 2 3 4 5 1 2 3 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ l : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ t : num [1:15] 1 2 3 4 5 2 3 4 5 3 ...</span></span>
+<span><span class="co">#&gt;  $ uj: int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
+<span><span class="co">#&gt;  $ pk: num [1:15] 110 120 130 140 150 110 120 130 140 110 ...</span></span>
+<span><span class="co">#&gt;  $ R : num [1:15] 1 1.01 1.02 0.5 0.5 ...</span></span>
+<span><span class="co">#&gt;  $ v : num [1:15] 1 0.961 0.924 0.888 0.854 ...</span></span>
+<span><span class="co">#&gt;  $ pv: num [1:15] 110 116.5 122.5 62.2 64 ...</span></span>
+<span><span class="co">#&gt;  @ ncoh      : int 5</span></span>
+<span><span class="co">#&gt;  @ uptake    : num 15</span></span>
+<span><span class="co">#&gt;  @ sum_by_coh: tibble [5 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ j    : int [1:5] 1 2 3 4 5</span></span>
+<span><span class="co">#&gt;  $ tzero: num [1:5] 0 0 0 0 0</span></span>
+<span><span class="co">#&gt;  $ spv  : num [1:5] 475 675 637 400 235</span></span>
+<span><span class="co">#&gt;  @ total     : num 2423</span></span>
+<span><span class="co">#&gt;  @ mean      : num 162</span></span></code></pre></div>
 <p>There are 15 patients with a total NPV of 2,423, which equates to 162
 on average per patient.</p>
 </div>
@@ -552,7 +489,7 @@ dynamic pricing, as seen in the
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
