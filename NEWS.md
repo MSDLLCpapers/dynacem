@@ -1,3 +1,9 @@
+# dynamicpv 0.3.0
+
+# dynamicpv 0.2.2
+
+* Added 'class_dynpv' object with + and - methods for improved budget impact calculation handling
+
 # dynamicpv 0.2.1
 
 * Vignettes added, readme updated
