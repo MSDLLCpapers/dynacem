@@ -93,7 +93,7 @@ dynpv <- function(
   uptakes <- trim_vec(uptakes)
   payoffs <- trim_vec(payoffs)
   # Create a dataset for each combination of time
-  ds <- tidyr::expand_grid(j=1:length(uptakes), k=1:length(payoffs), l=tzero) |>
+  df <- tidyr::expand_grid(j=1:length(uptakes), k=1:length(payoffs), l=tzero) |>
     dplyr::mutate(t= j + k - 1) |>
     # Remove time entries that are outside the time horizon
     dplyr::filter(t <= horizon) |>
@@ -105,7 +105,7 @@ dynpv <- function(
       pv = uj * pk * R * v
     )
   # Put dataset into a dynpv_class object
-  cds <- class_dynpv(name = dpv_name, data = ds)  
+  cds <- class_dynpv(name = dpv_name, df = df)  
   # Return
   return(list(
     inputs = list(
