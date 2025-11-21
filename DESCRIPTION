@@ -18,7 +18,6 @@ Imports:
     readr,
     rlang,
     S7,
-    tibble,
     tidyr
 Suggests: 
     flexsurv,
@@ -28,6 +27,7 @@ Suggests:
     lubridate,
     purrr,
     rmarkdown,
+    scales,
     testthat (>= 3.0.0),
     usethis
 Config/testthat/edition: 3

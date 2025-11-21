@@ -698,7 +698,7 @@ gc_new_oth <- gtimes |>
     )$pv
 )
 # Combine in a tibble
-ds <- tibble::tibble(
+ds <- dplyr::tibble(
     # Time in weeks and years
     time_weeks = gtimes,
     time_years = time_weeks * cycle_years,

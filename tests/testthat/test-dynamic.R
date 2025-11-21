@@ -195,7 +195,8 @@ test_that("Addition of two dynamic pv's", {
   expect_equal(act_dval8a$results@total, exp_dval8a)
   expect_equal(act_dval8b$results@total, exp_dval8b)
   expect_equal(act_add@total, exp_dval8a + exp_dval8b)
-  expect_equal(act_add@mean, (exp_dval8a + exp_dval8b)/2)
+  expect_equal(act_dval8a$results@uptake + act_dval8b$results@uptake, 2)
+  expect_equal(act_add@total, (exp_dval8a + exp_dval8b))
 })
 
 # 9. Test subtraction of two pv's
@@ -221,4 +222,6 @@ test_that("Subtraction of two pv's", {
   expect_equal(act_dval8a$results@total, exp_dval8a)
   expect_equal(act_dval8b$results@total, exp_dval8b)
   expect_equal(act_sub@total, exp_dval8a - exp_dval8b)
+  expect_equal(act_dval8a$results@uptake - act_dval8b$results@uptake, 2-1)
+  expect_equal(act_sub@total, (exp_dval8a - exp_dval8b))
 })

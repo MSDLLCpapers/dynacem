@@ -377,7 +377,7 @@ wout1_soc_othcost <- dynpv(
 budget_wout1 <- budget_wout1_soc <- wout1_soc_daqcost + wout1_soc_othcost
 ```
 
-The total budgetary costs in the world without are $`r budget_wout1` in respect of `r wout1_uptake` patients.
+The total budgetary costs in the world without are $`r budget_wout1@total` in respect of `r budget_wout1@uptake` patients.
 
 Let us now calculate the budgetary costs in the world with the new intervention.
 
@@ -431,7 +431,7 @@ bi1_new <- budget_with1_new
 bi1 <- budget_with1 - budget_wout1
 ```
 
-The budgetary costs in the world with the new intervention are $`r budget_with1`, comprising $`r with1_soc_daqcost$results@total + with1_soc_othcost$results@total` in respect of the costs of `r uptake_soc1` patients being treated with the SoC, and $`r with1_new_daqcost$results@total + with1_new_othcost$results@total` in respect of the costs of `r uptake_new1` patients being treated with the SoC. The total budget impact is $`r bi1`, representing an increase of `r bi1/budget_wout1*100`%.
+The budgetary costs in the world with the new intervention are $`r budget_with1@total`, comprising $`r budget_with1_soc@total` in respect of the costs of `r with1_soc_daqcost@uptake` patients being treated with the SoC, and $`r budget_with1_new@total` in respect of the costs of `r budget_with1_new@uptake` patients being treated with the SoC. The total budget impact is $`r bi1@total`, representing an increase of `r bi1@total/budget_wout1@total *100`%.
 
 ### Dynamic prices
 
@@ -456,7 +456,7 @@ wout2_soc_othcost <- wout1_soc_othcost
 budget_wout2 <- budget_wout2_soc <- wout2_soc_daqcost + wout2_soc_othcost
 ```
 
-The total budgetary costs in the world without are $`r budget_wout2` in respect of `r wout2_uptake` patients.
+The total budgetary costs in the world without are $`r budget_wout2@total` in respect of `r budget_wout2@uptake` patients.
 
 Let us now calculate the budgetary costs in the world with the new intervention.
 
@@ -498,7 +498,7 @@ bi2_new <- budget_with2_new
 bi2 <- budget_with2 - budget_wout2
 ```
 
-The budgetary costs in the world with the new intervention are $`r budget_with2`, comprising $`r budget_with2_soc` in respect of the costs of `r uptake_soc2` patients being treated with the SoC, and $`r budget_with2_new` in respect of the costs of `r uptake_new2` patients being treated with the SoC. The total budget impact is $`r bi2`, representing an increase of `r bi2/budget_wout2*100`%.
+The budgetary costs in the world with the new intervention are $`r budget_with2@total`, comprising $`r budget_with2_soc@total` in respect of the costs of `r with2_soc_daqcost@uptake` patients being treated with the SoC, and $`r budget_with2_new@total` in respect of the costs of `r with2_new_daqcost@uptake` patients being treated with the new treatment. The total budget impact is $`r bi2@total`, representing an increase of `r bi2@total/budget_wout2@total *100`%.
 
 ### Summary
 
@@ -506,7 +506,7 @@ The budgetary costs in the world with the new intervention are $`r budget_with2`
 |:---|:--|------------|------------|
 | World without new intervention ||  |  |
 | | Standard of Care | `r budget_wout1_soc@total` | `r budget_wout2_soc@total`  |
-| | New intervention | `r budget_wout1_new@total`  | `r budget_wout2_new@total`  |
+| | New intervention | 0 | 0 |
 | | Total | `r budget_wout1@total` | `r budget_wout2@total` |
 | World with new intervention ||  |  |
 | | Standard of Care | `r budget_with1_soc@total`  | `r budget_with2_soc@total`  |
