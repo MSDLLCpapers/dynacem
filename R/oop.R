@@ -94,18 +94,20 @@ class_dynpv <- S7::new_class(
 
 # New generics for add and subtract
 # Do not use - because + and - are builtins, so doing this will mess-up all other use of + and -
-#`+` <- new_generic("+", c("e1", "e2"))
-#`-` <- new_generic("-", c("e1", "e2"))
+#`+` <- S7::new_generic("+", c("e1", "e2"))
+#`-` <- S7::new_generic("-", c("e1", "e2"))
+addprod <- S7::new_generic("addprod", c("e1", "e2"))
 
 # @title Method to add two class_dynpv S7 objects together
-# @description Add together two objects each of S7 class `class_dynpv`
+# @description Add together two objects each of S7 class `class_dynpv`: e1 + mult * e2
 # @param e1 First `class_dynpv` object
 # @param e2 Second `class_dynpv` object
-# Present value of `e1+e2` is sum of present values from `e1` and `e2`.
-# Total uptake of `e1+e2` is sum of uptake from `e1` and `e2`. Take care of this when using `@mean` of the summed object.
+# @param mult Numeric
+# Present value is present value from `e1` plus `mult` times the present value from `e2`.
+# Total uptake is the uptake from `e1` plus `mult` times the uptake from `e2`. Take care of this when using `@mean` of the summed object.
 # @returns S7 object of class `class_dynpv`
 # @export
-S7::method(`+`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- function(e1, e2) {
+S7::method(addprod, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- function(e1, e2, mult) {
   # Pull out xdata and subset of ydata; add dpvno=1 or 2 depending on source
   xdata <- e1@df |>
     dplyr::mutate(dpvno="x")
@@ -126,8 +128,8 @@ S7::method(`+`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- functio
     ) |>
     # Sum the present values from both objects
     dplyr::mutate(
-      uj = uj_x + uj_y,
-      pv = pv_x + pv_y
+      uj = uj_x + mult * uj_y,
+      pv = pv_x + mult * pv_y
     ) |>
     dplyr::select(-uj_x, -uj_y, -pv_x, -pv_y) |>
     dplyr::as_tibble()
@@ -138,6 +140,18 @@ S7::method(`+`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- functio
   )
 }
 
+# @title Method to add two class_dynpv S7 objects together
+# @description Add together two objects each of S7 class `class_dynpv`
+# @param e1 First `class_dynpv` object
+# @param e2 Second `class_dynpv` object
+# Present value of `e1+e2` is sum of present values from `e1` and `e2`.
+# Total uptake of `e1+e2` is sum of uptake from `e1` and `e2`. Take care of this when using `@mean` of the summed object.
+# @returns S7 object of class `class_dynpv`
+# @export
+S7::method(`+`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- function(e1, e2) {
+  addprod(e1, e2, mult=1)
+}
+
 # Method to subtract one class_dynpv S7 object from another
 # @description Subtract one object of S7 class `class_dynpv` from another
 # @param e1 First `class_dynpv` object
@@ -146,34 +160,5 @@ S7::method(`+`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- functio
 # Total uptake of `e1-e2` is the uptake from `e1` less that from `e2`. Take care of this when using `@mean` of the summed object.
 # @returns S7 object of class `class_dynpv`
 S7::method(`-`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- function(e1, e2) {
-  # Pull out xdata and subset of ydata; add dpvno=1 or 2 depending on source
-  xdata <- e1@df |>
-    dplyr::mutate(dpvno="x")
-  ydata <- e2@df |>
-    dplyr::mutate(dpvno="y")
-  # Check that j, k and l vectors align
-  if (length(xdata$j) != length(ydata$j)) {warning("Uptake vectors differ in length after trimming")}
-  stopifnot(max(xdata$k) == max(ydata$k))
-  stopifnot(max(xdata$l) == max(ydata$l))
-  # Combine data
-  jdata <- dplyr::bind_rows(xdata, ydata) |>
-    # Spread
-    tidyr::pivot_wider(
-      id_cols = c(j, k, l, t),
-      names_from = dpvno,
-      values_from = c(uj, pv),
-      values_fill = 0
-    ) |>
-    # Sum the present values from both objects
-    dplyr::mutate(
-      uj = uj_x - uj_y,
-      pv = pv_x - pv_y
-    ) |>
-    dplyr::select(-uj_x, -uj_y, -pv_x, -pv_y) |>
-    dplyr::as_tibble()
-  # Create the resulting object
-  class_dynpv(
-    name = paste0(e1@name, " minus ", e2@name),
-    df = jdata
-  )
+  addprod(e1, e2, mult=-1)
 }
