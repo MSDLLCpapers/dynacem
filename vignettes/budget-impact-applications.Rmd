@@ -431,7 +431,7 @@ bi1_new <- budget_with1_new
 bi1 <- budget_with1 - budget_wout1
 ```
 
-The budgetary costs in the world with the new intervention are $`r budget_with1@total`, comprising $`r budget_with1_soc@total` in respect of the costs of `r with1_soc_daqcost@uptake` patients being treated with the SoC, and $`r budget_with1_new@total` in respect of the costs of `r budget_with1_new@uptake` patients being treated with the SoC. The total budget impact is $`r bi1@total`, representing an increase of `r bi1@total/budget_wout1@total *100`%.
+The budgetary costs in the world with the new intervention are $`r budget_with1@total`, comprising $`r budget_with1_soc@total` in respect of the costs of `r budget_with1_soc@uptake` patients being treated with the SoC, and $`r budget_with1_new@total` in respect of the costs of `r budget_with1_new@uptake` patients being treated with the SoC. The total budget impact is $`r bi1@total`, representing an increase of `r bi1@total/budget_wout1@total *100`%.
 
 ### Dynamic prices
 
@@ -498,7 +498,7 @@ bi2_new <- budget_with2_new
 bi2 <- budget_with2 - budget_wout2
 ```
 
-The budgetary costs in the world with the new intervention are $`r budget_with2@total`, comprising $`r budget_with2_soc@total` in respect of the costs of `r with2_soc_daqcost@uptake` patients being treated with the SoC, and $`r budget_with2_new@total` in respect of the costs of `r with2_new_daqcost@uptake` patients being treated with the new treatment. The total budget impact is $`r bi2@total`, representing an increase of `r bi2@total/budget_wout2@total *100`%.
+The budgetary costs in the world with the new intervention are $`r budget_with2@total`, comprising $`r budget_with2_soc@total` in respect of the costs of `r budget_with2_soc@uptake` patients being treated with the SoC, and $`r budget_with2_new@total` in respect of the costs of `r budget_with2_new@uptake` patients being treated with the new treatment. The total budget impact is $`r bi2@total`, representing an increase of `r bi2@total/budget_wout2@total *100`%.
 
 ### Summary
 
