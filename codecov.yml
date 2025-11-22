@@ -15,3 +15,5 @@ patch:
   target: auto
 threshold: 1%
 informational: true
+ignore:
+      - "R/oop.R"
