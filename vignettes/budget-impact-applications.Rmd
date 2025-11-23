@@ -305,7 +305,7 @@ hemout_new <- payoffs |> dplyr::filter(int=="new")
 head(hemout_new)
 ```
 
-Then let us suppose we have the same cost-effectiveness model and variables as set-up in `vignette("Cost Effectiveness Applications")`.
+Then let us suppose we have the same cost-effectiveness model and variables as set-up in `vignette("cost-effectiveness-applications")`.
 
 ## Methods
 

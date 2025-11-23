@@ -30,11 +30,11 @@ known as *dynacem*, but *dynamicpv* better reflects the package’s
 intent.)
 
 ``` r
-# Install pak package if not already installed
-install.packages("pak")
+# Install devtools package if not already installed
+install.packages("devtools")
 
 # Install dynamicpv using pak, from MSD's dynacem repository
-pak::pak("MSDLLCpapers/dynacem")
+devtools::install_github("MSDLLCpapers/dynacem", build_vignettes=TRUE)
 ```
 
 You should then load the package, alongside some other packages used
@@ -53,17 +53,17 @@ library(tidyr)
 
 ## How to use
 
-There are three vignettes provided.
+There are four vignettes provided.
 
 1.  The [Dynamic
     Pricing](https://msdllcpapers.github.io/dynacem/articles/dynamic-pricing.html)
-    vignette (`vignette("Dynamic Pricing")`) describes how present
+    vignette (`vignette("dynamic-pricing")`) describes how present
     values may be calculated in the package from a payoff vector,
     allowing for the prices of the resources costed to be dynamic.
 
 2.  The [Dynamic
     Uptake](https://msdllcpapers.github.io/dynacem/articles/dynamic-uptake.html)
-    vignette (`vignette("Dynamic Uptake")`) explores further how present
+    vignette (`vignette("dynamic-uptake")`) explores further how present
     values can be derived allowing for dynamic uptake. This is in
     contrast to the non-dynamic approach of calculating a present value
     for a single cohort of patients. This is analogous to the use by
@@ -71,7 +71,7 @@ There are three vignettes provided.
 
 3.  The [Cost-Effectiveness
     Applications](https://msdllcpapers.github.io/dynacem/articles/cost-effectiveness-applications.html)
-    (`vignette(Cost-Effectiveness Applications")`) vignette describes
+    (`vignette(cost-effectiveness-applications")`) vignette describes
     how, given a static cost-effectiveness model (single cohort, prices
     constant in real terms), Incremental Cost-Effectiveness Ratios may
     be calculated that allow for dynamic pricing and/or dynamic uptake.
@@ -84,7 +84,7 @@ There are three vignettes provided.
 
 4.  The [Budget Impact
     Applications](https://msdllcpapers.github.io/dynacem/articles/budget-impact-applications.html)
-    (`vignette("Budget Impact Applications")`) vignette describes how,
+    (`vignette("budget-impact-applications")`) vignette describes how,
     given a static cost-effectiveness model (single cohort, prices
     constant in real terms) and dynamic uptake, a budget impact can be
     readily calculated. The calculations are repeated with the dynamic
