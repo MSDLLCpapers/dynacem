@@ -32,7 +32,7 @@ knitr::knit_hooks$set(
 
 Dynamic uptake refers to the modeling of multiple series of payoffs/cashflows over time, rather than the modeling of just one series of payoffs/cashflows at a time. This may arise, for example, in considering the treatment costs of multiple cohorts of patients beginning their treatment courses at different times. There are also analogies to 'run-off triangles' used by general insurance actuaries to model the emergence of insurance claims over time following claim events.
 
-This package is designed to be able to calculate presente values with dynamic uptake/multiple cohorts. This can be coupled with considerations of dynamic pricing, as covered in `vignette("Dynamic Pricing")`.
+This package is designed to be able to calculate presente values with dynamic uptake/multiple cohorts. This can be coupled with considerations of dynamic pricing, as covered in `vignette("dynamic-pricing")`.
 
 ## Using *dynamicpv*
 
@@ -42,7 +42,7 @@ First let us load the packages we will use for this vignette.
 library(dynamicpv)
 ```
 
-Let us work with the same cashflow as in `vignette("Dynamic Pricing")`, but assume all costs/prices are constant in real terms. The discount rate is 3 \% per year, real.
+Let us work with the same cashflow as in `vignette("dynamic-pricing")`, but assume all costs/prices are constant in real terms. The discount rate is 3 \% per year, real.
 
 ```{r demo1}
 # A simple cashflow
@@ -57,7 +57,7 @@ vt1 <- (1 + disc)^(-1 * (0:4))
 
 ### Non-dynamic uptake
 
-First let us consider non-dynamic uptake, as covered in `vignette("Dynamic Pricing")`.
+First let us consider non-dynamic uptake, as covered in `vignette("dynamic-pricing")`.
 
 | Time | Cashflow 1 | Discount factor    | Product |
 |------|----------|--------------------|---------|
@@ -82,7 +82,7 @@ pv1 <- dynpv(payoffs=cashflow, uptakes=uptakes1, discrate=disc)
 pv1$results@total
 ```
 
-The result is unchanged from the `vignette("Dynamic Pricing")`, where we also showed the function could be verified with some simple vector arithmetic.
+The result is unchanged from the `vignette("dynamic-pricing")`, where we also showed the function could be verified with some simple vector arithmetic.
 
 ### Dynamic uptake, constant in time (unweighted)
 
@@ -168,4 +168,4 @@ There are `r sum(uptakes3)` patients with a total NPV of `r pv4$results@total`, 
 
 - Dynamic uptake occurs if the same cashflow series may begin at several different times, as can occur when modeling costs of treatment to populations over time (where uptake of that treatment varies in time) or the run-off of insurance claims. This can complicate calculations of NPV.
 - The `dynamicpv::dynpv()` function can be used to calculate NPVs for arbitrary vectors of cashflows, at a given discount rate and a given expected uptake over time.
-- In this way, the function can accommodate both dynamic uptake and dynamic pricing, as seen in the `vignette("Dynamic Pricing")`.
+- In this way, the function can accommodate both dynamic uptake and dynamic pricing, as seen in the `vignette("dynamic-pricing")`.
