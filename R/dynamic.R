@@ -48,7 +48,7 @@ trim_vec <- function(vec){
 #' @param dpv_name Name to be given to Dynamic Present Value object created by this function call
 #' @returns A list containing `inputs` and `results`.
 #' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' The `results` output is a `class_dynpv` S7 object that contains the following elements:
+#' The `results` output is a [class_dynpv()] S7 object that contains the following elements:
 #' - `name`: Name given to the object
 #' - `df`: Tibble of calculation results
 #' - `ncoh`: Number of cohorts of uptaking patients

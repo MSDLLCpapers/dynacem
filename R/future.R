@@ -28,7 +28,7 @@
 #' @seealso [dynpv()]
 #' @returns A list `inputs`, `results` and `pv`.
 #' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' The `results` output is a `class_dynpv` S7 object that contains the following elements:
+#' The `results` output is a [class_dynpv()] S7 object that contains the following elements:
 #' - `name`: Name given to the object
 #' - `df`: Tibble of calculation results
 #' - `ncoh`: Number of cohorts of uptaking patients (always 1)
