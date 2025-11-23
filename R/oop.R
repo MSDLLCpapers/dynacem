@@ -33,32 +33,37 @@ class_dynpv <- S7::new_class(
     ncoh = S7::new_property(
       getter = function(self) max(self@df$k)
     ),
+    # Number of time periods
+    ntimes = S7::new_property(
+      getter = function(self) length(unique(self@df$l))
+    ),
     # Size of the cohort = sum(uptakes) = sum of uj such that k==1
     uptake = S7::new_property(
       getter = function(self) {
-        outuptake <- self@df |>
+        tempout1 <- self@df |>
           dplyr::summarize(mean=mean(uj), sd=sd(uj), .by=c(j, l)) |>
           dplyr::rename(tzero = l) |>
           dplyr::summarize(uptake=sum(mean), .by=tzero)
-        if (nrow(outuptake)==1) outuptake$uptake else outuptake
+        if (nrow(tempout1)==1) tempout1$uptake else tempout1
       }
     ),
     # Sum PVs by cohort and tzero
     sum_by_coh = S7::new_property(
       getter = function(self) {
-        self@df |>
+        tempout2 <- self@df |>
           # Summing over k, where uj does not vary by k
           dplyr::summarize(spv = sum(pv), .by=c(j, l)) |>
           dplyr::rename(tzero = l)
+        if (nrow(tempout2)==1) tempout2$spv else tempout2
       }
     ),
     # Total present value, by tzero
     total = S7::new_property(
       getter = function(self) {
-        outpv<- self@sum_by_coh |>
-          dplyr::summarize(total = sum(spv), .by=c(tzero)) |>
-          dplyr::select(tzero, total)
-        if (nrow(outpv)==1) outpv$total else outpv
+        tempout3 <- self@df |>
+          dplyr::summarize(total = sum(pv), .by=c(l)) |>
+          dplyr::rename(tzero = l)
+        if (nrow(tempout3)==1) tempout3$total else tempout3
       }
     ),
     # Mean present value, by tzero - a bit duplicative of total
@@ -66,7 +71,7 @@ class_dynpv <- S7::new_class(
       getter = function(self) {
         if (length(self@total)==1) (self@total/self@uptake) else {
           dplyr::left_join(self@total, self@uptake, dplyr::join_by(tzero)) |>
-            dplyr::mutate(mean=total/uptake) |>
+            dplyr::mutate(mean = total / uptake) |>
             dplyr::select(-total, -uptake)
           }
      }
@@ -88,12 +93,15 @@ class_dynpv <- S7::new_class(
       "@df must contain a field named uj"
     } else if (!("pv" %in% colnames(self@df))) {
       "@df must contain a field named pv"
+    } else if (self@ntimes < 1) {
+      "@df must contain at least one unique value of l (tzero)"
     }
   }
 )
 
 # New generics for add and subtract
 # Do not use - because + and - are builtins, so doing this will mess-up all other use of + and -
+# addprod(e1, e2, mult) = e1 + mult x e2
 #`+` <- S7::new_generic("+", c("e1", "e2"))
 #`-` <- S7::new_generic("-", c("e1", "e2"))
 addprod <- S7::new_generic("addprod", c("e1", "e2"))
@@ -161,4 +169,29 @@ S7::method(`+`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- functio
 # @returns S7 object of class `class_dynpv`
 S7::method(`-`, signature = list(e1 = class_dynpv, e2 = class_dynpv)) <- function(e1, e2) {
   addprod(e1, e2, mult=-1)
+}
+
+# Define a print method for the class_dynpv class
+S7::method(print, class_dynpv) <- function(x, ...) {
+  cat("This is a dynamicpv::class_dynpv S7 object, named", x@name, ". \n")
+  cat("     Number of cohorts:            ", x@ncoh, "\n")
+  cat("     Number of times:              ", x@ntimes, "\n")
+  # Output depends on whether @ntimes>1
+  if (x@ntimes>1) {
+    # Create a tibble
+    tib <- x@uptake |>
+      dplyr::left_join(x@total, dplyr::join_by(tzero)) |>
+      dplyr::left_join(x@mean, dplyr::join_by(tzero))
+    cat("\n Uptake, total and mean present values by timepoint: \n")
+    print(tib)
+  }
+  else {
+    cat("     Total uptake:                 ", x@uptake, "\n")
+    cat("     Total present value:          ", x@total, "\n")
+    cat("     Mean present value:           ", x@mean, "\n")
+  }
+  # Other values
+  cat("\n The full dataset is available using @df. \n")
+  # Conventional to add this line
+  invisible(x)
 }

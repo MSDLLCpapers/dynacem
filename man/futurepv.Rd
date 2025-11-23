@@ -16,11 +16,20 @@ futurepv(tzero = 0, payoffs, prices, discrate)
 \item{discrate}{Discount rate per timestep, corresponding to price index}
 }
 \value{
-A list containing:
+A list \code{inputs}, \code{results} and \code{pv}.
+The \code{inputs} list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
+The \code{results} output is a \code{class_dynpv} S7 object that contains the following elements:
 \itemize{
+\item \code{name}: Name given to the object
+\item \code{df}: Tibble of calculation results
+\item \code{ncoh}: Number of cohorts of uptaking patients (always 1)
+\item \code{ntimes}: Number of times (unique values of tzero) at which calculations are performed
+\item \code{uptake}: Total number of uptaking patients (always 1)
+\item \code{total}: Total present value
+\item \code{mean}: Average present value per uptaking patient (=total/uptake)
+\item \code{sum_by_coh}: Tibble of summarized calculation results for each uptake cohort
 \item \code{inputs}: list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
-\item \code{calc}: Tibble of calculation results
-\item \code{pv}: Present value
+The \code{pv} output is numeric, a convenience value equal to \verb{$results$mean}.
 }
 }
 \description{

@@ -26,10 +26,19 @@
 #' Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for [dynpv()] restricted to evaluation of a single cohort.
 #' @inheritParams dynpv
 #' @seealso [dynpv()]
-#' @returns A list containing:
+#' @returns A list `inputs`, `results` and `pv`.
+#' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
+#' The `results` output is a `class_dynpv` S7 object that contains the following elements:
+#' - `name`: Name given to the object
+#' - `df`: Tibble of calculation results
+#' - `ncoh`: Number of cohorts of uptaking patients (always 1)
+#' - `ntimes`: Number of times (unique values of tzero) at which calculations are performed 
+#' - `uptake`: Total number of uptaking patients (always 1)
+#' - `total`: Total present value
+#' - `mean`: Average present value per uptaking patient (=total/uptake)
+#' - `sum_by_coh`: Tibble of summarized calculation results for each uptake cohort
 #' - `inputs`: list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' - `calc`: Tibble of calculation results
-#' - `pv`: Present value
+#' The `pv` output is numeric, a convenience value equal to `$results$mean`.
 #' @export
 #' @examples
 #' # Obtain dataset

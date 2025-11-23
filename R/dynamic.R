@@ -46,15 +46,17 @@ trim_vec <- function(vec){
 #' @param prices Vector of price indices through the time horizon of interest
 #' @param discrate Discount rate per timestep, corresponding to price index
 #' @param dpv_name Name to be given to Dynamic Present Value object created by this function call
-#' @returns Two lists named `inputs` and `results`.
+#' @returns A list containing `inputs` and `results`.
 #' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' The `results` output is a `DynPV` object that contains the following elements:
+#' The `results` output is a `class_dynpv` S7 object that contains the following elements:
+#' - `name`: Name given to the object
+#' - `df`: Tibble of calculation results
 #' - `ncoh`: Number of cohorts of uptaking patients
+#' - `ntimes`: Number of times (unique values of tzero) at which calculations are performed
 #' - `uptake`: Total number of uptaking patients
-#' - `calc`: Tibble of calculation results
-#' - `cohpv`: Tibble of summarized calculation results for each uptake cohort
 #' - `total`: Total present value
 #' - `mean`: Average present value per uptaking patient (=total/uptake)
+#' - `sum_by_coh`: Tibble of summarized calculation results for each uptake cohort
 #' @export
 #' @importFrom rlang .data
 #' @examples

@@ -45,3 +45,23 @@ test_that("Complex calculation works", {
   # Tests
   expect_equal(act_val2, exp_val2)
 })
+
+# 10. No error when running print
+test_that("No error when applying print", {
+  # Some sample dynpv values
+  fpv1 <- futurepv(
+    tzero = 0,
+    payoffs = payoffs$cost_oth[1:(Nt/2)],
+    prices = rep(1, 2*Nt),
+    discrate = discrate
+  )$results
+  fpv2 <- futurepv(
+      tzero = 0:9,
+      payoffs = payoffs$cost_oth,
+      prices = rep(1, 2*Nt),
+      discrate = discrate
+      )$results
+  # Check no error
+  expect_no_error(print(fpv1))
+  expect_no_error(print(fpv2))
+})

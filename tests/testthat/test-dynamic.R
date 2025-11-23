@@ -117,7 +117,7 @@ test_that("As (5) but with price increases", {
 
 
 # 7. As (6) but with multiple time points
-test_that("As (5) but with price increases", {
+test_that("As (6) but with multiple time points (tzero)", {
   # Actual
   prices <- 1.01^((1:(2*Nt))-1)
   tzero <- (0:4)*52
@@ -224,4 +224,36 @@ test_that("Subtraction of two pv's", {
   expect_equal(act_sub@total, exp_dval8a - exp_dval8b)
   expect_equal(act_dval8a$results@uptake - act_dval8b$results@uptake, 2-1)
   expect_equal(act_sub@total, (exp_dval8a - exp_dval8b))
+})
+
+# 10. No error when running print
+test_that("No error when applying print", {
+  # Some sample dynpv values
+  prices <- 1.01^((1:(2*Nt))-1)
+  act_dval4 <- dynpv(
+    uptakes = c(1, rep(0, Nt-1)),
+    payoffs = payoffs$cost_oth,
+    prices = prices,
+    discrate = 0.015
+    )$results
+  tzero <- (0:4)*52
+  act_dval6 <- dynpv(
+    uptakes = rep(1, Nt),
+    payoffs = payoffs$cost_oth,
+    prices = prices,
+    tzero = tzero,
+    discrate = discrate
+  )$results
+  act_dval8a <- dynpv(
+    uptakes = c(2, rep(0, Nt-1)),
+    payoffs = payoffs$cost_oth * (1:Nt),
+    prices = rep(1, Nt),
+    discrate = 0
+    )$results
+  # Check no error
+  expect_no_error(print(act_dval4))
+  expect_no_error(print(act_dval8a))
+  expect_no_error(print(act_dval4 + act_dval8a))
+  expect_no_error(print(act_dval4 - act_dval8a))
+  expect_no_error(print(act_dval6))
 })
