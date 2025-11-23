@@ -332,26 +332,14 @@ rate</caption>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes2</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
 <span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; &lt;dynamicpv::class_dynpv&gt;</span></span>
-<span><span class="co">#&gt;  @ name      : chr NA</span></span>
-<span><span class="co">#&gt;  @ df        : tibble [15 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ j : int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
-<span><span class="co">#&gt;  $ k : int [1:15] 1 2 3 4 5 1 2 3 4 1 ...</span></span>
-<span><span class="co">#&gt;  $ l : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ t : num [1:15] 1 2 3 4 5 2 3 4 5 3 ...</span></span>
-<span><span class="co">#&gt;  $ uj: num [1:15] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ pk: num [1:15] 110 120 130 140 150 110 120 130 140 110 ...</span></span>
-<span><span class="co">#&gt;  $ R : num [1:15] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ v : num [1:15] 1 0.971 0.943 0.915 0.888 ...</span></span>
-<span><span class="co">#&gt;  $ pv: num [1:15] 110 117 123 128 133 ...</span></span>
-<span><span class="co">#&gt;  @ ncoh      : int 5</span></span>
-<span><span class="co">#&gt;  @ uptake    : num 5</span></span>
-<span><span class="co">#&gt;  @ sum_by_coh: tibble [5 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ j    : int [1:5] 1 2 3 4 5</span></span>
-<span><span class="co">#&gt;  $ tzero: num [1:5] 0 0 0 0 0</span></span>
-<span><span class="co">#&gt;  $ spv  : num [1:5] 610.4 463.3 329 207.3 97.7</span></span>
-<span><span class="co">#&gt;  @ total     : num 1708</span></span>
-<span><span class="co">#&gt;  @ mean      : num 342</span></span></code></pre></div>
+<span><span class="co">#&gt; This is a dynamicpv::class_dynpv S7 object, named NA . </span></span>
+<span><span class="co">#&gt;      Number of cohorts:             5 </span></span>
+<span><span class="co">#&gt;      Number of times:               1 </span></span>
+<span><span class="co">#&gt;      Total uptake:                  5 </span></span>
+<span><span class="co">#&gt;      Total present value:           1707.723 </span></span>
+<span><span class="co">#&gt;      Mean present value:            341.5446 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  The full dataset is available using @df.</span></span></code></pre></div>
 <p>There are 5 patients with a total NPV of 1,708, which equates to 342
 on average per patient. This can also be calculated in base R.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -380,26 +368,14 @@ be
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes3</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
 <span><span class="va">pv3</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; &lt;dynamicpv::class_dynpv&gt;</span></span>
-<span><span class="co">#&gt;  @ name      : chr NA</span></span>
-<span><span class="co">#&gt;  @ df        : tibble [15 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ j : int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
-<span><span class="co">#&gt;  $ k : int [1:15] 1 2 3 4 5 1 2 3 4 1 ...</span></span>
-<span><span class="co">#&gt;  $ l : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ t : num [1:15] 1 2 3 4 5 2 3 4 5 3 ...</span></span>
-<span><span class="co">#&gt;  $ uj: int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
-<span><span class="co">#&gt;  $ pk: num [1:15] 110 120 130 140 150 110 120 130 140 110 ...</span></span>
-<span><span class="co">#&gt;  $ R : num [1:15] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ v : num [1:15] 1 0.971 0.943 0.915 0.888 ...</span></span>
-<span><span class="co">#&gt;  $ pv: num [1:15] 110 117 123 128 133 ...</span></span>
-<span><span class="co">#&gt;  @ ncoh      : int 5</span></span>
-<span><span class="co">#&gt;  @ uptake    : num 15</span></span>
-<span><span class="co">#&gt;  @ sum_by_coh: tibble [5 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ j    : int [1:5] 1 2 3 4 5</span></span>
-<span><span class="co">#&gt;  $ tzero: num [1:5] 0 0 0 0 0</span></span>
-<span><span class="co">#&gt;  $ spv  : num [1:5] 610 927 987 829 489</span></span>
-<span><span class="co">#&gt;  @ total     : num 3842</span></span>
-<span><span class="co">#&gt;  @ mean      : num 256</span></span></code></pre></div>
+<span><span class="co">#&gt; This is a dynamicpv::class_dynpv S7 object, named NA . </span></span>
+<span><span class="co">#&gt;      Number of cohorts:             5 </span></span>
+<span><span class="co">#&gt;      Number of times:               1 </span></span>
+<span><span class="co">#&gt;      Total uptake:                  15 </span></span>
+<span><span class="co">#&gt;      Total present value:           3841.785 </span></span>
+<span><span class="co">#&gt;      Mean present value:            256.119 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  The full dataset is available using @df.</span></span></code></pre></div>
 <p>There are 15 patients with a total NPV of 3,842, which equates to 256
 on average per patient. Verifying this result in base R also becomes
 more complicated.</p>
@@ -431,26 +407,14 @@ complicated with base functions, even in this toy example.</p>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes3</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
 <span><span class="va">pv4</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; &lt;dynamicpv::class_dynpv&gt;</span></span>
-<span><span class="co">#&gt;  @ name      : chr NA</span></span>
-<span><span class="co">#&gt;  @ df        : tibble [15 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ j : int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
-<span><span class="co">#&gt;  $ k : int [1:15] 1 2 3 4 5 1 2 3 4 1 ...</span></span>
-<span><span class="co">#&gt;  $ l : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ t : num [1:15] 1 2 3 4 5 2 3 4 5 3 ...</span></span>
-<span><span class="co">#&gt;  $ uj: int [1:15] 1 1 1 1 1 2 2 2 2 3 ...</span></span>
-<span><span class="co">#&gt;  $ pk: num [1:15] 110 120 130 140 150 110 120 130 140 110 ...</span></span>
-<span><span class="co">#&gt;  $ R : num [1:15] 1 1.01 1.02 0.5 0.5 ...</span></span>
-<span><span class="co">#&gt;  $ v : num [1:15] 1 0.961 0.924 0.888 0.854 ...</span></span>
-<span><span class="co">#&gt;  $ pv: num [1:15] 110 116.5 122.5 62.2 64 ...</span></span>
-<span><span class="co">#&gt;  @ ncoh      : int 5</span></span>
-<span><span class="co">#&gt;  @ uptake    : num 15</span></span>
-<span><span class="co">#&gt;  @ sum_by_coh: tibble [5 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ j    : int [1:5] 1 2 3 4 5</span></span>
-<span><span class="co">#&gt;  $ tzero: num [1:5] 0 0 0 0 0</span></span>
-<span><span class="co">#&gt;  $ spv  : num [1:5] 475 675 637 400 235</span></span>
-<span><span class="co">#&gt;  @ total     : num 2423</span></span>
-<span><span class="co">#&gt;  @ mean      : num 162</span></span></code></pre></div>
+<span><span class="co">#&gt; This is a dynamicpv::class_dynpv S7 object, named NA . </span></span>
+<span><span class="co">#&gt;      Number of cohorts:             5 </span></span>
+<span><span class="co">#&gt;      Number of times:               1 </span></span>
+<span><span class="co">#&gt;      Total uptake:                  15 </span></span>
+<span><span class="co">#&gt;      Total present value:           2422.633 </span></span>
+<span><span class="co">#&gt;      Mean present value:            161.5089 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  The full dataset is available using @df.</span></span></code></pre></div>
 <p>There are 15 patients with a total NPV of 2,423, which equates to 162
 on average per patient.</p>
 </div>

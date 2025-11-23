@@ -117,14 +117,16 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Two lists named <code>inputs</code> and <code>results</code>.
+    <p>A list containing <code>inputs</code> and <code>results</code>.
 The <code>inputs</code> list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.
-The <code>results</code> output is a <code>DynPV</code> object that contains the following elements:</p><ul><li><p><code>ncoh</code>: Number of cohorts of uptaking patients</p></li>
+The <code>results</code> output is a <code>class_dynpv</code> S7 object that contains the following elements:</p><ul><li><p><code>name</code>: Name given to the object</p></li>
+<li><p><code>df</code>: Tibble of calculation results</p></li>
+<li><p><code>ncoh</code>: Number of cohorts of uptaking patients</p></li>
+<li><p><code>ntimes</code>: Number of times (unique values of tzero) at which calculations are performed</p></li>
 <li><p><code>uptake</code>: Total number of uptaking patients</p></li>
-<li><p><code>calc</code>: Tibble of calculation results</p></li>
-<li><p><code>cohpv</code>: Tibble of summarized calculation results for each uptake cohort</p></li>
 <li><p><code>total</code>: Total present value</p></li>
 <li><p><code>mean</code>: Average present value per uptaking patient (=total/uptake)</p></li>
+<li><p><code>sum_by_coh</code>: Tibble of summarized calculation results for each uptake cohort</p></li>
 </ul></div>
 
     <div id="ref-examples">
@@ -171,26 +173,14 @@ The <code>results</code> output is a <code>DynPV</code> object that contains the
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $results</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;dynamicpv::class_dynpv&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ name      : chr NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ df        : tibble [55 × 9] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ j : int [1:55] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ k : int [1:55] 1 2 3 4 5 6 7 8 9 10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ l : num [1:55] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ t : num [1:55] 1 2 3 4 5 6 7 8 9 10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ uj: num [1:55] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pk: num [1:55] 355 354 354 353 352 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ R : num [1:55] 1 1.05 1.1 1.15 1.2 1.25 1.3 1.35 1.4 1.45 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ v : num [1:55] 1 0.926 0.857 0.794 0.735 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pv: num [1:55] 355 344 334 322 310 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ncoh      : int 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ uptake    : num 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ sum_by_coh: tibble [10 × 3] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ j    : int [1:10] 1 2 3 4 5 6 7 8 9 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tzero: num [1:10] 0 0 0 0 0 0 0 0 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ spv  : num [1:10] 3033 2688 2351 2022 1703 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ total     : num 15870</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ mean      : num 1587</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This is a dynamicpv::class_dynpv S7 object, named NA . </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Number of cohorts:             10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Number of times:               1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Total uptake:                  10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Total present value:           15869.53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Mean present value:            1586.953 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  The full dataset is available using @df. </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

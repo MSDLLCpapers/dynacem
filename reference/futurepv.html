@@ -97,9 +97,18 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list containing:</p><ul><li><p><code>inputs</code>: list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.</p></li>
-<li><p><code>calc</code>: Tibble of calculation results</p></li>
-<li><p><code>pv</code>: Present value</p></li>
+    <p>A list <code>inputs</code>, <code>results</code> and <code>pv</code>.
+The <code>inputs</code> list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.
+The <code>results</code> output is a <code>class_dynpv</code> S7 object that contains the following elements:</p><ul><li><p><code>name</code>: Name given to the object</p></li>
+<li><p><code>df</code>: Tibble of calculation results</p></li>
+<li><p><code>ncoh</code>: Number of cohorts of uptaking patients (always 1)</p></li>
+<li><p><code>ntimes</code>: Number of times (unique values of tzero) at which calculations are performed</p></li>
+<li><p><code>uptake</code>: Total number of uptaking patients (always 1)</p></li>
+<li><p><code>total</code>: Total present value</p></li>
+<li><p><code>mean</code>: Average present value per uptaking patient (=total/uptake)</p></li>
+<li><p><code>sum_by_coh</code>: Tibble of summarized calculation results for each uptake cohort</p></li>
+<li><p><code>inputs</code>: list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.
+The <code>pv</code> output is numeric, a convenience value equal to <code>$results$mean</code>.</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -132,32 +141,26 @@
 <span class="r-in"><span>  discrate <span class="op">=</span> <span class="fl">0.001</span> <span class="op">+</span> <span class="va">discrate</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fpv</span><span class="op">$</span><span class="va">results</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;dynamicpv::class_dynpv&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ name      : chr NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ df        : tibble [10,440 × 9] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ j : int [1:10440] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ k : int [1:10440] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ l : num [1:10440] 0 52 104 156 208 260 312 364 416 468 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ t : num [1:10440] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ uj: num [1:10440] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pk: num [1:10440] 355 355 355 355 355 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ R : num [1:10440] 1 1.05 1.11 1.17 1.23 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ v : num [1:10440] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pv: num [1:10440] 355 374 394 415 437 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ncoh      : int 1044</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ uptake    : tibble [10 × 2] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tzero : num [1:10] 0 52 104 156 208 260 312 364 416 468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ uptake: num [1:10] 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ sum_by_coh: tibble [10 × 3] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ j    : int [1:10] 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tzero: num [1:10] 0 52 104 156 208 260 312 364 416 468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ spv  : num [1:10] 52165 54948 57880 60967 64220 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ total     : tibble [10 × 2] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tzero: num [1:10] 0 52 104 156 208 260 312 364 416 468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ total: num [1:10] 52165 54948 57880 60967 64220 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  @ mean      : tibble [10 × 2] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tzero: num [1:10] 0 52 104 156 208 260 312 364 416 468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ mean : num [1:10] 52165 54948 57880 60967 64220 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This is a dynamicpv::class_dynpv S7 object, named NA . </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Number of cohorts:             1044 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Number of times:               10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Uptake, total and mean present values by timepoint: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    tzero uptake  total   mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     0      1 <span style="text-decoration: underline;">52</span>165. <span style="text-decoration: underline;">52</span>165.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    52      1 <span style="text-decoration: underline;">54</span>948. <span style="text-decoration: underline;">54</span>948.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>   104      1 <span style="text-decoration: underline;">57</span>880. <span style="text-decoration: underline;">57</span>880.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>   156      1 <span style="text-decoration: underline;">60</span>967. <span style="text-decoration: underline;">60</span>967.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>   208      1 <span style="text-decoration: underline;">64</span>220. <span style="text-decoration: underline;">64</span>220.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>   260      1 <span style="text-decoration: underline;">67</span>646. <span style="text-decoration: underline;">67</span>646.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>   312      1 <span style="text-decoration: underline;">71</span>255. <span style="text-decoration: underline;">71</span>255.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   364      1 <span style="text-decoration: underline;">75</span>056. <span style="text-decoration: underline;">75</span>056.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>   416      1 <span style="text-decoration: underline;">79</span>060. <span style="text-decoration: underline;">79</span>060.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>   468      1 <span style="text-decoration: underline;">83</span>278. <span style="text-decoration: underline;">83</span>278.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  The full dataset is available using @df. </span>
 <span class="r-in"><span><span class="va">fpv</span><span class="op">$</span><span class="va">pv</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    tzero   mean</span>
