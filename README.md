@@ -34,6 +34,14 @@ intent.)
 install.packages("devtools")
 
 # Install dynamicpv using pak, from MSD's dynacem repository
+pak::pak("MSDLLCpapers/dynacem")
+```
+
+Note that the above does not install vignettes. Vignettes may be viewed
+on the [package website](https://msdllcpapers.github.io/dynacem) or by
+instead running the following.
+
+``` r
 devtools::install_github("MSDLLCpapers/dynacem", build_vignettes=TRUE)
 ```
 

@@ -35,12 +35,19 @@ You can install the development version of *dynamicpv* from [GitHub](https://git
 install.packages("devtools")
 
 # Install dynamicpv using pak, from MSD's dynacem repository
+pak::pak("MSDLLCpapers/dynacem")
+```
+
+Note that the above does not install vignettes. Vignettes may be viewed on the [package website](https://msdllcpapers.github.io/dynacem) or by instead running the following.
+
+```{r instal2}
+#| eval: false
 devtools::install_github("MSDLLCpapers/dynacem", build_vignettes=TRUE)
 ```
 
 You should then load the package, alongside some other packages used here.
 
-```{r instal2}
+```{r instal3}
 #| eval: false
 # Load the dynamicpv package
 library(dynamicpv)
