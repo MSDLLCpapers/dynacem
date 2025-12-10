@@ -32,7 +32,7 @@ dynpv(
 \value{
 A list containing \code{inputs} and \code{results}.
 The \code{inputs} list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
-The \code{results} output is a \code{\link[=class_dynpv]{class_dynpv()}} S7 object that contains the following elements:
+The \code{results} output is a "dynpv" object (created by \code{\link[=class_dynpv]{class_dynpv()}}) that contains the following elements:
 \itemize{
 \item \code{name}: Name given to the object
 \item \code{df}: Tibble of calculation results

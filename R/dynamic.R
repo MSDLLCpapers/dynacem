@@ -37,18 +37,18 @@ trim_vec <- function(vec){
 }
 
 #' Calculate present value for a payoff with dynamic pricing and dynamic uptake
-#' 
+#'
 #' Present value of a payoff affected by dynamic pricing, with uptake across multiple cohorts (dynamic uptake)
 #' @param uptakes Vector of patient uptake over time
 #' @param horizon Time horizon for the calculation (length must be less than or equal to the length of payoffs)
 #' @param tzero Time at the date of calculation, to be used in lookup in prices vector
-#' @param payoffs Vector of payoffs of interest (numeric vector) 
+#' @param payoffs Vector of payoffs of interest (numeric vector)
 #' @param prices Vector of price indices through the time horizon of interest
 #' @param discrate Discount rate per timestep, corresponding to price index
 #' @param dpv_name Name to be given to Dynamic Present Value object created by this function call
 #' @returns A list containing `inputs` and `results`.
-#' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' The `results` output is a [class_dynpv()] S7 object that contains the following elements:
+#' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`.
+#' The `results` output is a "dynpv" object (created by [class_dynpv()]) that contains the following elements:
 #' - `name`: Name given to the object
 #' - `df`: Tibble of calculation results
 #' - `ncoh`: Number of cohorts of uptaking patients
@@ -66,19 +66,19 @@ trim_vec <- function(vec){
 #'    payoffs = c("cost_daq_new", "cost_total", "qaly"),
 #'    discount = "disc"
 #'    )
-#' 
+#'
 #' # Obtain short payoff vector of interest
 #' payoffs <- democe |>
 #'    dplyr::filter(int=="new", model_time<11) |>
 #'    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
 #' Nt <- nrow(payoffs)
-#' 
+#'
 #' # Example calculation
 #' dynpv(
 #'    uptakes = rep(1, Nt),
 #'    payoffs = payoffs$cost_oth,
 #'    prices = 1 + (0:(Nt-1))*0.05,
-#'    discrate = 0.08 
+#'    discrate = 0.08
 #' )
 dynpv <- function(
     uptakes = 1,
@@ -106,9 +106,10 @@ dynpv <- function(
       v = (1+discrate)^(1 - t),
       pv = uj * pk * R * v
     )
+
   # Put dataset into a dynpv_class object
-  cds <- class_dynpv(name = dpv_name, df = df)  
-  # Return
+  cds <- class_dynpv(name = dpv_name, df = df)
+
   return(list(
     inputs = list(
       uptakes = uptakes,

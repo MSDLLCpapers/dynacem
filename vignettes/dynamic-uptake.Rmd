@@ -79,7 +79,7 @@ uptakes1 <- 1
 
 # NPV calculation
 pv1 <- dynpv(payoffs=cashflow, uptakes=uptakes1, discrate=disc)
-pv1$results@total
+pv1$results$total
 ```
 
 The result is unchanged from the `vignette("dynamic-pricing")`, where we also showed the function could be verified with some simple vector arithmetic.
@@ -112,7 +112,7 @@ pv2 <- dynpv(payoffs=cashflow, uptakes=uptakes2, discrate=disc)
 pv2$results
 ```
 
-There are `r sum(uptakes2)` patients with a total NPV of `r pv2$results@total`, which equates to `r pv2$results@mean` on average per patient. This can also be calculated in base R.
+There are `r sum(uptakes2)` patients with a total NPV of `r pv2$results$total`, which equates to `r pv2$results$mean` on average per patient. This can also be calculated in base R.
 
 ```{r verify2}
 sum(vt1 * cumsum(cashflow))
@@ -133,7 +133,7 @@ pv3 <- dynpv(payoffs=cashflow, uptakes=uptakes3, discrate=disc)
 pv3$results
 ```
 
-There are `r sum(uptakes3)` patients with a total NPV of `r pv3$results@total`, which equates to `r pv3$results@mean` on average per patient. Verifying this result in base R also becomes more complicated.
+There are `r sum(uptakes3)` patients with a total NPV of `r pv3$results$total`, which equates to `r pv3$results$mean` on average per patient. Verifying this result in base R also becomes more complicated.
 
 ```{r verify3}
 # Verifying total NPV is now more complicated
@@ -162,7 +162,7 @@ pv4 <- dynpv(payoffs=cashflow, uptakes=uptakes3, prices=pindex, discrate=nomdisc
 pv4$results
 ```
 
-There are `r sum(uptakes3)` patients with a total NPV of `r pv4$results@total`, which equates to `r pv4$results@mean` on average per patient.
+There are `r sum(uptakes3)` patients with a total NPV of `r pv4$results$total`, which equates to `r pv4$results$mean` on average per patient.
 
 ## Summary
 
