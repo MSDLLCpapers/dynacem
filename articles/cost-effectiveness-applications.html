@@ -740,8 +740,8 @@ risk-free real rate (<code>discrate=disc_cycle</code>).</p>
 <span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s1_icost</span> <span class="op">&lt;-</span> <span class="va">s1_new_cost</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s1_soc_cost</span><span class="op">@</span><span class="va">total</span></span>
-<span><span class="va">s1_iqaly</span> <span class="op">&lt;-</span> <span class="va">s1_new_qaly</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s1_soc_qaly</span><span class="op">@</span><span class="va">total</span></span>
+<span><span class="va">s1_icost</span> <span class="op">&lt;-</span> <span class="va">s1_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s1_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s1_iqaly</span> <span class="op">&lt;-</span> <span class="va">s1_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s1_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="va">s1_icer</span> <span class="op">&lt;-</span> <span class="va">s1_icost</span> <span class="op">/</span> <span class="va">s1_iqaly</span></span></code></pre></div>
 <p>These results show that the new intervention is associated with
 $117,034 incremental costs relative to the standard of care (including
@@ -786,8 +786,8 @@ Otherwise costs and QALYs are unchanged from Scenario 1.</p>
 <span><span class="va">s2_new_qaly</span> <span class="op">&lt;-</span> <span class="va">s1_new_qaly</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s2_icost</span> <span class="op">&lt;-</span> <span class="va">s2_new_cost</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s2_soc_cost</span><span class="op">@</span><span class="va">total</span></span>
-<span><span class="va">s2_iqaly</span> <span class="op">&lt;-</span> <span class="va">s2_new_qaly</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s2_soc_qaly</span><span class="op">@</span><span class="va">total</span></span>
+<span><span class="va">s2_icost</span> <span class="op">&lt;-</span> <span class="va">s2_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s2_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s2_iqaly</span> <span class="op">&lt;-</span> <span class="va">s2_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s2_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="va">s2_icer</span> <span class="op">&lt;-</span> <span class="va">s2_icost</span> <span class="op">/</span> <span class="va">s2_iqaly</span></span></code></pre></div>
 <p>Under scenario 2, the new intervention has an incremental
 cost-effectiveness of $124,059 per QALY (incremental costs of $114,820,
@@ -849,8 +849,8 @@ for dynamic uptake, which is handled by setting
 <span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s3_icost</span> <span class="op">&lt;-</span> <span class="va">s3_new_cost</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s3_soc_cost</span><span class="op">@</span><span class="va">total</span></span>
-<span><span class="va">s3_iqaly</span> <span class="op">&lt;-</span> <span class="va">s3_new_qaly</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s3_soc_qaly</span><span class="op">@</span><span class="va">total</span></span>
+<span><span class="va">s3_icost</span> <span class="op">&lt;-</span> <span class="va">s3_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s3_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s3_iqaly</span> <span class="op">&lt;-</span> <span class="va">s3_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s3_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="va">s3_icer</span> <span class="op">&lt;-</span> <span class="va">s3_icost</span> <span class="op">/</span> <span class="va">s3_iqaly</span></span></code></pre></div>
 <p>Under scenario 3, the new intervention has an incremental
 cost-effectiveness of $149,782 per QALY (incremental costs of
@@ -894,8 +894,8 @@ costs and QALYs are unchanged from Scenario 3.</p>
 <span><span class="va">s4_new_qaly</span> <span class="op">&lt;-</span> <span class="va">s3_new_qaly</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s4_icost</span> <span class="op">&lt;-</span> <span class="va">s4_new_cost</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s4_soc_cost</span><span class="op">@</span><span class="va">total</span></span>
-<span><span class="va">s4_iqaly</span> <span class="op">&lt;-</span> <span class="va">s4_new_qaly</span><span class="op">@</span><span class="va">total</span> <span class="op">-</span> <span class="va">s4_soc_qaly</span><span class="op">@</span><span class="va">total</span></span>
+<span><span class="va">s4_icost</span> <span class="op">&lt;-</span> <span class="va">s4_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s4_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s4_iqaly</span> <span class="op">&lt;-</span> <span class="va">s4_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s4_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="va">s4_icer</span> <span class="op">&lt;-</span> <span class="va">s4_icost</span> <span class="op">/</span> <span class="va">s4_iqaly</span></span></code></pre></div>
 <p>Under scenario 4, the new intervention has an incremental
 cost-effectiveness of $94,570 per QALY (incremental costs of
@@ -1150,8 +1150,8 @@ calculate the ICER, given the incremental QALYs we have already observed
 <span>    totcost_new <span class="op">=</span> <span class="va">gc_new_daq</span> <span class="op">+</span> <span class="va">gc_new_oth</span>,</span>
 <span>    totcost_soc <span class="op">=</span> <span class="va">gc_soc_daq</span> <span class="op">+</span> <span class="va">gc_soc_oth</span>,</span>
 <span>    <span class="co"># Scenario 1/2 QALYs</span></span>
-<span>    qaly_soc <span class="op">=</span> <span class="va">s1_soc_qaly</span><span class="op">@</span><span class="va">total</span>,</span>
-<span>    qaly_new <span class="op">=</span> <span class="va">s1_new_qaly</span><span class="op">@</span><span class="va">total</span></span>
+<span>    qaly_soc <span class="op">=</span> <span class="va">s1_soc_qaly</span><span class="op">$</span><span class="va">total</span>,</span>
+<span>    qaly_new <span class="op">=</span> <span class="va">s1_new_qaly</span><span class="op">$</span><span class="va">total</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    <span class="co"># Incremental cost and QALYs</span></span>

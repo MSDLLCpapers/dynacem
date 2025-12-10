@@ -249,15 +249,13 @@ intervention.</p>
 <span><span class="va">budget_with1_soc</span> <span class="op">&lt;-</span> <span class="va">with1_soc_daqcost</span> <span class="op">+</span> <span class="va">with1_soc_othcost</span></span>
 <span><span class="va">budget_with1_new</span> <span class="op">&lt;-</span> <span class="va">with1_new_daqcost</span> <span class="op">+</span> <span class="va">with1_new_othcost</span></span>
 <span><span class="va">budget_with1</span> <span class="op">&lt;-</span> <span class="va">budget_with1_soc</span> <span class="op">+</span> <span class="va">budget_with1_new</span></span>
-<span><span class="co">#&gt; Warning in `method(addprod, list(dynamicpv::class_dynpv,</span></span>
-<span><span class="co">#&gt; dynamicpv::class_dynpv))`(e1 = &lt;object&gt;, : Uptake vectors differ in length</span></span>
-<span><span class="co">#&gt; after trimming</span></span>
+<span><span class="co">#&gt; Warning in addprod(e1, e2, mult = 1): Uptake vectors differ in length after</span></span>
+<span><span class="co">#&gt; trimming</span></span>
 <span></span>
 <span><span class="co"># Budget impact</span></span>
 <span><span class="va">bi1_soc</span> <span class="op">&lt;-</span> <span class="va">budget_with1_soc</span> <span class="op">-</span> <span class="va">budget_wout1_soc</span></span>
-<span><span class="co">#&gt; Warning in `method(addprod, list(dynamicpv::class_dynpv,</span></span>
-<span><span class="co">#&gt; dynamicpv::class_dynpv))`(e1 = &lt;object&gt;, : Uptake vectors differ in length</span></span>
-<span><span class="co">#&gt; after trimming</span></span>
+<span><span class="co">#&gt; Warning in addprod(e1, e2, mult = -1): Uptake vectors differ in length after</span></span>
+<span><span class="co">#&gt; trimming</span></span>
 <span><span class="va">bi1_new</span> <span class="op">&lt;-</span> <span class="va">budget_with1_new</span></span>
 <span><span class="va">bi1</span> <span class="op">&lt;-</span> <span class="va">budget_with1</span> <span class="op">-</span> <span class="va">budget_wout1</span></span></code></pre></div>
 <p>The budgetary costs in the world with the new intervention are
@@ -327,15 +325,13 @@ intervention.</p>
 <span><span class="va">budget_with2_soc</span> <span class="op">&lt;-</span> <span class="va">with2_soc_daqcost</span> <span class="op">+</span> <span class="va">with2_soc_othcost</span></span>
 <span><span class="va">budget_with2_new</span> <span class="op">&lt;-</span> <span class="va">with2_new_daqcost</span> <span class="op">+</span> <span class="va">with2_new_othcost</span></span>
 <span><span class="va">budget_with2</span> <span class="op">&lt;-</span> <span class="va">budget_with2_soc</span> <span class="op">+</span> <span class="va">budget_with2_new</span></span>
-<span><span class="co">#&gt; Warning in `method(addprod, list(dynamicpv::class_dynpv,</span></span>
-<span><span class="co">#&gt; dynamicpv::class_dynpv))`(e1 = &lt;object&gt;, : Uptake vectors differ in length</span></span>
-<span><span class="co">#&gt; after trimming</span></span>
+<span><span class="co">#&gt; Warning in addprod(e1, e2, mult = 1): Uptake vectors differ in length after</span></span>
+<span><span class="co">#&gt; trimming</span></span>
 <span></span>
 <span><span class="co"># Budget impact</span></span>
 <span><span class="va">bi2_soc</span> <span class="op">&lt;-</span> <span class="va">budget_with2_soc</span> <span class="op">-</span> <span class="va">budget_wout2_soc</span></span>
-<span><span class="co">#&gt; Warning in `method(addprod, list(dynamicpv::class_dynpv,</span></span>
-<span><span class="co">#&gt; dynamicpv::class_dynpv))`(e1 = &lt;object&gt;, : Uptake vectors differ in length</span></span>
-<span><span class="co">#&gt; after trimming</span></span>
+<span><span class="co">#&gt; Warning in addprod(e1, e2, mult = -1): Uptake vectors differ in length after</span></span>
+<span><span class="co">#&gt; trimming</span></span>
 <span><span class="va">bi2_new</span> <span class="op">&lt;-</span> <span class="va">budget_with2_new</span></span>
 <span><span class="va">bi2</span> <span class="op">&lt;-</span> <span class="va">budget_with2</span> <span class="op">-</span> <span class="va">budget_wout2</span></span></code></pre></div>
 <p>The budgetary costs in the world with the new intervention are

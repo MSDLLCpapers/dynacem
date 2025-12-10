@@ -172,17 +172,17 @@ understand functionality.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $results</span></span>
-<span><span class="co">#&gt; This is a dynamicpv::class_dynpv S7 object, named NA . </span></span>
+<span><span class="co">#&gt; This is a dynpv S3 object, named NA . </span></span>
 <span><span class="co">#&gt;      Number of cohorts:             5 </span></span>
 <span><span class="co">#&gt;      Number of times:               1 </span></span>
 <span><span class="co">#&gt;      Total uptake:                  1 </span></span>
 <span><span class="co">#&gt;      Total present value:           610.4352 </span></span>
 <span><span class="co">#&gt;      Mean present value:            610.4352 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  The full dataset is available using @df.</span></span>
+<span><span class="co">#&gt;  The full dataset is available using $df.</span></span>
 <span></span>
 <span><span class="co"># Pull out result of interest</span></span>
-<span><span class="va">pv1</span><span class="op">$</span><span class="va">results</span><span class="op">@</span><span class="va">total</span></span>
+<span><span class="va">pv1</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="co">#&gt; [1] 610.4352</span></span></code></pre></div>
 <p>The calculation can be presented in a table as follows.</p>
 <table class="table">
@@ -271,7 +271,7 @@ calculate the NPV.</p>
 <span></span>
 <span><span class="co"># Calculate present value</span></span>
 <span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
-<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span><span class="op">@</span><span class="va">total</span></span>
+<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="co">#&gt; [1] 591.9954</span></span></code></pre></div>
 <p>The NPV of 592 could still have been calculated using base R
 functions.</p>
@@ -299,7 +299,7 @@ year.</p>
 <span></span>
 <span><span class="co"># Calculate present value</span></span>
 <span><span class="va">pv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
-<span><span class="va">pv3</span><span class="op">$</span><span class="va">results</span><span class="op">@</span><span class="va">total</span></span>
+<span><span class="va">pv3</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
 <span><span class="co">#&gt; [1] 463.6326</span></span></code></pre></div>
 <p>With this dynamic pricing change, the NPV has reduced by 0, from 464
 to 464. The corresponding base R code is shown below.</p>

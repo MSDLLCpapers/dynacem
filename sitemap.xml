@@ -10,7 +10,9 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
+<url><loc>/reference/addprod.html</loc></url>
 <url><loc>/reference/class_dynpv.html</loc></url>
+<url><loc>/reference/dot-dynpv.html</loc></url>
 <url><loc>/reference/dynamicpv-package.html</loc></url>
 <url><loc>/reference/dynpv.html</loc></url>
 <url><loc>/reference/futurepv.html</loc></url>
@@ -18,6 +20,7 @@
 <url><loc>/reference/get_param_value.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/oncpsm.html</loc></url>
+<url><loc>/reference/plus-.dynpv.html</loc></url>
 <url><loc>/reference/trim_vec.html</loc></url>
 </urlset>
 

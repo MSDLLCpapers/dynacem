@@ -119,7 +119,7 @@
     <h2>Value</h2>
     <p>A list containing <code>inputs</code> and <code>results</code>.
 The <code>inputs</code> list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.
-The <code>results</code> output is a <code><a href="class_dynpv.html">class_dynpv()</a></code> S7 object that contains the following elements:</p><ul><li><p><code>name</code>: Name given to the object</p></li>
+The <code>results</code> output is a "dynpv" object (created by <code><a href="class_dynpv.html">class_dynpv()</a></code>) that contains the following elements:</p><ul><li><p><code>name</code>: Name given to the object</p></li>
 <li><p><code>df</code>: Tibble of calculation results</p></li>
 <li><p><code>ncoh</code>: Number of cohorts of uptaking patients</p></li>
 <li><p><code>ntimes</code>: Number of times (unique values of tzero) at which calculations are performed</p></li>
@@ -173,14 +173,14 @@ The <code>results</code> output is a <code><a href="class_dynpv.html">class_dynp
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $results</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> This is a dynamicpv::class_dynpv S7 object, named NA . </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This is a dynpv S3 object, named NA . </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Number of cohorts:             10 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Number of times:               1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Total uptake:                  10 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Total present value:           15869.53 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Mean present value:            1586.953 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  The full dataset is available using @df. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  The full dataset is available using $df. </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
