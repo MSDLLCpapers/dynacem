@@ -474,12 +474,12 @@ s1_new_qaly <- dynamicpv::dynpv(
     )$results
 
 # Incrementals
-s1_icost <- s1_new_cost@total - s1_soc_cost@total
-s1_iqaly <- s1_new_qaly@total - s1_soc_qaly@total
+s1_icost <- s1_new_cost$total - s1_soc_cost$total
+s1_iqaly <- s1_new_qaly$total - s1_soc_qaly$total
 s1_icer <- s1_icost / s1_iqaly
 ```
 
-These results show that the new intervention is associated with $`r s1_icost` incremental costs relative to the standard of care (including $`r s1_new_daqcost@total` of drug acquisition costs for the new intervention) and `r s1_iqaly` incremental QALYs. The cumulative ICER (incremental cost per QALY) is $`r s1_icer` per QALY at the 20 year time horizon.
+These results show that the new intervention is associated with $`r s1_icost` incremental costs relative to the standard of care (including $`r s1_new_daqcost$total` of drug acquisition costs for the new intervention) and `r s1_iqaly` incremental QALYs. The cumulative ICER (incremental cost per QALY) is $`r s1_icer` per QALY at the 20 year time horizon.
 
 ### Scenario 2: Dynamic pricing, no dynamic uptake
 
@@ -514,8 +514,8 @@ s2_new_cost <- s2_new_daqcost + s2_new_othcost
 s2_new_qaly <- s1_new_qaly
 
 # Incrementals
-s2_icost <- s2_new_cost@total - s2_soc_cost@total
-s2_iqaly <- s2_new_qaly@total - s2_soc_qaly@total
+s2_icost <- s2_new_cost$total - s2_soc_cost$total
+s2_iqaly <- s2_new_qaly$total - s2_soc_qaly$total
 s2_icer <- s2_icost / s2_iqaly
 ```
 
@@ -575,8 +575,8 @@ s3_new_qaly <- dynamicpv::dynpv(
     )$results
 
 # Incrementals
-s3_icost <- s3_new_cost@total - s3_soc_cost@total
-s3_iqaly <- s3_new_qaly@total - s3_soc_qaly@total
+s3_icost <- s3_new_cost$total - s3_soc_cost$total
+s3_iqaly <- s3_new_qaly$total - s3_soc_qaly$total
 s3_icer <- s3_icost / s3_iqaly
 ```
 
@@ -616,8 +616,8 @@ s4_new_cost <- s4_new_daqcost + s4_new_othcost
 s4_new_qaly <- s3_new_qaly
 
 # Incrementals
-s4_icost <- s4_new_cost@total - s4_soc_cost@total
-s4_iqaly <- s4_new_qaly@total - s4_soc_qaly@total
+s4_icost <- s4_new_cost$total - s4_soc_cost$total
+s4_iqaly <- s4_new_qaly$total - s4_soc_qaly$total
 s4_icer <- s4_icost / s4_iqaly
 ```
 
@@ -633,20 +633,20 @@ Total costs and QALYs for each scenario are summarized in the table below. The r
 | Dynamic uptake? || No | No | Yes | Yes |
 | Cohort size || 1 | 1 | `r sum(uptake_multi)` | `r sum(uptake_multi)` |
 | Total costs (cohort) | | ||||
-| | New intervention | `r s1_new_cost@total` | `r s2_new_cost@total` | `r s3_new_cost@total` | `r s4_new_cost@total` |
-| | Standard of care | `r s1_soc_cost@total` | `r s2_soc_cost@total` | `r s3_soc_cost@total` | `r s4_soc_cost@total` |
+| | New intervention | `r s1_new_cost$total` | `r s2_new_cost$total` | `r s3_new_cost$total` | `r s4_new_cost$total` |
+| | Standard of care | `r s1_soc_cost$total` | `r s2_soc_cost$total` | `r s3_soc_cost$total` | `r s4_soc_cost$total` |
 | | Incremental | `r s1_icost` | `r s2_icost` | `r s3_icost` | `r s4_icost` |
 | Total costs (per patient) | | ||||
-| | New intervention | `r s1_new_cost@total` | `r s2_new_cost@total` | `r s3_new_cost@total/sum(uptake_multi)` | `r s4_new_cost@total/sum(uptake_multi)` |
-| | Standard of care | `r s1_soc_cost@total` | `r s2_soc_cost@total` | `r s3_soc_cost@total/sum(uptake_multi)` | `r s4_soc_cost@total/sum(uptake_multi)` |
+| | New intervention | `r s1_new_cost$total` | `r s2_new_cost$total` | `r s3_new_cost$total/sum(uptake_multi)` | `r s4_new_cost$total/sum(uptake_multi)` |
+| | Standard of care | `r s1_soc_cost$total` | `r s2_soc_cost$total` | `r s3_soc_cost$total/sum(uptake_multi)` | `r s4_soc_cost$total/sum(uptake_multi)` |
 | | Incremental | `r s1_icost` | `r s2_icost` | `r s3_icost/sum(uptake_multi)` | `r s4_icost/sum(uptake_multi)` |
 | Total QALYs (cohort) | ||||
-| | New intervention | `r s1_new_qaly@total` | `r s2_new_qaly@total` | `r s3_new_qaly@total` | `r s4_new_qaly@total` |
-| | Standard of care | `r s1_soc_qaly@total` | `r s2_soc_qaly@total` | `r s3_soc_qaly@total` | `r s4_soc_qaly@total` |
+| | New intervention | `r s1_new_qaly$total` | `r s2_new_qaly$total` | `r s3_new_qaly$total` | `r s4_new_qaly$total` |
+| | Standard of care | `r s1_soc_qaly$total` | `r s2_soc_qaly$total` | `r s3_soc_qaly$total` | `r s4_soc_qaly$total` |
 | | Incremental | `r s1_iqaly` | `r s2_iqaly` | `r s3_iqaly` | `r s4_iqaly` |
 | Total QALYs (per patient) | ||||
-| | New intervention | `r s1_new_qaly@total` | `r s2_new_qaly@total` | `r s3_new_qaly@total/sum(uptake_multi)` | `r s4_new_qaly@total/sum(uptake_multi)` |
-| | Standard of care | `r s1_soc_qaly@total` | `r s2_soc_qaly@total` | `r s3_soc_qaly@total/sum(uptake_multi)` | `r s4_soc_qaly@total/sum(uptake_multi)` |
+| | New intervention | `r s1_new_qaly$total` | `r s2_new_qaly$total` | `r s3_new_qaly$total/sum(uptake_multi)` | `r s4_new_qaly$total/sum(uptake_multi)` |
+| | Standard of care | `r s1_soc_qaly$total` | `r s2_soc_qaly$total` | `r s3_soc_qaly$total/sum(uptake_multi)` | `r s4_soc_qaly$total/sum(uptake_multi)` |
 | | Incremental | `r s1_iqaly` | `r s2_iqaly` | `r s3_iqaly/sum(uptake_multi)` | `r s4_iqaly/sum(uptake_multi)` |
 | ICER | | `r s1_icer` | `r s2_icer` | `r s3_icer` | `r s4_icer` |
 
@@ -710,8 +710,8 @@ ds <- dplyr::tibble(
     totcost_new = gc_new_daq + gc_new_oth,
     totcost_soc = gc_soc_daq + gc_soc_oth,
     # Scenario 1/2 QALYs
-    qaly_soc = s1_soc_qaly@total,
-    qaly_new = s1_new_qaly@total
+    qaly_soc = s1_soc_qaly$total,
+    qaly_new = s1_new_qaly$total
   ) |>
   dplyr::mutate(
     # Incremental cost and QALYs
@@ -752,11 +752,11 @@ ggplot2::ggplot(ds,
 
 The findings for this example model are as follows:
 
-- The effect of assuming dynamic pricing rather than flat pricing over time is shown in the difference between results of scenarios 1 and 2. Scenario 1 assumed no increases in drug acquisition costs, but inflationary increases in other costs. Scenario 2 additionally assumed drug prices of the new intervention and SoC comparator would be eroded due to losses of exclusivity. This has a material impact on costs per patient of the new intervention (reducing from $`r s1_new_cost@total` to $`r s2_new_cost@total`). Accordingly the ICER reduces from $`r s1_icer` to $`r s2_icer` per QALY.
+- The effect of assuming dynamic pricing rather than flat pricing over time is shown in the difference between results of scenarios 1 and 2. Scenario 1 assumed no increases in drug acquisition costs, but inflationary increases in other costs. Scenario 2 additionally assumed drug prices of the new intervention and SoC comparator would be eroded due to losses of exclusivity. This has a material impact on costs per patient of the new intervention (reducing from $`r s1_new_cost$total` to $`r s2_new_cost$total`). Accordingly the ICER reduces from $`r s1_icer` to $`r s2_icer` per QALY.
 
-- The effect of modeling uptake dynamically rather than just the current cohort of patients is shown in the difference between results of scenarios 1 and 3. Dynamic modeling of uptake has the effect of weighting the costs and QALYs per patient in scenario 3 towards a later cohort of patients, where the accumulation of costs and QALYs over the time remaining in the payer's 20 year time horizon will be less. The incremental costs per patient reduced from $`r s1_new_cost@total` in scenario 1 to $`r s3_new_cost@total/sum(uptake_multi)` in scenario 3, whereas the incremental QALYs reduced from `r s1_new_qaly@total` to `r s3_new_qaly@total/sum(uptake_multi)` per patient. Overall, the ICER increased slightly from $`r s1_icer` to $`r s3_icer` per QALY.
+- The effect of modeling uptake dynamically rather than just the current cohort of patients is shown in the difference between results of scenarios 1 and 3. Dynamic modeling of uptake has the effect of weighting the costs and QALYs per patient in scenario 3 towards a later cohort of patients, where the accumulation of costs and QALYs over the time remaining in the payer's 20 year time horizon will be less. The incremental costs per patient reduced from $`r s1_new_cost$total` in scenario 1 to $`r s3_new_cost$total/sum(uptake_multi)` in scenario 3, whereas the incremental QALYs reduced from `r s1_new_qaly$total` to `r s3_new_qaly$total/sum(uptake_multi)` per patient. Overall, the ICER increased slightly from $`r s1_icer` to $`r s3_icer` per QALY.
 
-- The effects of dynamic pricing and dynamic uptake are extremely synergistic. Scenario 4 illustrates the effects of both dynamic pricing and cohort modeling. The results per patient are identical to scenario 3, except that the cost per patient of the new intervention reduces from $`r s3_new_cost@total/sum(uptake_multi)` to $`r s4_new_cost@total/sum(uptake_multi)`, due to the impact of dynamic pricing. The ICER in this case is reduced considerably to $`r s4_icer` per QALY.
+- The effects of dynamic pricing and dynamic uptake are extremely synergistic. Scenario 4 illustrates the effects of both dynamic pricing and cohort modeling. The results per patient are identical to scenario 3, except that the cost per patient of the new intervention reduces from $`r s3_new_cost$total/sum(uptake_multi)` to $`r s4_new_cost$total/sum(uptake_multi)`, due to the impact of dynamic pricing. The ICER in this case is reduced considerably to $`r s4_icer` per QALY.
 
 - As shown in the Figure, the ICER increases a little at first, as we approach the LoE of the standard of care comparator. After all, a cheaper comparator will increase the incremental cost of the new treatment. However, this is soon dwarfed by the effect of the LoE of the new treatment, which occurs later. This reduces the ICER significantly as the LoE approaches. Thereafter, the ICER is constant in real terms (but increasing with price inflation in nominal terms).
 

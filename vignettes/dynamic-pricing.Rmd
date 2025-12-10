@@ -66,7 +66,7 @@ pv1 <- dynpv(payoffs=cashflow, discrate=disc)
 pv1
 
 # Pull out result of interest
-pv1$results@total
+pv1$results$total
 ```
 
 The calculation can be presented in a table as follows.
@@ -83,7 +83,7 @@ The calculation can be presented in a table as follows.
 
 : Calculation of NPV from a simple cashflow and given discount rate
 
-The present value of this cashflow is `r pv1$results@total`. The same result could have been found more easily than invoking this package.
+The present value of this cashflow is `r pv1$results$total`. The same result could have been found more easily than invoking this package.
 
 ```{r simpler}
 sum(vt1 * cashflow)
@@ -106,10 +106,10 @@ nomdisc <- (1+disc)*1.025-1
 
 # Calculate present value
 pv2 <- dynpv(payoffs=cashflow, prices=pindex, discrate=nomdisc)
-pv2$results@total
+pv2$results$total
 ```
 
-The NPV of `r pv2$results@total` could still have been calculated using base R functions.
+The NPV of `r pv2$results$total` could still have been calculated using base R functions.
 
 ```{r calc2b}
 # Compare with more base calculations
@@ -128,10 +128,10 @@ pindex
 
 # Calculate present value
 pv3 <- dynpv(payoffs=cashflow, prices=pindex, discrate=nomdisc)
-pv3$results@total
+pv3$results$total
 ```
 
-With this dynamic pricing change, the NPV has reduced by `r pv3$results@total-pv3$results@total`, from `r pv3$results@total` to `r pv3$results@total`. The corresponding base R code is shown below.
+With this dynamic pricing change, the NPV has reduced by `r pv3$results$total - pv3$results$total`, from `r pv3$results$total` to `r pv3$results$total`. The corresponding base R code is shown below.
 
 ```{r calc3b}
 # Compare with more base calculations
