@@ -7,3 +7,8 @@
 ^doc$
 ^Meta$
 ^docs$
+^LICENSES-THIRD-PARTY\.md$
+^codecov\.yml$
+^pkg\.lock$
+^pkgdown$
+^sticker\.png$
