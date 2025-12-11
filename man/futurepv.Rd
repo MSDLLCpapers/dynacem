@@ -16,26 +16,25 @@ futurepv(tzero = 0, payoffs, prices, discrate)
 \item{discrate}{Discount rate per timestep, corresponding to price index}
 }
 \value{
-A list \code{inputs}, \code{results} and \code{pv}.
-The \code{inputs} list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
-The \code{results} output is a "dynpv" object (created by \code{\link[=class_dynpv]{class_dynpv()}}) that contains the following elements:
+A tibble of class "dynpv" with the following columns:
 \itemize{
-\item \code{name}: Name given to the object
-\item \code{df}: Tibble of calculation results
-\item \code{ncoh}: Number of cohorts of uptaking patients (always 1)
-\item \code{ntimes}: Number of times (unique values of tzero) at which calculations are performed
-\item \code{uptake}: Total number of uptaking patients (always 1)
-\item \code{total}: Total present value
-\item \code{mean}: Average present value per uptaking patient (=total/uptake)
-\item \code{sum_by_coh}: Tibble of summarized calculation results for each uptake cohort
-\item \code{inputs}: list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
-The \code{pv} output is numeric, a convenience value equal to \verb{$results$mean}.
+\item \code{j}: todo
+\item \code{k}: todo
+\item \code{l}: todo
+\item \code{t}: todo
+\item \code{uj}: todo
+\item \code{pk}: todo
+\item \code{R}: todo
+\item \code{v}: todo
+\item \code{pv}: todo
 }
 }
 \description{
 Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for \code{\link[=dynpv]{dynpv()}} restricted to evaluation of a single cohort.
 }
 \examples{
+library(dplyr)
+
 # Obtain dataset
 democe <- get_dynfields(
    heemodel = oncpsm,
@@ -48,8 +47,8 @@ discrate <- get_param_value(oncpsm, "disc")
 
 # Obtain payoff vector of interest
 payoffs <- democe |>
-   dplyr::filter(int=="new") |>
-   dplyr::mutate(cost_oth_rup = cost_total_rup - cost_daq_new_rup)
+   filter(int=="new") |>
+   mutate(cost_oth_rup = cost_total_rup - cost_daq_new_rup)
 Nt <- nrow(payoffs)
 
 # Run calculation for times 0-9
@@ -59,8 +58,8 @@ fpv <- futurepv(
   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3\% every 52 steps
   discrate = 0.001 + discrate
 )
-fpv$results
-fpv$pv
+fpv
+summary(fpv)
 }
 \seealso{
 \code{\link[=dynpv]{dynpv()}}

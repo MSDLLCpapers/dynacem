@@ -10,8 +10,7 @@ dynpv(
   horizon = length(payoffs),
   tzero = 0,
   prices = rep(1, length(payoffs) + tzero),
-  discrate = 0,
-  dpv_name = NA_character_
+  discrate = 0
 )
 }
 \arguments{
@@ -26,28 +25,27 @@ dynpv(
 \item{prices}{Vector of price indices through the time horizon of interest}
 
 \item{discrate}{Discount rate per timestep, corresponding to price index}
-
-\item{dpv_name}{Name to be given to Dynamic Present Value object created by this function call}
 }
 \value{
-A list containing \code{inputs} and \code{results}.
-The \code{inputs} list contains a list of the following parameters called with the function: \verb{uptakes, payoffs, horizon, tzero, prices}, and \code{discrate}.
-The \code{results} output is a "dynpv" object (created by \code{\link[=class_dynpv]{class_dynpv()}}) that contains the following elements:
+A tibble of class "dynpv" with the following columns:
 \itemize{
-\item \code{name}: Name given to the object
-\item \code{df}: Tibble of calculation results
-\item \code{ncoh}: Number of cohorts of uptaking patients
-\item \code{ntimes}: Number of times (unique values of tzero) at which calculations are performed
-\item \code{uptake}: Total number of uptaking patients
-\item \code{total}: Total present value
-\item \code{mean}: Average present value per uptaking patient (=total/uptake)
-\item \code{sum_by_coh}: Tibble of summarized calculation results for each uptake cohort
+\item \code{j}: todo
+\item \code{k}: todo
+\item \code{l}: todo
+\item \code{t}: todo
+\item \code{uj}: todo
+\item \code{pk}: todo
+\item \code{R}: todo
+\item \code{v}: todo
+\item \code{pv}: todo
 }
 }
 \description{
 Present value of a payoff affected by dynamic pricing, with uptake across multiple cohorts (dynamic uptake)
 }
 \examples{
+library(dplyr)
+
 # Obtain dataset
 democe <- get_dynfields(
    heemodel = oncpsm,
@@ -57,15 +55,17 @@ democe <- get_dynfields(
 
 # Obtain short payoff vector of interest
 payoffs <- democe |>
-   dplyr::filter(int=="new", model_time<11) |>
-   dplyr::mutate(cost_oth = cost_total - cost_daq_new)
+   filter(int=="new", model_time<11) |>
+   mutate(cost_oth = cost_total - cost_daq_new)
 Nt <- nrow(payoffs)
 
 # Example calculation
-dynpv(
+pv <- dynpv(
    uptakes = rep(1, Nt),
    payoffs = payoffs$cost_oth,
    prices = 1 + (0:(Nt-1))*0.05,
-   discrate = 0.08 
+   discrate = 0.08
 )
+pv
+summary(pv)
 }
