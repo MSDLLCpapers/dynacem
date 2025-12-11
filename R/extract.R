@@ -15,8 +15,6 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  =====================================================================
 
 ## Collection of functions to extract payoffs from other systems, e.g. heemod
 ## ==========================================================================
@@ -27,11 +25,10 @@
 #' @param discount Name of parameter providing discount rate per cycle (string)
 #' @param fname Export data to a .CSV file of this name, if given (character)
 #' @returns Tibble of payoffs taken from the heemod model, by intervention and model timestep (`model_time`).
-#' 
+#'
 #' The field `vt` is calculated as `(1+i)^(1-model_time)`, where `i` is the discount rate per model timestep set in the *heemod* model through the parameter `disc_cycle`. This can be useful in 'rolling-up' payoff values to the timestep in which they were incurred.
-#' 
+#'
 #' An additional set of payoffs (identified with a "_rup" suffix) provides calculations of the payoffs as at the start of the timestep in which they were incurred, i.e. original payoff / `vt`.
-#' @importFrom rlang .data
 #' @seealso [heemod::heemod-package]
 #' @export
 #' @examples
@@ -53,21 +50,21 @@ get_dynfields <- function(heemodel, payoffs, discount, fname=NA){
   # Pull in tibble into list for each intervention
   for (i in seq(int)){
     ds[[i]] <- heemodel$eval_strategy_list[[int[i]]]$values |>
-      dplyr::as_tibble() |>
-      dplyr::select(c("model_time", dplyr::all_of(payoffs))) |>
-      dplyr::mutate(int = int[i])
+      as_tibble() |>
+      select(c("model_time", all_of(payoffs))) |>
+      mutate(int = int[i])
   }
   # Unnest
-  ds <- dplyr::bind_rows(ds) |>
+  ds <- bind_rows(ds) |>
     # Add discounting variable
-    dplyr::mutate(vt = (1 + discrate)^(1 - model_time))
+    mutate(vt = (1 + discrate)^(1 - model_time))
   # Create rolled-up variables, with "r" prefix to their name
   rs <- ds |>
-    dplyr::mutate(dplyr::across(dplyr::all_of(payoffs), ~.x/vt))
+    mutate(across(all_of(payoffs), ~.x/vt))
   # Join the rolled-up data to the original data
   ds <- ds |>
-    dplyr::left_join(rs, by=c("model_time", "int"), suffix=c("", "_rup")) |>
-    dplyr::select(-vt_rup)
+    left_join(rs, by=c("model_time", "int"), suffix=c("", "_rup")) |>
+    select(-vt_rup)
   # Export as CSV
   if (!is.na(fname)) {readr::write_csv(ds, file=paste0(fname, ".csv"))}
   # Return

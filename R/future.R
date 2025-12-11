@@ -15,48 +15,35 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  =====================================================================
 
 ## Convenience function to calculate 'future' cost-effectiveness results
 ## ========================================================================
 
 #' Calculate present value for a payoff in a single cohort with dynamic pricing across multiple timepoints
-#' 
+#'
 #' Present value of a series of payoffs for a single given cohort, entering at given future time, allowing for dynamic pricing. This function is a wrapper for [dynpv()] restricted to evaluation of a single cohort.
-#' @inheritParams dynpv
 #' @seealso [dynpv()]
-#' @returns A list `inputs`, `results` and `pv`.
-#' The `inputs` list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' The `results` output is a "dynpv" object (created by [class_dynpv()]) that contains the following elements:
-#' - `name`: Name given to the object
-#' - `df`: Tibble of calculation results
-#' - `ncoh`: Number of cohorts of uptaking patients (always 1)
-#' - `ntimes`: Number of times (unique values of tzero) at which calculations are performed 
-#' - `uptake`: Total number of uptaking patients (always 1)
-#' - `total`: Total present value
-#' - `mean`: Average present value per uptaking patient (=total/uptake)
-#' - `sum_by_coh`: Tibble of summarized calculation results for each uptake cohort
-#' - `inputs`: list contains a list of the following parameters called with the function: `uptakes, payoffs, horizon, tzero, prices`, and `discrate`. 
-#' The `pv` output is numeric, a convenience value equal to `$results$mean`.
+#' @inherit dynpv params return
 #' @export
 #' @examples
+#' library(dplyr)
+#'
 #' # Obtain dataset
 #' democe <- get_dynfields(
 #'    heemodel = oncpsm,
 #'    payoffs = c("cost_daq_new", "cost_total", "qaly"),
 #'    discount = "disc"
 #'    )
-#' 
+#'
 #' # Obtain discount rate
 #' discrate <- get_param_value(oncpsm, "disc")
-#' 
+#'
 #' # Obtain payoff vector of interest
 #' payoffs <- democe |>
-#'    dplyr::filter(int=="new") |>
-#'    dplyr::mutate(cost_oth_rup = cost_total_rup - cost_daq_new_rup)
+#'    filter(int=="new") |>
+#'    mutate(cost_oth_rup = cost_total_rup - cost_daq_new_rup)
 #' Nt <- nrow(payoffs)
-#' 
+#'
 #' # Run calculation for times 0-9
 #' fpv <- futurepv(
 #'   tzero = (0:9)*52,
@@ -64,22 +51,16 @@
 #'   prices = 1.001^(1:(2*Nt)-1), # Approx 5.3% every 52 steps
 #'   discrate = 0.001 + discrate
 #' )
-#' fpv$results
-#' fpv$pv
+#' fpv
+#' summary(fpv)
 futurepv <- function(tzero=0, payoffs, prices, discrate){
   # Wrapper for dynpv with uptakes=1 and horizon=length(payoffs)
-  dpv <- dynpv(
+  dynpv(
     uptakes = 1,
     payoffs = payoffs,
     horizon = length(payoffs),
     tzero = tzero,
     prices = prices,
     discrate = discrate
-  )
-  # Only return useful outputs
-  list(
-    inputs = dpv$inputs,
-    results = dpv$results,
-    pv = dpv$results$mean
   )
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/oop.R
 \name{addprod}
 \alias{addprod}
-\title{Method to add two class_dynpv S7 objects together}
+\title{Method to add two dynpv objects together}
 \usage{
 addprod(e1, e2, mult)
 }

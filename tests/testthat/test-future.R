@@ -9,7 +9,7 @@ democe <- get_dynfields(
 
 # Get discount rate
 discrate <- get_param_value(oncpsm, "disc")
- 
+
 # Obtain payoff vector of interest
 payoffs <- democe |>
    dplyr::filter(int=="new") |>
@@ -24,11 +24,11 @@ test_that("Simple calculation works", {
       payoffs = payoffs$cost_oth,
       prices = rep(1, 2*Nt),
       discrate = discrate
-      )$pv$mean
+      )
   # Expected
   exp_val1 <- rep(sum(payoffs$cost_total - payoffs$cost_daq_new), 10)
   # Test
-  expect_equal(act_val1, exp_val1)
+  expect_equal(mean(act_val1)[[2]], exp_val1)
 })
 
 # More complex calculations - different time horizon
@@ -39,29 +39,29 @@ test_that("Complex calculation works", {
     payoffs = payoffs$cost_oth[1:(Nt/2)],
     prices = rep(1, 2*Nt),
     discrate = discrate
-  )$pv
+  )
   # Expected
   exp_val2 <- sum((payoffs$cost_total - payoffs$cost_daq_new)[1:(Nt/2)])
   # Tests
-  expect_equal(act_val2, exp_val2)
+  expect_equal(mean(act_val2), exp_val2)
 })
 
 # 10. No error when running print
-test_that("No error when applying print", {
+test_that("No error when applying print summary", {
   # Some sample dynpv values
   fpv1 <- futurepv(
     tzero = 0,
     payoffs = payoffs$cost_oth[1:(Nt/2)],
     prices = rep(1, 2*Nt),
     discrate = discrate
-  )$results
+  )
   fpv2 <- futurepv(
       tzero = 0:9,
       payoffs = payoffs$cost_oth,
       prices = rep(1, 2*Nt),
       discrate = discrate
-      )$results
+      )
   # Check no error
-  expect_no_error(print(fpv1))
-  expect_no_error(print(fpv2))
+  expect_no_error(print(summary(fpv1)))
+  expect_no_error(print(summary(fpv2)))
 })
