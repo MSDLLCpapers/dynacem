@@ -247,6 +247,7 @@ single cohorts by <code><a href="../reference/futurepv.html">dynamicpv::futurepv
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chjackson/flexsurv" class="external-link">flexsurv</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://aphp.github.io/heemod/" class="external-link">heemod</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/" class="external-link">dynamicpv</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -521,7 +522,7 @@ one year.</li>
 <span></span>
 <span><span class="co"># Create a tibble of price indices of length 2T, then pull out columns as needed</span></span>
 <span><span class="co"># We only need of length T for now, but need of length 2T for future calculations later</span></span>
-<span><span class="va">pricetib</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="va">pricetib</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  model_time <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">Ncycles</span><span class="op">)</span>,</span>
 <span>  model_year <span class="op">=</span> <span class="va">model_time</span> <span class="op">*</span> <span class="va">cycle_years</span>,</span>
 <span>  static <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -636,7 +637,7 @@ what <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> requi
 <span>    payoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cost_daq_new"</span>, <span class="st">"cost_daq_soc"</span>, <span class="st">"cost_total"</span>, <span class="st">"qaly"</span>, <span class="st">"life_year"</span><span class="op">)</span>,</span>
 <span>    discount <span class="op">=</span> <span class="st">"disc"</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>      model_years <span class="op">=</span> <span class="va">model_time</span> <span class="op">*</span> <span class="va">cycle_years</span>,</span>
 <span>      <span class="co"># Derive costs other than drug acquisition, as at time zero</span></span>
 <span>      cost_nondaq <span class="op">=</span> <span class="va">cost_total</span> <span class="op">-</span> <span class="va">cost_daq_new</span> <span class="op">-</span> <span class="va">cost_daq_soc</span>,</span>
@@ -645,7 +646,7 @@ what <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> requi
 <span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create and view dataset for SoC</span></span>
-<span><span class="va">hemout_soc</span> <span class="op">&lt;-</span> <span class="va">payoffs</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"soc"</span><span class="op">)</span></span>
+<span><span class="va">hemout_soc</span> <span class="op">&lt;-</span> <span class="va">payoffs</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"soc"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hemout_soc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 16</span></span></span>
 <span><span class="co">#&gt;   model_time cost_daq_new cost_daq_soc cost_total   qaly life_year int      vt</span></span>
@@ -661,7 +662,7 @@ what <code><a href="../reference/dynpv.html">dynamicpv::dynpv()</a></code> requi
 <span><span class="co">#&gt; <span style="color: #949494;">#   model_years &lt;dbl&gt;, cost_nondaq &lt;dbl&gt;, cost_nondaq_rup &lt;dbl&gt;</span></span></span>
 <span></span>
 <span><span class="co"># Create and view dataset for new intervention</span></span>
-<span><span class="va">hemout_new</span> <span class="op">&lt;-</span> <span class="va">payoffs</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">)</span></span>
+<span><span class="va">hemout_new</span> <span class="op">&lt;-</span> <span class="va">payoffs</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hemout_new</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 16</span></span></span>
 <span><span class="co">#&gt;   model_time cost_daq_new cost_daq_soc cost_total   qaly life_year int      vt</span></span>
@@ -696,14 +697,14 @@ risk-free real rate (<code>discrate=disc_cycle</code>).</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s1_soc_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
 <span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s1_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s1_soc_daqcost</span> <span class="op">+</span> <span class="va">s1_soc_othcost</span></span>
 <span></span>
@@ -712,7 +713,7 @@ risk-free real rate (<code>discrate=disc_cycle</code>).</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># New intervention</span></span>
 <span></span>
@@ -721,14 +722,14 @@ risk-free real rate (<code>discrate=disc_cycle</code>).</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s1_new_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
 <span>    uptakes <span class="op">=</span> <span class="va">uptake_single</span>,</span>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s1_new_cost</span> <span class="op">&lt;-</span> <span class="va">s1_new_daqcost</span> <span class="op">+</span> <span class="va">s1_new_othcost</span></span>
 <span></span>
@@ -737,11 +738,11 @@ risk-free real rate (<code>discrate=disc_cycle</code>).</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s1_icost</span> <span class="op">&lt;-</span> <span class="va">s1_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s1_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
-<span><span class="va">s1_iqaly</span> <span class="op">&lt;-</span> <span class="va">s1_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s1_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s1_icost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s1_new_cost</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s1_soc_cost</span><span class="op">)</span></span>
+<span><span class="va">s1_iqaly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s1_new_qaly</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s1_soc_qaly</span><span class="op">)</span></span>
 <span><span class="va">s1_icer</span> <span class="op">&lt;-</span> <span class="va">s1_icost</span> <span class="op">/</span> <span class="va">s1_iqaly</span></span></code></pre></div>
 <p>These results show that the new intervention is associated with
 $117,034 incremental costs relative to the standard of care (including
@@ -766,7 +767,7 @@ Otherwise costs and QALYs are unchanged from Scenario 1.</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s2_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s2_soc_daqcost</span> <span class="op">+</span> <span class="va">s2_soc_othcost</span></span>
 <span><span class="va">s2_soc_qaly</span> <span class="op">&lt;-</span> <span class="va">s1_soc_qaly</span></span>
@@ -780,14 +781,14 @@ Otherwise costs and QALYs are unchanged from Scenario 1.</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_dyn_new</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s2_new_cost</span> <span class="op">&lt;-</span> <span class="va">s2_new_daqcost</span> <span class="op">+</span> <span class="va">s2_new_othcost</span></span>
 <span><span class="va">s2_new_qaly</span> <span class="op">&lt;-</span> <span class="va">s1_new_qaly</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s2_icost</span> <span class="op">&lt;-</span> <span class="va">s2_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s2_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
-<span><span class="va">s2_iqaly</span> <span class="op">&lt;-</span> <span class="va">s2_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s2_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s2_icost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s2_new_cost</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s2_soc_cost</span><span class="op">)</span></span>
+<span><span class="va">s2_iqaly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s2_new_qaly</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s2_soc_qaly</span><span class="op">)</span></span>
 <span><span class="va">s2_icer</span> <span class="op">&lt;-</span> <span class="va">s2_icost</span> <span class="op">/</span> <span class="va">s2_iqaly</span></span></code></pre></div>
 <p>Under scenario 2, the new intervention has an incremental
 cost-effectiveness of $124,059 per QALY (incremental costs of $114,820,
@@ -806,14 +807,14 @@ for dynamic uptake, which is handled by setting
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s3_soc_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
 <span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s3_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s3_soc_daqcost</span> <span class="op">+</span> <span class="va">s3_soc_othcost</span></span>
 <span></span>
@@ -822,7 +823,7 @@ for dynamic uptake, which is handled by setting
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># New intervention</span></span>
 <span><span class="va">s3_new_othcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
@@ -830,14 +831,14 @@ for dynamic uptake, which is handled by setting
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s3_new_daqcost</span> <span class="op">&lt;-</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
 <span>    uptakes <span class="op">=</span> <span class="va">uptake_multi</span>,</span>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s3_new_cost</span> <span class="op">&lt;-</span> <span class="va">s3_new_daqcost</span> <span class="op">+</span> <span class="va">s3_new_othcost</span></span>
 <span></span>
@@ -846,11 +847,11 @@ for dynamic uptake, which is handled by setting
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">qaly_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">disc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s3_icost</span> <span class="op">&lt;-</span> <span class="va">s3_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s3_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
-<span><span class="va">s3_iqaly</span> <span class="op">&lt;-</span> <span class="va">s3_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s3_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s3_icost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s3_new_cost</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s3_soc_cost</span><span class="op">)</span></span>
+<span><span class="va">s3_iqaly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s3_new_qaly</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s3_soc_qaly</span><span class="op">)</span></span>
 <span><span class="va">s3_icer</span> <span class="op">&lt;-</span> <span class="va">s3_icost</span> <span class="op">/</span> <span class="va">s3_iqaly</span></span></code></pre></div>
 <p>Under scenario 3, the new intervention has an incremental
 cost-effectiveness of $149,782 per QALY (incremental costs of
@@ -873,7 +874,7 @@ costs and QALYs are unchanged from Scenario 3.</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s4_soc_cost</span> <span class="op">&lt;-</span> <span class="va">s4_soc_daqcost</span> <span class="op">+</span> <span class="va">s4_soc_othcost</span></span>
 <span></span>
@@ -888,14 +889,14 @@ costs and QALYs are unchanged from Scenario 3.</p>
 <span>    payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_dyn_new</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="va">s4_new_cost</span> <span class="op">&lt;-</span> <span class="va">s4_new_daqcost</span> <span class="op">+</span> <span class="va">s4_new_othcost</span></span>
 <span><span class="va">s4_new_qaly</span> <span class="op">&lt;-</span> <span class="va">s3_new_qaly</span></span>
 <span></span>
 <span><span class="co"># Incrementals</span></span>
-<span><span class="va">s4_icost</span> <span class="op">&lt;-</span> <span class="va">s4_new_cost</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s4_soc_cost</span><span class="op">$</span><span class="va">total</span></span>
-<span><span class="va">s4_iqaly</span> <span class="op">&lt;-</span> <span class="va">s4_new_qaly</span><span class="op">$</span><span class="va">total</span> <span class="op">-</span> <span class="va">s4_soc_qaly</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="va">s4_icost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s4_new_cost</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s4_soc_cost</span><span class="op">)</span></span>
+<span><span class="va">s4_iqaly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s4_new_qaly</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s4_soc_qaly</span><span class="op">)</span></span>
 <span><span class="va">s4_icer</span> <span class="op">&lt;-</span> <span class="va">s4_icost</span> <span class="op">/</span> <span class="va">s4_iqaly</span></span></code></pre></div>
 <p>Under scenario 4, the new intervention has an incremental
 cost-effectiveness of $94,570 per QALY (incremental costs of
@@ -1103,42 +1104,42 @@ calculate the ICER, given the incremental QALYs we have already observed
 <span><span class="va">gtimes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">thoz</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="va">cycle_years</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co"># SOC drug acquisition costs</span></span>
 <span><span class="va">gc_soc_daq</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
 <span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
 <span>        payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_daq_soc_rup</span>,</span>
 <span>        prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
 <span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span>    <span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># SOC other costs</span></span>
 <span><span class="va">gc_soc_oth</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
 <span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
 <span>        payoffs <span class="op">=</span> <span class="va">hemout_soc</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
 <span>        prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
 <span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span>    <span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># New drug acquisition costs</span></span>
 <span><span class="va">gc_new_daq</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
 <span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
 <span>        payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_daq_new_rup</span>,</span>
 <span>        prices <span class="op">=</span> <span class="va">prices_dyn_new</span>,</span>
 <span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span>    <span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># New other costs</span></span>
 <span><span class="va">gc_new_oth</span> <span class="op">&lt;-</span> <span class="va">gtimes</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu">dynamicpv</span><span class="fu">::</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
+<span>    <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_vec</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">l</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="../reference/futurepv.html">futurepv</a></span><span class="op">(</span></span>
 <span>        tzero <span class="op">=</span> <span class="va">l</span>,</span>
 <span>        payoffs <span class="op">=</span> <span class="va">hemout_new</span><span class="op">$</span><span class="va">cost_nondaq_rup</span>,</span>
 <span>        prices <span class="op">=</span> <span class="va">prices_oth</span>,</span>
 <span>        discrate <span class="op">=</span> <span class="va">nomdisc_cycle</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">pv</span></span>
+<span>    <span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># Combine in a tibble</span></span>
-<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    <span class="co"># Time in weeks and years</span></span>
 <span>    time_weeks <span class="op">=</span> <span class="va">gtimes</span>,</span>
 <span>    time_years <span class="op">=</span> <span class="va">time_weeks</span> <span class="op">*</span> <span class="va">cycle_years</span>,</span>
@@ -1150,10 +1151,10 @@ calculate the ICER, given the incremental QALYs we have already observed
 <span>    totcost_new <span class="op">=</span> <span class="va">gc_new_daq</span> <span class="op">+</span> <span class="va">gc_new_oth</span>,</span>
 <span>    totcost_soc <span class="op">=</span> <span class="va">gc_soc_daq</span> <span class="op">+</span> <span class="va">gc_soc_oth</span>,</span>
 <span>    <span class="co"># Scenario 1/2 QALYs</span></span>
-<span>    qaly_soc <span class="op">=</span> <span class="va">s1_soc_qaly</span><span class="op">$</span><span class="va">total</span>,</span>
-<span>    qaly_new <span class="op">=</span> <span class="va">s1_new_qaly</span><span class="op">$</span><span class="va">total</span></span>
+<span>    qaly_soc <span class="op">=</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s1_soc_qaly</span><span class="op">)</span>,</span>
+<span>    qaly_new <span class="op">=</span> <span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">s1_new_qaly</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    <span class="co"># Incremental cost and QALYs</span></span>
 <span>    icost <span class="op">=</span> <span class="va">totcost_new</span><span class="op">-</span><span class="va">totcost_soc</span>,</span>
 <span>    iqaly <span class="op">=</span> <span class="va">qaly_new</span><span class="op">-</span><span class="va">qaly_soc</span>,</span>
@@ -1162,7 +1163,7 @@ calculate the ICER, given the incremental QALYs we have already observed
 <span>    Real <span class="op">=</span> <span class="va">Nominal</span> <span class="op">/</span> <span class="va">pinfl</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Pivot to long so can be used in a graphic</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nominal"</span>, <span class="st">"Real"</span><span class="op">)</span>,</span>
 <span>    names_to <span class="op">=</span> <span class="st">"Type"</span>,</span>
 <span>    values_to <span class="op">=</span> <span class="st">"ICER"</span></span>
@@ -1176,7 +1177,7 @@ Scenario 2. The vertical dashed lines mark the timings of the LoEs of
 first the standard of care, and then the new treatment.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot real and nominal present value over time</span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ds</span>,</span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ds</span>,</span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">evaldate</span>, y <span class="op">=</span> <span class="va">ICER</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Evaluation date"</span><span class="op">)</span> <span class="op">+</span></span>

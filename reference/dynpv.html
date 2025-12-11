@@ -78,8 +78,7 @@
 <span>  horizon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">)</span>,</span>
 <span>  tzero <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  prices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">)</span> <span class="op">+</span> <span class="va">tzero</span><span class="op">)</span>,</span>
-<span>  discrate <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  dpv_name <span class="op">=</span> <span class="cn">NA_character_</span></span>
+<span>  discrate <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -110,28 +109,33 @@
 <dt id="arg-discrate">discrate<a class="anchor" aria-label="anchor" href="#arg-discrate"></a></dt>
 <dd><p>Discount rate per timestep, corresponding to price index</p></dd>
 
-
-<dt id="arg-dpv-name">dpv_name<a class="anchor" aria-label="anchor" href="#arg-dpv-name"></a></dt>
-<dd><p>Name to be given to Dynamic Present Value object created by this function call</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list containing <code>inputs</code> and <code>results</code>.
-The <code>inputs</code> list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.
-The <code>results</code> output is a "dynpv" object (created by <code><a href="class_dynpv.html">class_dynpv()</a></code>) that contains the following elements:</p><ul><li><p><code>name</code>: Name given to the object</p></li>
-<li><p><code>df</code>: Tibble of calculation results</p></li>
-<li><p><code>ncoh</code>: Number of cohorts of uptaking patients</p></li>
-<li><p><code>ntimes</code>: Number of times (unique values of tzero) at which calculations are performed</p></li>
-<li><p><code>uptake</code>: Total number of uptaking patients</p></li>
-<li><p><code>total</code>: Total present value</p></li>
-<li><p><code>mean</code>: Average present value per uptaking patient (=total/uptake)</p></li>
-<li><p><code>sum_by_coh</code>: Tibble of summarized calculation results for each uptake cohort</p></li>
+    <p>A tibble of class "dynpv" with the following columns:</p><ul><li><p><code>j</code>: todo</p></li>
+<li><p><code>k</code>: todo</p></li>
+<li><p><code>l</code>: todo</p></li>
+<li><p><code>t</code>: todo</p></li>
+<li><p><code>uj</code>: todo</p></li>
+<li><p><code>pk</code>: todo</p></li>
+<li><p><code>R</code>: todo</p></li>
+<li><p><code>v</code>: todo</p></li>
+<li><p><code>pv</code>: todo</p></li>
 </ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Obtain dataset</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘dplyr’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     filter, lag</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Obtain dataset</span></span></span>
 <span class="r-in"><span><span class="va">democe</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_dynfields.html">get_dynfields</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>   heemodel <span class="op">=</span> <span class="va">oncpsm</span>,</span></span>
 <span class="r-in"><span>   payoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cost_daq_new"</span>, <span class="st">"cost_total"</span>, <span class="st">"qaly"</span><span class="op">)</span>,</span></span>
@@ -140,48 +144,39 @@ The <code>results</code> output is a "dynpv" object (created by <code><a href="c
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Obtain short payoff vector of interest</span></span></span>
 <span class="r-in"><span><span class="va">payoffs</span> <span class="op">&lt;-</span> <span class="va">democe</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span>, <span class="va">model_time</span><span class="op">&lt;</span><span class="fl">11</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cost_oth <span class="op">=</span> <span class="va">cost_total</span> <span class="op">-</span> <span class="va">cost_daq_new</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span>, <span class="va">model_time</span><span class="op">&lt;</span><span class="fl">11</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cost_oth <span class="op">=</span> <span class="va">cost_total</span> <span class="op">-</span> <span class="va">cost_daq_new</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Nt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example calculation</span></span></span>
-<span class="r-in"><span><span class="fu">dynpv</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">pv</span> <span class="op">&lt;-</span> <span class="fu">dynpv</span><span class="op">(</span></span></span>
 <span class="r-in"><span>   uptakes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">Nt</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>   payoffs <span class="op">=</span> <span class="va">payoffs</span><span class="op">$</span><span class="va">cost_oth</span>,</span></span>
 <span class="r-in"><span>   prices <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="va">Nt</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">*</span><span class="fl">0.05</span>,</span></span>
-<span class="r-in"><span>   discrate <span class="op">=</span> <span class="fl">0.08</span> </span></span>
+<span class="r-in"><span>   discrate <span class="op">=</span> <span class="fl">0.08</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inputs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inputs$uptakes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inputs$payoffs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 354.8228 354.3419 353.7327 352.9161 351.8567 350.5507 349.0109 347.2584</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] 345.3166 343.2095</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inputs$horizon</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inputs$tzero</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inputs$prices</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inputs$discrate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $results</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> This is a dynpv S3 object, named NA . </span>
+<span class="r-in"><span><span class="va">pv</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 55 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        j     k     l     t    uj    pk     R     v    pv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1     0     1     1  355.  1    1      355.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1     2     0     2     1  354.  1.05 0.926  344.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1     3     0     3     1  354.  1.1  0.857  334.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1     4     0     4     1  353.  1.15 0.794  322.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1     5     0     5     1  352.  1.2  0.735  310.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1     6     0     6     1  351.  1.25 0.681  298.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1     7     0     7     1  349.  1.3  0.630  286.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1     8     0     8     1  347.  1.35 0.583  274.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     1     9     0     9     1  345.  1.4  0.540  261.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1    10     0    10     1  343.  1.45 0.500  249.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 45 more rows</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pv</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Summary of Dynamic Pricing and Uptake</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Number of cohorts:             10 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Number of times:               1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Total uptake:                  10 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Total present value:           15869.53 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Mean present value:            1586.953 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  The full dataset is available using $df. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </div>

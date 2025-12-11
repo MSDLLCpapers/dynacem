@@ -97,18 +97,15 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list <code>inputs</code>, <code>results</code> and <code>pv</code>.
-The <code>inputs</code> list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.
-The <code>results</code> output is a "dynpv" object (created by <code><a href="class_dynpv.html">class_dynpv()</a></code>) that contains the following elements:</p><ul><li><p><code>name</code>: Name given to the object</p></li>
-<li><p><code>df</code>: Tibble of calculation results</p></li>
-<li><p><code>ncoh</code>: Number of cohorts of uptaking patients (always 1)</p></li>
-<li><p><code>ntimes</code>: Number of times (unique values of tzero) at which calculations are performed</p></li>
-<li><p><code>uptake</code>: Total number of uptaking patients (always 1)</p></li>
-<li><p><code>total</code>: Total present value</p></li>
-<li><p><code>mean</code>: Average present value per uptaking patient (=total/uptake)</p></li>
-<li><p><code>sum_by_coh</code>: Tibble of summarized calculation results for each uptake cohort</p></li>
-<li><p><code>inputs</code>: list contains a list of the following parameters called with the function: <code>uptakes, payoffs, horizon, tzero, prices</code>, and <code>discrate</code>.
-The <code>pv</code> output is numeric, a convenience value equal to <code>$results$mean</code>.</p></li>
+    <p>A tibble of class "dynpv" with the following columns:</p><ul><li><p><code>j</code>: todo</p></li>
+<li><p><code>k</code>: todo</p></li>
+<li><p><code>l</code>: todo</p></li>
+<li><p><code>t</code>: todo</p></li>
+<li><p><code>uj</code>: todo</p></li>
+<li><p><code>pk</code>: todo</p></li>
+<li><p><code>R</code>: todo</p></li>
+<li><p><code>v</code>: todo</p></li>
+<li><p><code>pv</code>: todo</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -117,7 +114,9 @@ The <code>pv</code> output is numeric, a convenience value equal to <code>$resul
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Obtain dataset</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Obtain dataset</span></span></span>
 <span class="r-in"><span><span class="va">democe</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_dynfields.html">get_dynfields</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>   heemodel <span class="op">=</span> <span class="va">oncpsm</span>,</span></span>
 <span class="r-in"><span>   payoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cost_daq_new"</span>, <span class="st">"cost_total"</span>, <span class="st">"qaly"</span><span class="op">)</span>,</span></span>
@@ -129,8 +128,8 @@ The <code>pv</code> output is numeric, a convenience value equal to <code>$resul
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Obtain payoff vector of interest</span></span></span>
 <span class="r-in"><span><span class="va">payoffs</span> <span class="op">&lt;-</span> <span class="va">democe</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cost_oth_rup <span class="op">=</span> <span class="va">cost_total_rup</span> <span class="op">-</span> <span class="va">cost_daq_new_rup</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">int</span><span class="op">==</span><span class="st">"new"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cost_oth_rup <span class="op">=</span> <span class="va">cost_total_rup</span> <span class="op">-</span> <span class="va">cost_daq_new_rup</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Nt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">payoffs</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run calculation for times 0-9</span></span></span>
@@ -140,8 +139,23 @@ The <code>pv</code> output is numeric, a convenience value equal to <code>$resul
 <span class="r-in"><span>  prices <span class="op">=</span> <span class="fl">1.001</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">Nt</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="co"># Approx 5.3% every 52 steps</span></span></span>
 <span class="r-in"><span>  discrate <span class="op">=</span> <span class="fl">0.001</span> <span class="op">+</span> <span class="va">discrate</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">fpv</span><span class="op">$</span><span class="va">results</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> This is a dynpv S3 object, named NA . </span>
+<span class="r-in"><span><span class="va">fpv</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10,440 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        j     k     l     t    uj    pk     R     v    pv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1     0     1     1  355.  1        1  355.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1     1    52     1     1  355.  1.05     1  374.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1     1   104     1     1  355.  1.11     1  394.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1     1   156     1     1  355.  1.17     1  415.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1     1   208     1     1  355.  1.23     1  437.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1     1   260     1     1  355.  1.30     1  460.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1     1   312     1     1  355.  1.37     1  485.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1     1   364     1     1  355.  1.44     1  511.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     1     1   416     1     1  355.  1.52     1  538.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1     1   468     1     1  355.  1.60     1  566.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 10,430 more rows</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fpv</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Summary of Dynamic Pricing and Uptake</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Number of cohorts:             1044 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Number of times:               10 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -159,22 +173,6 @@ The <code>pv</code> output is numeric, a convenience value equal to <code>$resul
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   364      1 <span style="text-decoration: underline;">75</span>056. <span style="text-decoration: underline;">75</span>056.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>   416      1 <span style="text-decoration: underline;">79</span>060. <span style="text-decoration: underline;">79</span>060.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>   468      1 <span style="text-decoration: underline;">83</span>278. <span style="text-decoration: underline;">83</span>278.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  The full dataset is available using $df. </span>
-<span class="r-in"><span><span class="va">fpv</span><span class="op">$</span><span class="va">pv</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    tzero   mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     0 <span style="text-decoration: underline;">52</span>165.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    52 <span style="text-decoration: underline;">54</span>948.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>   104 <span style="text-decoration: underline;">57</span>880.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>   156 <span style="text-decoration: underline;">60</span>967.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>   208 <span style="text-decoration: underline;">64</span>220.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>   260 <span style="text-decoration: underline;">67</span>646.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>   312 <span style="text-decoration: underline;">71</span>255.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   364 <span style="text-decoration: underline;">75</span>056.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>   416 <span style="text-decoration: underline;">79</span>060.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>   468 <span style="text-decoration: underline;">83</span>278.</span>
 </code></pre></div>
     </div>
   </div>

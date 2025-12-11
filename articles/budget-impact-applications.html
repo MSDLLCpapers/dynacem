@@ -189,7 +189,7 @@ costs for the world without the new intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># SoC, other costs</span></span>
 <span><span class="va">wout1_soc_othcost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
@@ -198,7 +198,7 @@ costs for the world without the new intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Total budgetary costs</span></span>
 <span><span class="va">budget_wout1</span> <span class="op">&lt;-</span> <span class="va">budget_wout1_soc</span> <span class="op">&lt;-</span> <span class="va">wout1_soc_daqcost</span> <span class="op">+</span> <span class="va">wout1_soc_othcost</span></span></code></pre></div>
@@ -216,7 +216,7 @@ intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># SoC, other costs</span></span>
 <span><span class="va">with1_soc_othcost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
@@ -225,7 +225,7 @@ intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># New intervention, drug acquisition costs</span></span>
 <span><span class="va">with1_new_daqcost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
@@ -234,7 +234,7 @@ intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># New intervention, other costs</span></span>
 <span><span class="va">with1_new_othcost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span></span>
@@ -243,7 +243,7 @@ intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_static</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Total</span></span>
 <span><span class="va">budget_with1_soc</span> <span class="op">&lt;-</span> <span class="va">with1_soc_daqcost</span> <span class="op">+</span> <span class="va">with1_soc_othcost</span></span>
@@ -269,7 +269,7 @@ impact is $14,041,423, representing an increase of 109%.</p>
 </h3>
 <p>Now let us recalculate the budget impact, assuming dynamic pricing in
 drug acquisition costs. This is simple with
-<code>dynamicpv():dynpv()</code> because we just change the
+<code>dynamicpv()::dynpv()</code> because we just change the
 <code>prices</code> argument from <code>prices_static</code> to either
 <code>prices_dyn_soc</code> or <code>prices_dyn_new</code> for the drug
 acquisition costs. We will keep other costs unchanged.</p>
@@ -283,7 +283,7 @@ acquisition costs. We will keep other costs unchanged.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># SoC, other costs - unchanged from static calculations</span></span>
 <span><span class="va">wout2_soc_othcost</span> <span class="op">&lt;-</span> <span class="va">wout1_soc_othcost</span></span>
@@ -304,7 +304,7 @@ intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_dyn_soc</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># SoC, other costs</span></span>
 <span><span class="va">with2_soc_othcost</span> <span class="op">&lt;-</span> <span class="va">with1_soc_othcost</span></span>
@@ -316,7 +316,7 @@ intervention.</p>
 <span>    horizon <span class="op">=</span> <span class="va">bi_horizon_wks</span>,</span>
 <span>    prices <span class="op">=</span> <span class="va">prices_dyn_new</span>,</span>
 <span>    discrate <span class="op">=</span> <span class="va">bi_discount</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">results</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># New intervention, other costs</span></span>
 <span><span class="va">with2_new_othcost</span> <span class="op">&lt;-</span> <span class="va">with1_new_othcost</span></span>

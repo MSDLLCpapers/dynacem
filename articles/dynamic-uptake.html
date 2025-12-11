@@ -204,7 +204,7 @@ default is also 1.</p>
 <span></span>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes1</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
-<span><span class="va">pv1</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">total</span></span>
+<span><span class="fu"><a href="../reference/total.html">total</a></span><span class="op">(</span><span class="va">pv1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 610.4352</span></span></code></pre></div>
 <p>The result is unchanged from the
 <code><a href="../articles/dynamic-pricing.html">vignette("dynamic-pricing")</a></code>, where we also showed the
@@ -331,15 +331,13 @@ rate</caption>
 <span></span>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes2</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
-<span><span class="va">pv2</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; This is a dynpv S3 object, named NA . </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pv2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Summary of Dynamic Pricing and Uptake</span></span>
 <span><span class="co">#&gt;      Number of cohorts:             5 </span></span>
 <span><span class="co">#&gt;      Number of times:               1 </span></span>
 <span><span class="co">#&gt;      Total uptake:                  5 </span></span>
 <span><span class="co">#&gt;      Total present value:           1707.723 </span></span>
-<span><span class="co">#&gt;      Mean present value:            341.5446 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  The full dataset is available using $df.</span></span></code></pre></div>
+<span><span class="co">#&gt;      Mean present value:            341.5446</span></span></code></pre></div>
 <p>There are 5 patients with a total NPV of 1,708, which equates to 342
 on average per patient. This can also be calculated in base R.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -367,15 +365,13 @@ be
 <span></span>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes3</span>, discrate<span class="op">=</span><span class="va">disc</span><span class="op">)</span></span>
-<span><span class="va">pv3</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; This is a dynpv S3 object, named NA . </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pv3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Summary of Dynamic Pricing and Uptake</span></span>
 <span><span class="co">#&gt;      Number of cohorts:             5 </span></span>
 <span><span class="co">#&gt;      Number of times:               1 </span></span>
 <span><span class="co">#&gt;      Total uptake:                  15 </span></span>
 <span><span class="co">#&gt;      Total present value:           3841.785 </span></span>
-<span><span class="co">#&gt;      Mean present value:            256.119 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  The full dataset is available using $df.</span></span></code></pre></div>
+<span><span class="co">#&gt;      Mean present value:            256.119</span></span></code></pre></div>
 <p>There are 15 patients with a total NPV of 3,842, which equates to 256
 on average per patient. Verifying this result in base R also becomes
 more complicated.</p>
@@ -406,15 +402,13 @@ complicated with base functions, even in this toy example.</p>
 <span></span>
 <span><span class="co"># NPV calculation</span></span>
 <span><span class="va">pv4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dynpv.html">dynpv</a></span><span class="op">(</span>payoffs<span class="op">=</span><span class="va">cashflow</span>, uptakes<span class="op">=</span><span class="va">uptakes3</span>, prices<span class="op">=</span><span class="va">pindex</span>, discrate<span class="op">=</span><span class="va">nomdisc</span><span class="op">)</span></span>
-<span><span class="va">pv4</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt; This is a dynpv S3 object, named NA . </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pv4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Summary of Dynamic Pricing and Uptake</span></span>
 <span><span class="co">#&gt;      Number of cohorts:             5 </span></span>
 <span><span class="co">#&gt;      Number of times:               1 </span></span>
 <span><span class="co">#&gt;      Total uptake:                  15 </span></span>
 <span><span class="co">#&gt;      Total present value:           2422.633 </span></span>
-<span><span class="co">#&gt;      Mean present value:            161.5089 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  The full dataset is available using $df.</span></span></code></pre></div>
+<span><span class="co">#&gt;      Mean present value:            161.5089</span></span></code></pre></div>
 <p>There are 15 patients with a total NPV of 2,423, which equates to 162
 on average per patient.</p>
 </div>
