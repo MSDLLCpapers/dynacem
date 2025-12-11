@@ -56,6 +56,8 @@
 #'
 #' @export
 addprod <- function(e1, e2, mult) {
+  # Avoid no visible binding note
+  j <- k <- l <- dpvno <- uj <- pv <- uj_x <- uj_y <- pv_x <- pv_y <- NULL
   # Pull out xdata and subset of ydata; add dpvno=1 or 2 depending on source
   xdata <- e1 |> mutate(dpvno="x")
   ydata <- e2 |> mutate(dpvno="y")
@@ -83,7 +85,6 @@ addprod <- function(e1, e2, mult) {
   return(jdata)
 }
 
-
 #' Number of cohorts of uptaking patients (ncoh)
 #'
 #' @param df Tibble of class "dynpv" created by [dynpv()] or [futurepv()]
@@ -108,6 +109,8 @@ ntimes <- function(df) length(unique(df$l))
 #'
 #' @export
 uptake <- function(df) {
+  # Avoid no visible binding note
+  uj <- sd <- j <- l <- tzero <- NULL
   tempout1 <- df |>
     summarize(mean=mean(uj), sd=sd(uj), .by=c(j, l)) |>
     rename(tzero = l) |>
@@ -115,12 +118,15 @@ uptake <- function(df) {
   result <- if (nrow(tempout1)==1) tempout1$uptake else tempout1
   return(result)
 }
+
 #' Tibble of summarized calculation results for each uptake cohort (sum_by_coh)
 #'
 #' @inherit uptake params return
 #'
 #' @export
 sum_by_coh <- function(df) {
+  # Avoid no visible binding note
+  pv <- j <- l <- NULL
   tempout2 <- df |>
     # Summing over k, where uj does not vary by k
     summarize(spv = sum(pv), .by=c(j, l)) |>
@@ -135,6 +141,8 @@ sum_by_coh <- function(df) {
 #'
 #' @export
 total <- function(df) {
+  # Avoid no visible binding note
+  pv <- l <- NULL
   tempout3 <- df |>
     summarize(total = sum(pv), .by=c(l)) |>
     rename(tzero = l)
@@ -151,6 +159,8 @@ total <- function(df) {
 #'
 #' @export
 mean.dynpv <- function(x, ...) {
+  # Avoid no visible binding note
+  tzero <- NULL
   total <- total(x)
   uptake <- uptake(x)
   if (length(total)==1) {
@@ -197,6 +207,8 @@ print.dynpv_summary <- function(x, ...) {
   cat("     Number of times:              ", x$ntimes, "\n")
   # Output depends on whether $ntimes>1
   if (x$ntimes>1) {
+    # Avoid no visible binding note
+    tzero <- NULL
     # Create a tibble
     tib <- x$uptake |>
       left_join(x$total, join_by(tzero)) |>
