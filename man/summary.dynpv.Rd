@@ -25,3 +25,6 @@ A list of class "dynpv_summary" with the following elements:
 \description{
 Summarize a dynpv object
 }
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
+}

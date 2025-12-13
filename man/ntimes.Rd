@@ -15,3 +15,6 @@ A number
 \description{
 Number of times at which present value calculations are performed, calculated as the length of the \code{tzero} input to \code{\link[=dynpv]{dynpv()}}
 }
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
+}

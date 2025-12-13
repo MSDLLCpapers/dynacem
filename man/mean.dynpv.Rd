@@ -20,3 +20,6 @@ Mean of the Present Value per uptaking patient, by time at which the calculation
 \details{
 This is equal to \code{\link[=total]{total()}} divided by \code{\link[=uptake]{uptake()}}.
 }
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
+}

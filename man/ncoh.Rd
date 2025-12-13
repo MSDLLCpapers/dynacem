@@ -15,3 +15,6 @@ A number
 \description{
 Number of cohorts of uptaking patients, calculated as the length of the \code{uptakes} input to \code{\link[=dynpv]{dynpv()}}
 }
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
+}

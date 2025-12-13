@@ -65,16 +65,18 @@ This function calculates \eqn{PV(j,k,l)} for all values of \eqn{j}, \eqn{k} and 
 }
 \examples{
 # Simple example
-dynpv(
-   uptakes = (1:10),
-   tzero = 0:5,
-   payoffs = 90 + 10*(1:10),
-   prices = 1.02^((1:10)-1),
-   discrate = 0.05
+pv1 <- dynpv(
+   uptakes = (1:10), # 1 patient uptakes in timestep 1, 2 patients in timestep 2, etc
+   tzero = c(0,5), # Calculations are performed with prices at times 0 and 5
+   payoffs = 90 + 10*(1:10), # Payoff vector of length 10 = (100, 110, ..., 190)
+   prices = 1.02^((1:15)-1), # Prices increase at 2\\% per timestep in future
+   discrate = 0.05 # The nominal discount rate is 5\\% per timestep;
+                   # the real discount rate per timestep is 3\\% (=5\\% - 3\\%)
 )
+pv1
+summary(pv1)
 
 # More complex example, using cashflow output from a heemod model
-library(dplyr)
 
 # Obtain dataset
 democe <- get_dynfields(
@@ -85,17 +87,15 @@ democe <- get_dynfields(
 
 # Obtain short payoff vector of interest
 payoffs <- democe |>
-   filter(int=="new", model_time<11) |>
-   mutate(cost_oth = cost_total - cost_daq_new)
-Nt <- nrow(payoffs)
+   dplyr::filter(int=="new", model_time<11) |>
+   dplyr::mutate(cost_oth = cost_total - cost_daq_new)
 
 # Example calculation
-pv <- dynpv(
-   uptakes = rep(1, Nt),
+pv2 <- dynpv(
+   uptakes = rep(1, nrow(payoffs)),
    payoffs = payoffs$cost_oth,
-   prices = 1 + (0:(Nt-1))*0.05,
+   prices = 1.05^(0:(nrow(payoffs)-1)),
    discrate = 0.08
 )
-pv
-summary(pv)
+summary(pv2)
 }

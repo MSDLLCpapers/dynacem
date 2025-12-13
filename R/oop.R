@@ -52,6 +52,7 @@
 #' from `e2`. Total uptake is the uptake from `e1` plus `mult` times the uptake
 #' from `e2`. Take care of this when using `$mean` of the summed object.
 #'
+#' @seealso [dynpv()], [futurepv()]
 #' @returns S3 object of class "dynpv"
 #'
 #' @export
@@ -90,7 +91,7 @@ addprod <- function(e1, e2, mult) {
 #' Number of cohorts of uptaking patients, calculated as the length of the `uptakes` input to [dynpv()]
 #'  
 #' @param df Tibble of class "dynpv" created by [dynpv()] or [futurepv()]
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @return A number
 #'
 #' @export
@@ -101,28 +102,26 @@ ncoh <- function(df) max(df$k)
 #' Number of times at which present value calculations are performed, calculated as the length of the `tzero` input to [dynpv()]
 #' 
 #' @inherit ncoh params return
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @export
 ntimes <- function(df) length(unique(df$l))
 
 #' Total number of uptaking patients
 #'
-#' Total number of uptaking patients, calculated as the sum of the `uptake` input to [dynpv()], by time at which the calculation is performed (`tzero` input to [dynpv()])
+#' Total number of uptaking patients, calculated as the sum of the `uptake` input to [dynpv()], or \eqn{\sum_{j=1}^T u_j}
 #' 
 #' @inherit ncoh params
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @return A number or tibble
 #'
 #' @export
 uptake <- function(df) {
   # Avoid no visible binding note
-  uj <- sd <- j <- l <- tzero <- NULL
+  uj <- sd <- j <- NULL
   tempout1 <- df |>
-    summarize(mean=mean(uj), sd=sd(uj), .by=c(j, l)) |>
-    rename(tzero = l) |>
-    summarize(uptake=sum(mean), .by=tzero)
-  result <- if (nrow(tempout1)==1) tempout1$uptake else tempout1
-  return(result)
+    summarize(mean=mean(uj), sd=sd(uj), .by=c(j)) |>
+    summarize(uptake=sum(mean))
+  return(tempout1$uptake)
 }
 
 #' Present value for each uptake cohort and calculation time
@@ -187,7 +186,7 @@ total <- function(df) {
 #' @param ... Currently unused
 #'
 #' @inherit uptake return
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @export
 mean.dynpv <- function(x, ...) {
   # Avoid no visible binding note
@@ -197,9 +196,12 @@ mean.dynpv <- function(x, ...) {
   if (length(total)==1) {
     total / uptake
   } else {
-    left_join(total, uptake, join_by(tzero)) |>
-      mutate(mean = total / uptake) |>
-      select(-total, -uptake)
+    total |>
+      mutate(
+        uptake = uptake,
+        mean = total / uptake
+      ) |>
+    select(-total, -uptake)
   }
 }
 
@@ -215,7 +217,7 @@ mean.dynpv <- function(x, ...) {
 #' - `sum_by_coh`: Present value for each uptake cohort and calculation time, from [sum_by_coh()]
 #' - `total`: Total present value, from [total()]
 #' - `mean`: Mean present value per uptaking patient, from [mean()], equal to `total`/`uptake`.
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @export
 summary.dynpv <- function(object, ...) {
   structure(
@@ -241,9 +243,10 @@ print.dynpv_summary <- function(x, ...) {
     # Avoid no visible binding note
     tzero <- NULL
     # Create a tibble
-    tib <- x$uptake |>
-      left_join(x$total, join_by(tzero)) |>
-      left_join(x$mean, join_by(tzero))
+    tib <- x$total |>
+      left_join(x$mean, join_by(tzero)) |>
+      mutate(uptake = x$uptake) |>
+      select(tzero, uptake, total, mean)
     cat("\n Uptake, total and mean present values by timepoint: \n")
     print(tib)
   }

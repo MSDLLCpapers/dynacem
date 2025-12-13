@@ -35,7 +35,6 @@ First we load the packages necessary for this vignette.
 ```{r setup, echo=TRUE, message=FALSE}
 library(dplyr)
 library(lubridate)
-library(flexsurv)
 library(heemod)
 library(dynamicpv)
 ```
