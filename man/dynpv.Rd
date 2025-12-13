@@ -2,7 +2,7 @@
 % Please edit documentation in R/dynamic.R
 \name{dynpv}
 \alias{dynpv}
-\title{Calculate present value for a payoff with dynamic pricing and dynamic uptake}
+\title{Present values with dynamic pricing and dynamic uptake}
 \usage{
 dynpv(
   uptakes = 1,
@@ -29,21 +29,51 @@ dynpv(
 \value{
 A tibble of class "dynpv" with the following columns:
 \itemize{
-\item \code{j}: todo
-\item \code{k}: todo
-\item \code{l}: todo
-\item \code{t}: todo
-\item \code{uj}: todo
-\item \code{pk}: todo
-\item \code{R}: todo
-\item \code{v}: todo
-\item \code{pv}: todo
+\item \code{j}: Time at which patients began treatment
+\item \code{k}: Time since patients began treatment
+\item \code{l}: Time offset for the price index (from \code{tzero})
+\item \code{t}: Equals \eqn{j+k-1}
+\item \code{uj}: Uptake of patients beginning treatment at time \eqn{j} (from \code{uptakes})
+\item \code{pk}: Cashflow amount in today's money in respect of patients at time \eqn{k} since starting treatment (from \code{payoffs})
+\item \code{R}: Index of prices over time \eqn{l+t} (from \code{prices})
+\item \code{v}: Discounting factors, \eqn{(1+i)^{1-t}}, where \code{i} is the discount rate per timestep
+\item \code{pv}: Present value, \eqn{PV(j,k,l)}
 }
 }
 \description{
-Present value of a payoff affected by dynamic pricing, with uptake across multiple cohorts (dynamic uptake)
+Calculate present value for a payoff with dynamic (lifecycle) pricing and dynamic uptake (stacked cohorts).
+}
+\details{
+Let us partition time as follows.
+\itemize{
+\item Suppose \eqn{j=1,...,T} indexes the time at which the patient begins treatment, where \eqn{T} is the time horizon of the decision-maker.
+\item Suppose \eqn{k=1,...,T} indexes time since initiating treatment.
+}
+
+In general, \eqn{t=j+k-1}, and we are interested in \eqn{t=1,...,T}.
+
+The \href{https://en.wikipedia.org/wiki/Present_value}{Present Value} of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+\deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+
+The total present value, \eqn{TPV(l)}, is therefore the sum over all \eqn{j} and \eqn{k} within the time horizon \eqn{T}, namely:
+\deqn{TPV(l) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j,k, l) \\
+\;
+= \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{l+j+k-1} \cdot (1+i)^{2-j-k}}
+
+This function calculates \eqn{PV(j,k,l)} for all values of \eqn{j}, \eqn{k} and \eqn{l}, and returns this in a tibble.
 }
 \examples{
+# Simple example
+dynpv(
+   uptakes = (1:10),
+   tzero = 0:5,
+   payoffs = 90 + 10*(1:10),
+   prices = 1.02^((1:10)-1),
+   discrate = 0.05
+)
+
+# More complex example, using cashflow output from a heemod model
 library(dplyr)
 
 # Obtain dataset

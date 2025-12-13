@@ -62,9 +62,9 @@ addprod <- function(e1, e2, mult) {
   xdata <- e1 |> mutate(dpvno="x")
   ydata <- e2 |> mutate(dpvno="y")
   # Check that j, k and l vectors align
-  if (length(xdata$j) != length(ydata$j)) {warning("Uptake vectors differ in length after trimming")}
-  stopifnot(max(xdata$k) == max(ydata$k))
-  stopifnot(max(xdata$l) == max(ydata$l))
+  if (length(xdata$j) != length(ydata$j)) {warning("Uptake vectors differ in length")}
+  stopifnot("Length of payoffs vectors differ" = max(xdata$k) == max(ydata$k))
+  stopifnot("Length of time-offset vectors (tzero) differ" = max(xdata$l) == max(ydata$l))
   # Combine data
   jdata <- bind_rows(xdata, ydata) |>
     # Spread
@@ -85,8 +85,10 @@ addprod <- function(e1, e2, mult) {
   return(jdata)
 }
 
-#' Number of cohorts of uptaking patients (ncoh)
-#'
+#' Number of cohorts of uptaking patients
+#' 
+#' Number of cohorts of uptaking patients, calculated as the length of the `uptakes` input to [dynpv()]
+#'  
 #' @param df Tibble of class "dynpv" created by [dynpv()] or [futurepv()]
 #'
 #' @return A number
@@ -94,15 +96,19 @@ addprod <- function(e1, e2, mult) {
 #' @export
 ncoh <- function(df) max(df$k)
 
-#' Number of times (unique values of tzero) at which calculations are performed
+#' Number of times at which present value calculations are performed
 #'
+#' Number of times at which present value calculations are performed, calculated as the length of the `tzero` input to [dynpv()]
+#' 
 #' @inherit ncoh params return
 #'
 #' @export
 ntimes <- function(df) length(unique(df$l))
 
-#' Total number of uptaking patients (uptake)
+#' Total number of uptaking patients
 #'
+#' Total number of uptaking patients, calculated as the sum of the `uptake` input to [dynpv()], by time at which the calculation is performed (`tzero` input to [dynpv()])
+#' 
 #' @inherit ncoh params
 #'
 #' @return A number or tibble
@@ -119,10 +125,19 @@ uptake <- function(df) {
   return(result)
 }
 
-#' Tibble of summarized calculation results for each uptake cohort (sum_by_coh)
+#' Present value for each uptake cohort and calculation time
 #'
+#' Calculates the sum of the Present Value by uptake cohort (`j`) and time at which the calculation is performed (`tzero` input to [dynpv()])
+#' 
+#' The [Present Value](https://en.wikipedia.org/wiki/Present_value) of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+#' \deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+#' where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+#' 
+#' This method returns \eqn{\sum_{k=1}^{T-j+1} PV(j,k,l)} for each value of \eqn{j} and \eqn{l}, where \eqn{T} is the time horizon of the calculation.
+#' 
 #' @inherit uptake params return
-#'
+#' @seealso [dynpv()], [futurepv()]
+#' @return A number or tibble
 #' @export
 sum_by_coh <- function(df) {
   # Avoid no visible binding note
@@ -135,10 +150,22 @@ sum_by_coh <- function(df) {
   return(result)
 }
 
-#' Total present value (total)
+#' Total present value
+#' 
+#' Sum of the Present Value, by time at which the calculation is performed (`tzero` input to [dynpv()])
+#' 
+#' The [Present Value](https://en.wikipedia.org/wiki/Present_value) of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+#' \deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+#' where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+#' 
+#' The total present value by time at which the calculation is performed, \eqn{TPV(l)}, is therefore the sum of \eqn{PV(j,k,l)} over all \eqn{j} and \eqn{k} within the time horizon \eqn{T}, namely:
+#' \deqn{TPV(l) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j,k, l) \\
+#' \;
+#' = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{l+j+k-1} \cdot (1+i)^{2-j-k}}
 #'
 #' @inherit uptake params return
-#'
+#' @seealso [dynpv()], [futurepv()]
+#' @return A number or tibble
 #' @export
 total <- function(df) {
   # Avoid no visible binding note
@@ -150,7 +177,11 @@ total <- function(df) {
   return(result)
 }
 
-#' Average present value per uptaking patient (mean=total/uptake)
+#' Mean present value per uptaking patient
+#' 
+#' Mean of the Present Value per uptaking patient, by time at which the calculation is performed (`tzero` input to [dynpv()]).
+#' 
+#' This is equal to [total()] divided by [uptake()].
 #'
 #' @param x Tibble of class "dynpv" created by [dynpv()] or [futurepv()]
 #' @param ... Currently unused
@@ -178,12 +209,12 @@ mean.dynpv <- function(x, ...) {
 #' @param ... Currently unused
 #'
 #' @return A list of class "dynpv_summary" with the following elements:
-#' - `ncoh`: Number of cohorts of uptaking patients
-#' - `ntimes`: Number of times (unique values of tzero) at which calculations are performed
-#' - `uptake`: Total number of uptaking patients
-#' - `sum_by_coh`: Tibble of summarized calculation results for each uptake cohort
-#' - `total`: Total present value
-#' - `mean`: Average present value per uptaking patient (=total/uptake)
+#' - `ncoh`: Number of cohorts of uptaking patients, from [ncoh()]
+#' - `ntimes`: Number of times at which present value calculations are performed, from [ntimes()]
+#' - `uptake`: Total number of uptaking patients, from [uptake()]
+#' - `sum_by_coh`: Present value for each uptake cohort and calculation time, from [sum_by_coh()]
+#' - `total`: Total present value, from [total()]
+#' - `mean`: Mean present value per uptaking patient, from [mean()], equal to `total`/`uptake`.
 #'
 #' @export
 summary.dynpv <- function(object, ...) {

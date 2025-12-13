@@ -2,7 +2,7 @@
 % Please edit documentation in R/oop.R
 \name{ncoh}
 \alias{ncoh}
-\title{Number of cohorts of uptaking patients (ncoh)}
+\title{Number of cohorts of uptaking patients}
 \usage{
 ncoh(df)
 }
@@ -13,5 +13,5 @@ ncoh(df)
 A number
 }
 \description{
-Number of cohorts of uptaking patients (ncoh)
+Number of cohorts of uptaking patients, calculated as the length of the \code{uptakes} input to \code{\link[=dynpv]{dynpv()}}
 }
