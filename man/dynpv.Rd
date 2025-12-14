@@ -44,13 +44,20 @@ A tibble of class "dynpv" with the following columns:
 Calculate present value for a payoff with dynamic (lifecycle) pricing and dynamic uptake (stacked cohorts).
 }
 \details{
-Let us partition time as follows.
+Suppose payoffs in relation to patients receiving treatment (such as costs or health outcomes) occur over timesteps \eqn{t=1, ..., T}. Let us partition time as follows.
 \itemize{
-\item Suppose \eqn{j=1,...,T} indexes the time at which the patient begins treatment, where \eqn{T} is the time horizon of the decision-maker.
+\item Suppose \eqn{j=1,...,T} indexes the time at which the patient begins treatment.
 \item Suppose \eqn{k=1,...,T} indexes time since initiating treatment.
 }
 
-In general, \eqn{t=j+k-1}, and we are interested in \eqn{t=1,...,T}.
+In general, \eqn{t=j+k-1}, and we are interested in the set of \eqn{(j,k)} such that \eqn{1 \leq t \leq T}.
+
+For example, \eqn{t=3} comprises:
+\itemize{
+\item patients who are in the third timestep of treatment that began in timestep 1: (j,k)=(1,3);
+\item patients who are in the second timestep of treatment that began in timestep 2, (j,k)=(2,2); and
+\item patients who are in the first timestep of treatment that began in timestep 3, (j,k)=(3,1)
+}
 
 The \href{https://en.wikipedia.org/wiki/Present_value}{Present Value} of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
 \deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
