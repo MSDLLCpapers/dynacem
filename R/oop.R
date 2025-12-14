@@ -238,6 +238,7 @@ print.dynpv_summary <- function(x, ...) {
   cat("Summary of Dynamic Pricing and Uptake\n")
   cat("     Number of cohorts:            ", x$ncoh, "\n")
   cat("     Number of times:              ", x$ntimes, "\n")
+  cat("     Total uptake:                 ", x$uptake, "\n")
   # Output depends on whether $ntimes>1
   if (x$ntimes>1) {
     # Avoid no visible binding note
@@ -245,13 +246,11 @@ print.dynpv_summary <- function(x, ...) {
     # Create a tibble
     tib <- x$total |>
       left_join(x$mean, join_by(tzero)) |>
-      mutate(uptake = x$uptake) |>
-      select(tzero, uptake, total, mean)
-    cat("\n Uptake, total and mean present values by timepoint: \n")
+      select(tzero, total, mean)
+    cat("\n Total and mean present values by timepoint: \n")
     print(tib)
   }
   else {
-    cat("     Total uptake:                 ", x$uptake, "\n")
     cat("     Total present value:          ", x$total, "\n")
     cat("     Mean present value:           ", x$mean, "\n")
   }
