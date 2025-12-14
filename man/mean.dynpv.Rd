@@ -2,7 +2,7 @@
 % Please edit documentation in R/oop.R
 \name{mean.dynpv}
 \alias{mean.dynpv}
-\title{Average present value per uptaking patient (mean=total/uptake)}
+\title{Mean present value per uptaking patient}
 \usage{
 \method{mean}{dynpv}(x, ...)
 }
@@ -15,5 +15,11 @@
 A number or tibble
 }
 \description{
-Average present value per uptaking patient (mean=total/uptake)
+Mean of the Present Value per uptaking patient, by time at which the calculation is performed (\code{tzero} input to \code{\link[=dynpv]{dynpv()}}).
+}
+\details{
+This is equal to \code{\link[=total]{total()}} divided by \code{\link[=uptake]{uptake()}}.
+}
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
 }

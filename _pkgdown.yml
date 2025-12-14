@@ -1,0 +1,28 @@
+url: https://MSDLLCpapers.github.io/dynacem/
+template:
+  bootstrap: 5
+
+reference:
+- title: Key functions and datasets
+- contents:
+  - dynpv
+  - futurepv
+  - oncpsm
+- title: Methods to apply to dynpv S3 objects
+- contents:
+  - "`+.dynpv`"
+  - "`-.dynpv`"
+  - mean.dynpv
+  - ncoh
+  - ntimes
+  - sum_by_coh
+  - summary.dynpv
+  - total
+  - uptake
+- title: Helper functions
+- contents:
+  - addprod
+  - get_dynfields
+  - get_param_value
+  - trim_vec
+

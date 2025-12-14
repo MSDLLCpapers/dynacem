@@ -18,15 +18,15 @@ futurepv(tzero = 0, payoffs, prices, discrate)
 \value{
 A tibble of class "dynpv" with the following columns:
 \itemize{
-\item \code{j}: todo
-\item \code{k}: todo
-\item \code{l}: todo
-\item \code{t}: todo
-\item \code{uj}: todo
-\item \code{pk}: todo
-\item \code{R}: todo
-\item \code{v}: todo
-\item \code{pv}: todo
+\item \code{j}: Time at which patients began treatment
+\item \code{k}: Time since patients began treatment
+\item \code{l}: Time offset for the price index (from \code{tzero})
+\item \code{t}: Equals \eqn{j+k-1}
+\item \code{uj}: Uptake of patients beginning treatment at time \eqn{j} (from \code{uptakes})
+\item \code{pk}: Cashflow amount in today's money in respect of patients at time \eqn{k} since starting treatment (from \code{payoffs})
+\item \code{R}: Index of prices over time \eqn{l+t} (from \code{prices})
+\item \code{v}: Discounting factors, \eqn{(1+i)^{1-t}}, where \code{i} is the discount rate per timestep
+\item \code{pv}: Present value, \eqn{PV(j,k,l)}
 }
 }
 \description{

@@ -15,12 +15,14 @@ coverage](https://codecov.io/gh/MSDLLCpapers/dynacem/graph/badge.svg)](https://a
 The goal of *dynamicpv* is to evaluate present values and
 cost-effectiveness with dynamic pricing and uptake.
 
-Through the `dynamicpv::dynpv()` function, the package provides
-calculations of the present values of costs, life years, QALYs or other
-payoffs allowing for dynamic uptake (also known as multiple cohorts) and
-dynamic pricing (also known as life-cycle). The starting point is a
-conventional cohort cost-effectiveness model, such as one computed using
-the [heemod](https://cran.r-project.org/package=heemod) package.
+Through the
+[dynpv()](https://msdllcpapers.github.io/dynacem/reference/dynpv.html)
+function, the package provides calculations of the present values of
+costs, life years, QALYs or other payoffs allowing for dynamic uptake
+(also known as multiple cohorts) and dynamic pricing (also known as
+life-cycle). The starting point is a conventional cohort
+cost-effectiveness model, such as one computed using the
+[heemod](https://cran.r-project.org/package=heemod) package.
 
 ## Installation
 

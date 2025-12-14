@@ -2,7 +2,7 @@
 % Please edit documentation in R/oop.R
 \name{total}
 \alias{total}
-\title{Total present value (total)}
+\title{Total present value}
 \usage{
 total(df)
 }
@@ -13,5 +13,18 @@ total(df)
 A number or tibble
 }
 \description{
-Total present value (total)
+Sum of the Present Value, by time at which the calculation is performed (\code{tzero} input to \code{\link[=dynpv]{dynpv()}})
+}
+\details{
+The \href{https://en.wikipedia.org/wiki/Present_value}{Present Value} of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+\deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+
+The total present value by time at which the calculation is performed, \eqn{TPV(l)}, is therefore the sum of \eqn{PV(j,k,l)} over all \eqn{j} and \eqn{k} within the time horizon \eqn{T}, namely:
+\deqn{TPV(l) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j,k, l) \\
+\;
+= \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{l+j+k-1} \cdot (1+i)^{2-j-k}}
+}
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
 }

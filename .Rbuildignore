@@ -12,3 +12,4 @@
 ^pkg\.lock$
 ^pkgdown$
 ^sticker\.png$
+^_pkgdown\.yml$

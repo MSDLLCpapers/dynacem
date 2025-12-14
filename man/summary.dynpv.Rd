@@ -14,14 +14,17 @@
 \value{
 A list of class "dynpv_summary" with the following elements:
 \itemize{
-\item \code{ncoh}: Number of cohorts of uptaking patients
-\item \code{ntimes}: Number of times (unique values of tzero) at which calculations are performed
-\item \code{uptake}: Total number of uptaking patients
-\item \code{sum_by_coh}: Tibble of summarized calculation results for each uptake cohort
-\item \code{total}: Total present value
-\item \code{mean}: Average present value per uptaking patient (=total/uptake)
+\item \code{ncoh}: Number of cohorts of uptaking patients, from \code{\link[=ncoh]{ncoh()}}
+\item \code{ntimes}: Number of times at which present value calculations are performed, from \code{\link[=ntimes]{ntimes()}}
+\item \code{uptake}: Total number of uptaking patients, from \code{\link[=uptake]{uptake()}}
+\item \code{sum_by_coh}: Present value for each uptake cohort and calculation time, from \code{\link[=sum_by_coh]{sum_by_coh()}}
+\item \code{total}: Total present value, from \code{\link[=total]{total()}}
+\item \code{mean}: Mean present value per uptaking patient, from \code{\link[=mean]{mean()}}, equal to \code{total}/\code{uptake}.
 }
 }
 \description{
 Summarize a dynpv object
+}
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
 }

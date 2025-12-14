@@ -23,3 +23,6 @@ S3 object of class "dynpv"
 \description{
 Add together two objects each of S3 class "dynpv": e1 + mult * e2
 }
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
+}

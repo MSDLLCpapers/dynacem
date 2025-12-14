@@ -2,7 +2,7 @@
 % Please edit documentation in R/dynamic.R
 \name{dynpv}
 \alias{dynpv}
-\title{Calculate present value for a payoff with dynamic pricing and dynamic uptake}
+\title{Present values with dynamic pricing and dynamic uptake}
 \usage{
 dynpv(
   uptakes = 1,
@@ -29,22 +29,61 @@ dynpv(
 \value{
 A tibble of class "dynpv" with the following columns:
 \itemize{
-\item \code{j}: todo
-\item \code{k}: todo
-\item \code{l}: todo
-\item \code{t}: todo
-\item \code{uj}: todo
-\item \code{pk}: todo
-\item \code{R}: todo
-\item \code{v}: todo
-\item \code{pv}: todo
+\item \code{j}: Time at which patients began treatment
+\item \code{k}: Time since patients began treatment
+\item \code{l}: Time offset for the price index (from \code{tzero})
+\item \code{t}: Equals \eqn{j+k-1}
+\item \code{uj}: Uptake of patients beginning treatment at time \eqn{j} (from \code{uptakes})
+\item \code{pk}: Cashflow amount in today's money in respect of patients at time \eqn{k} since starting treatment (from \code{payoffs})
+\item \code{R}: Index of prices over time \eqn{l+t} (from \code{prices})
+\item \code{v}: Discounting factors, \eqn{(1+i)^{1-t}}, where \code{i} is the discount rate per timestep
+\item \code{pv}: Present value, \eqn{PV(j,k,l)}
 }
 }
 \description{
-Present value of a payoff affected by dynamic pricing, with uptake across multiple cohorts (dynamic uptake)
+Calculate present value for a payoff with dynamic (lifecycle) pricing and dynamic uptake (stacked cohorts).
+}
+\details{
+Suppose payoffs in relation to patients receiving treatment (such as costs or health outcomes) occur over timesteps \eqn{t=1, ..., T}. Let us partition time as follows.
+\itemize{
+\item Suppose \eqn{j=1,...,T} indexes the time at which the patient begins treatment.
+\item Suppose \eqn{k=1,...,T} indexes time since initiating treatment.
+}
+
+In general, \eqn{t=j+k-1}, and we are interested in the set of \eqn{(j,k)} such that \eqn{1 \leq t \leq T}.
+
+For example, \eqn{t=3} comprises:
+\itemize{
+\item patients who are in the third timestep of treatment that began in timestep 1: (j,k)=(1,3);
+\item patients who are in the second timestep of treatment that began in timestep 2, (j,k)=(2,2); and
+\item patients who are in the first timestep of treatment that began in timestep 3, (j,k)=(3,1)
+}
+
+The \href{https://en.wikipedia.org/wiki/Present_value}{Present Value} of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+\deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+
+The total present value, \eqn{TPV(l)}, is therefore the sum over all \eqn{j} and \eqn{k} within the time horizon \eqn{T}, namely:
+\deqn{TPV(l) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j,k, l) \\
+\;
+= \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{l+j+k-1} \cdot (1+i)^{2-j-k}}
+
+This function calculates \eqn{PV(j,k,l)} for all values of \eqn{j}, \eqn{k} and \eqn{l}, and returns this in a tibble.
 }
 \examples{
-library(dplyr)
+# Simple example
+pv1 <- dynpv(
+   uptakes = (1:10), # 1 patient uptakes in timestep 1, 2 patients in timestep 2, etc
+   tzero = c(0,5), # Calculations are performed with prices at times 0 and 5
+   payoffs = 90 + 10*(1:10), # Payoff vector of length 10 = (100, 110, ..., 190)
+   prices = 1.02^((1:15)-1), # Prices increase at 2\\% per timestep in future
+   discrate = 0.05 # The nominal discount rate is 5\\% per timestep;
+                   # the real discount rate per timestep is 3\\% (=5\\% - 3\\%)
+)
+pv1
+summary(pv1)
+
+# More complex example, using cashflow output from a heemod model
 
 # Obtain dataset
 democe <- get_dynfields(
@@ -55,17 +94,15 @@ democe <- get_dynfields(
 
 # Obtain short payoff vector of interest
 payoffs <- democe |>
-   filter(int=="new", model_time<11) |>
-   mutate(cost_oth = cost_total - cost_daq_new)
-Nt <- nrow(payoffs)
+   dplyr::filter(int=="new", model_time<11) |>
+   dplyr::mutate(cost_oth = cost_total - cost_daq_new)
 
 # Example calculation
-pv <- dynpv(
-   uptakes = rep(1, Nt),
+pv2 <- dynpv(
+   uptakes = rep(1, nrow(payoffs)),
    payoffs = payoffs$cost_oth,
-   prices = 1 + (0:(Nt-1))*0.05,
+   prices = 1.05^(0:(nrow(payoffs)-1)),
    discrate = 0.08
 )
-pv
-summary(pv)
+summary(pv2)
 }

@@ -52,6 +52,7 @@
 #' from `e2`. Total uptake is the uptake from `e1` plus `mult` times the uptake
 #' from `e2`. Take care of this when using `$mean` of the summed object.
 #'
+#' @seealso [dynpv()], [futurepv()]
 #' @returns S3 object of class "dynpv"
 #'
 #' @export
@@ -62,9 +63,9 @@ addprod <- function(e1, e2, mult) {
   xdata <- e1 |> mutate(dpvno="x")
   ydata <- e2 |> mutate(dpvno="y")
   # Check that j, k and l vectors align
-  if (length(xdata$j) != length(ydata$j)) {warning("Uptake vectors differ in length after trimming")}
-  stopifnot(max(xdata$k) == max(ydata$k))
-  stopifnot(max(xdata$l) == max(ydata$l))
+  if (length(xdata$j) != length(ydata$j)) {warning("Uptake vectors differ in length")}
+  stopifnot("Length of payoffs vectors differ" = max(xdata$k) == max(ydata$k))
+  stopifnot("Length of time-offset vectors (tzero) differ" = max(xdata$l) == max(ydata$l))
   # Combine data
   jdata <- bind_rows(xdata, ydata) |>
     # Spread
@@ -85,44 +86,57 @@ addprod <- function(e1, e2, mult) {
   return(jdata)
 }
 
-#' Number of cohorts of uptaking patients (ncoh)
-#'
+#' Number of cohorts of uptaking patients
+#' 
+#' Number of cohorts of uptaking patients, calculated as the length of the `uptakes` input to [dynpv()]
+#'  
 #' @param df Tibble of class "dynpv" created by [dynpv()] or [futurepv()]
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @return A number
 #'
 #' @export
 ncoh <- function(df) max(df$k)
 
-#' Number of times (unique values of tzero) at which calculations are performed
+#' Number of times at which present value calculations are performed
 #'
+#' Number of times at which present value calculations are performed, calculated as the length of the `tzero` input to [dynpv()]
+#' 
 #' @inherit ncoh params return
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @export
 ntimes <- function(df) length(unique(df$l))
 
-#' Total number of uptaking patients (uptake)
+#' Total number of uptaking patients
 #'
+#' Total number of uptaking patients, calculated as the sum of the `uptake` input to [dynpv()], or \eqn{\sum_{j=1}^T u_j}
+#' 
 #' @inherit ncoh params
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @return A number or tibble
 #'
 #' @export
 uptake <- function(df) {
   # Avoid no visible binding note
-  uj <- sd <- j <- l <- tzero <- NULL
+  uj <- sd <- j <- NULL
   tempout1 <- df |>
-    summarize(mean=mean(uj), sd=sd(uj), .by=c(j, l)) |>
-    rename(tzero = l) |>
-    summarize(uptake=sum(mean), .by=tzero)
-  result <- if (nrow(tempout1)==1) tempout1$uptake else tempout1
-  return(result)
+    summarize(mean=mean(uj), sd=sd(uj), .by=c(j)) |>
+    summarize(uptake=sum(mean))
+  return(tempout1$uptake)
 }
 
-#' Tibble of summarized calculation results for each uptake cohort (sum_by_coh)
+#' Present value for each uptake cohort and calculation time
 #'
+#' Calculates the sum of the Present Value by uptake cohort (`j`) and time at which the calculation is performed (`tzero` input to [dynpv()])
+#' 
+#' The [Present Value](https://en.wikipedia.org/wiki/Present_value) of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+#' \deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+#' where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+#' 
+#' This method returns \eqn{\sum_{k=1}^{T-j+1} PV(j,k,l)} for each value of \eqn{j} and \eqn{l}, where \eqn{T} is the time horizon of the calculation.
+#' 
 #' @inherit uptake params return
-#'
+#' @seealso [dynpv()], [futurepv()]
+#' @return A number or tibble
 #' @export
 sum_by_coh <- function(df) {
   # Avoid no visible binding note
@@ -135,10 +149,22 @@ sum_by_coh <- function(df) {
   return(result)
 }
 
-#' Total present value (total)
+#' Total present value
+#' 
+#' Sum of the Present Value, by time at which the calculation is performed (`tzero` input to [dynpv()])
+#' 
+#' The [Present Value](https://en.wikipedia.org/wiki/Present_value) of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+#' \deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+#' where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+#' 
+#' The total present value by time at which the calculation is performed, \eqn{TPV(l)}, is therefore the sum of \eqn{PV(j,k,l)} over all \eqn{j} and \eqn{k} within the time horizon \eqn{T}, namely:
+#' \deqn{TPV(l) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j,k, l) \\
+#' \;
+#' = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{l+j+k-1} \cdot (1+i)^{2-j-k}}
 #'
 #' @inherit uptake params return
-#'
+#' @seealso [dynpv()], [futurepv()]
+#' @return A number or tibble
 #' @export
 total <- function(df) {
   # Avoid no visible binding note
@@ -150,13 +176,17 @@ total <- function(df) {
   return(result)
 }
 
-#' Average present value per uptaking patient (mean=total/uptake)
+#' Mean present value per uptaking patient
+#' 
+#' Mean of the Present Value per uptaking patient, by time at which the calculation is performed (`tzero` input to [dynpv()]).
+#' 
+#' This is equal to [total()] divided by [uptake()].
 #'
 #' @param x Tibble of class "dynpv" created by [dynpv()] or [futurepv()]
 #' @param ... Currently unused
 #'
 #' @inherit uptake return
-#'
+#' @seealso [dynpv()], [futurepv()]
 #' @export
 mean.dynpv <- function(x, ...) {
   # Avoid no visible binding note
@@ -166,9 +196,12 @@ mean.dynpv <- function(x, ...) {
   if (length(total)==1) {
     total / uptake
   } else {
-    left_join(total, uptake, join_by(tzero)) |>
-      mutate(mean = total / uptake) |>
-      select(-total, -uptake)
+    total |>
+      mutate(
+        uptake = uptake,
+        mean = total / uptake
+      ) |>
+    select(-total, -uptake)
   }
 }
 
@@ -178,13 +211,13 @@ mean.dynpv <- function(x, ...) {
 #' @param ... Currently unused
 #'
 #' @return A list of class "dynpv_summary" with the following elements:
-#' - `ncoh`: Number of cohorts of uptaking patients
-#' - `ntimes`: Number of times (unique values of tzero) at which calculations are performed
-#' - `uptake`: Total number of uptaking patients
-#' - `sum_by_coh`: Tibble of summarized calculation results for each uptake cohort
-#' - `total`: Total present value
-#' - `mean`: Average present value per uptaking patient (=total/uptake)
-#'
+#' - `ncoh`: Number of cohorts of uptaking patients, from [ncoh()]
+#' - `ntimes`: Number of times at which present value calculations are performed, from [ntimes()]
+#' - `uptake`: Total number of uptaking patients, from [uptake()]
+#' - `sum_by_coh`: Present value for each uptake cohort and calculation time, from [sum_by_coh()]
+#' - `total`: Total present value, from [total()]
+#' - `mean`: Mean present value per uptaking patient, from [mean()], equal to `total`/`uptake`.
+#' @seealso [dynpv()], [futurepv()]
 #' @export
 summary.dynpv <- function(object, ...) {
   structure(
@@ -205,19 +238,19 @@ print.dynpv_summary <- function(x, ...) {
   cat("Summary of Dynamic Pricing and Uptake\n")
   cat("     Number of cohorts:            ", x$ncoh, "\n")
   cat("     Number of times:              ", x$ntimes, "\n")
+  cat("     Total uptake:                 ", x$uptake, "\n")
   # Output depends on whether $ntimes>1
   if (x$ntimes>1) {
     # Avoid no visible binding note
     tzero <- NULL
     # Create a tibble
-    tib <- x$uptake |>
-      left_join(x$total, join_by(tzero)) |>
-      left_join(x$mean, join_by(tzero))
-    cat("\n Uptake, total and mean present values by timepoint: \n")
+    tib <- x$total |>
+      left_join(x$mean, join_by(tzero)) |>
+      select(tzero, total, mean)
+    cat("\n Total and mean present values by timepoint: \n")
     print(tib)
   }
   else {
-    cat("     Total uptake:                 ", x$uptake, "\n")
     cat("     Total present value:          ", x$total, "\n")
     cat("     Mean present value:           ", x$mean, "\n")
   }

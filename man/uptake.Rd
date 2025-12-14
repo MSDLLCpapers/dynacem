@@ -2,7 +2,7 @@
 % Please edit documentation in R/oop.R
 \name{uptake}
 \alias{uptake}
-\title{Total number of uptaking patients (uptake)}
+\title{Total number of uptaking patients}
 \usage{
 uptake(df)
 }
@@ -13,5 +13,8 @@ uptake(df)
 A number or tibble
 }
 \description{
-Total number of uptaking patients (uptake)
+Total number of uptaking patients, calculated as the sum of the \code{uptake} input to \code{\link[=dynpv]{dynpv()}}, or \eqn{\sum_{j=1}^T u_j}
+}
+\seealso{
+\code{\link[=dynpv]{dynpv()}}, \code{\link[=futurepv]{futurepv()}}
 }

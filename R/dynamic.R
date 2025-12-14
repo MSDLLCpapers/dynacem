@@ -16,9 +16,33 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' Calculate present value for a payoff with dynamic pricing and dynamic uptake
+#' Present values with dynamic pricing and dynamic uptake
+#' 
+#' Calculate present value for a payoff with dynamic (lifecycle) pricing and dynamic uptake (stacked cohorts).
 #'
-#' Present value of a payoff affected by dynamic pricing, with uptake across multiple cohorts (dynamic uptake)
+#' Suppose payoffs in relation to patients receiving treatment (such as costs or health outcomes) occur over timesteps \eqn{t=1, ..., T}. Let us partition time as follows.
+#' 
+#' - Suppose \eqn{j=1,...,T} indexes the time at which the patient begins treatment.
+#' - Suppose \eqn{k=1,...,T} indexes time since initiating treatment.
+#' 
+#' In general, \eqn{t=j+k-1}, and we are interested in the set of \eqn{(j,k)} such that \eqn{1 \leq t \leq T}.
+#' 
+#' For example, \eqn{t=3} comprises:
+#' 
+#' - patients who are in the third timestep of treatment that began in timestep 1: (j,k)=(1,3);
+#' - patients who are in the second timestep of treatment that began in timestep 2, (j,k)=(2,2); and
+#' - patients who are in the first timestep of treatment that began in timestep 3, (j,k)=(3,1)
+#' 
+#' The [Present Value](https://en.wikipedia.org/wiki/Present_value) of a cashflow \eqn{p_k} for the \eqn{u_j} patients who began treatment at time \eqn{j} and who are in their \eqn{k}th timestep of treatment is as follows
+#' \deqn{PV(j,k,l) = u_j \cdot p_k \cdot R_{j+k+l-1} \cdot (1+i)^{2-j-k}}
+#' where \eqn{i} is the risk-free discount rate per timestep, \eqn{p_k} is the cashflow amount in today’s money, and \eqn{p_k \cdot R_{j+k+l-1}} is the nominal amount of the cashflow at the time it is incurred, allowing for an offset of \eqn{l = tzero}.
+#' 
+#' The total present value, \eqn{TPV(l)}, is therefore the sum over all \eqn{j} and \eqn{k} within the time horizon \eqn{T}, namely:
+#' \deqn{TPV(l) = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} PV(j,k, l) \\
+#' \;
+#' = \sum_{j=1}^{T} \sum_{k=1}^{T-j+1} u_j \cdot p_k \cdot R_{l+j+k-1} \cdot (1+i)^{2-j-k}}
+#' 
+#' This function calculates \eqn{PV(j,k,l)} for all values of \eqn{j}, \eqn{k} and \eqn{l}, and returns this in a tibble.
 #' @param uptakes Vector of patient uptake over time
 #' @param horizon Time horizon for the calculation (length must be less than or equal to the length of payoffs)
 #' @param tzero Time at the date of calculation, to be used in lookup in prices vector
@@ -26,18 +50,30 @@
 #' @param prices Vector of price indices through the time horizon of interest
 #' @param discrate Discount rate per timestep, corresponding to price index
 #' @returns A tibble of class "dynpv" with the following columns:
-#' - `j`: todo
-#' - `k`: todo
-#' - `l`: todo
-#' - `t`: todo
-#' - `uj`: todo
-#' - `pk`: todo
-#' - `R`: todo
-#' - `v`: todo
-#' - `pv`: todo
+#' - `j`: Time at which patients began treatment
+#' - `k`: Time since patients began treatment
+#' - `l`: Time offset for the price index (from `tzero`)
+#' - `t`: Equals \eqn{j+k-1}
+#' - `uj`: Uptake of patients beginning treatment at time \eqn{j} (from `uptakes`)
+#' - `pk`: Cashflow amount in today's money in respect of patients at time \eqn{k} since starting treatment (from `payoffs`)
+#' - `R`: Index of prices over time \eqn{l+t} (from `prices`)
+#' - `v`: Discounting factors, \eqn{(1+i)^{1-t}}, where `i` is the discount rate per timestep
+#' - `pv`: Present value, \eqn{PV(j,k,l)}
 #' @export
 #' @examples
-#' library(dplyr)
+#' # Simple example
+#' pv1 <- dynpv(
+#'    uptakes = (1:10), # 1 patient uptakes in timestep 1, 2 patients in timestep 2, etc
+#'    tzero = c(0,5), # Calculations are performed with prices at times 0 and 5
+#'    payoffs = 90 + 10*(1:10), # Payoff vector of length 10 = (100, 110, ..., 190)
+#'    prices = 1.02^((1:15)-1), # Prices increase at 2\% per timestep in future
+#'    discrate = 0.05 # The nominal discount rate is 5\% per timestep;
+#'                    # the real discount rate per timestep is 3\% (=5\% - 3\%)
+#' )
+#' pv1
+#' summary(pv1)
+#' 
+#' # More complex example, using cashflow output from a heemod model
 #'
 #' # Obtain dataset
 #' democe <- get_dynfields(
@@ -48,19 +84,17 @@
 #'
 #' # Obtain short payoff vector of interest
 #' payoffs <- democe |>
-#'    filter(int=="new", model_time<11) |>
-#'    mutate(cost_oth = cost_total - cost_daq_new)
-#' Nt <- nrow(payoffs)
+#'    dplyr::filter(int=="new", model_time<11) |>
+#'    dplyr::mutate(cost_oth = cost_total - cost_daq_new)
 #'
 #' # Example calculation
-#' pv <- dynpv(
-#'    uptakes = rep(1, Nt),
+#' pv2 <- dynpv(
+#'    uptakes = rep(1, nrow(payoffs)),
 #'    payoffs = payoffs$cost_oth,
-#'    prices = 1 + (0:(Nt-1))*0.05,
+#'    prices = 1.05^(0:(nrow(payoffs)-1)),
 #'    discrate = 0.08
 #' )
-#' pv
-#' summary(pv)
+#' summary(pv2)
 dynpv <- function(
     uptakes = 1,
     payoffs,
