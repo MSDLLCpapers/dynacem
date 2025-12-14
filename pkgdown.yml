@@ -6,4 +6,7 @@ articles:
   cost-effectiveness-applications: cost-effectiveness-applications.html
   dynamic-pricing: dynamic-pricing.html
   dynamic-uptake: dynamic-uptake.html
-last_built: 2025-12-11T20:37Z
+last_built: 2025-12-14T04:16Z
+urls:
+  reference: https://MSDLLCpapers.github.io/dynacem/reference
+  article: https://MSDLLCpapers.github.io/dynacem/articles
