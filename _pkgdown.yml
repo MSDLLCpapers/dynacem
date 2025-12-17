@@ -1,6 +1,7 @@
 url: https://MSDLLCpapers.github.io/dynacem/
 template:
   bootstrap: 5
+  math-rendering: mathjax
 
 reference:
 - title: Key functions and datasets
