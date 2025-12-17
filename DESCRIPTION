@@ -8,8 +8,8 @@ Authors@R: c(
     )
 Description: Evaluates present values and cost-effectiveness with dynamic pricing and uptake.
 License: GPL (>= 3)
-URL: https://MSDLLCpapers.github.io/dynacem/, https://github.com/MSDLLCpapers/dynacem
-BugReports: https://github.com/MSDLLCpapers/dynacem/issues
+URL: https://MSDLLCpapers.github.io/dynamicpv/, https://github.com/MSDLLCpapers/dynamicpv
+BugReports: https://github.com/MSDLLCpapers/dynamipv/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

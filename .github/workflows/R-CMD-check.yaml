@@ -44,8 +44,6 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
-          # Newly added line suggested by Github Copilot - cache instead of cache-key
-          cache: ${{ runner.os }}-r-deps
 
       - uses: r-lib/actions/check-r-package@v2
         with:
