@@ -4,7 +4,7 @@ The goal of *dynamicpv* is to evaluate present values and
 cost-effectiveness with dynamic pricing and uptake.
 
 Through the
-[dynpv()](https://msdllcpapers.github.io/dynacem/reference/dynpv.html)
+[dynpv()](https://msdllcpapers.github.io/dynamicpv/reference/dynpv.html)
 function, the package provides calculations of the present values of
 costs, life years, QALYs or other payoffs allowing for dynamic uptake
 (also known as multiple cohorts) and dynamic pricing (also known as
@@ -23,8 +23,8 @@ intent.)
 # Install devtools package if not already installed
 install.packages("devtools")
 
-# Install dynamicpv using pak, from MSD's dynacem repository
-pak::pak("MSDLLCpapers/dynacem")
+# Install dynamicpv using pak from MSD repository
+pak::pak("MSDLLCpapers/dynamicpv")
 ```
 
 Note that the above does not install vignettes. Vignettes may be viewed
@@ -32,7 +32,7 @@ on the [package website](https://msdllcpapers.github.io/dynacem) or by
 instead running the following.
 
 ``` r
-devtools::install_github("MSDLLCpapers/dynacem", build_vignettes=TRUE)
+devtools::install_github("MSDLLCpapers/dynamicpv", build_vignettes=TRUE)
 ```
 
 You should then load the package, alongside some other packages used
@@ -54,7 +54,7 @@ library(tidyr)
 There are four vignettes provided.
 
 1.  The [Dynamic
-    Pricing](https://msdllcpapers.github.io/dynacem/articles/dynamic-pricing.html)
+    Pricing](https://msdllcpapers.github.io/dynamicpv/articles/dynamic-pricing.html)
     vignette
     ([`vignette("dynamic-pricing")`](https://MSDLLCpapers.github.io/dynacem/articles/dynamic-pricing.md))
     describes how present values may be calculated in the package from a
@@ -62,7 +62,7 @@ There are four vignettes provided.
     dynamic.
 
 2.  The [Dynamic
-    Uptake](https://msdllcpapers.github.io/dynacem/articles/dynamic-uptake.html)
+    Uptake](https://msdllcpapers.github.io/dynamicpv/articles/dynamic-uptake.html)
     vignette
     ([`vignette("dynamic-uptake")`](https://MSDLLCpapers.github.io/dynacem/articles/dynamic-uptake.md))
     explores further how present values can be derived allowing for
@@ -72,7 +72,7 @@ There are four vignettes provided.
     triangles.
 
 3.  The [Cost-Effectiveness
-    Applications](https://msdllcpapers.github.io/dynacem/articles/cost-effectiveness-applications.html)
+    Applications](https://msdllcpapers.github.io/dynamicpv/articles/cost-effectiveness-applications.html)
     (`vignette(cost-effectiveness-applications")`) vignette describes
     how, given a static cost-effectiveness model (single cohort, prices
     constant in real terms), Incremental Cost-Effectiveness Ratios may
@@ -85,7 +85,7 @@ There are four vignettes provided.
     exclusivity points for each intervention.
 
 4.  The [Budget Impact
-    Applications](https://msdllcpapers.github.io/dynacem/articles/budget-impact-applications.html)
+    Applications](https://msdllcpapers.github.io/dynamicpv/articles/budget-impact-applications.html)
     ([`vignette("budget-impact-applications")`](https://MSDLLCpapers.github.io/dynacem/articles/budget-impact-applications.md))
     vignette describes how, given a static cost-effectiveness model
     (single cohort, prices constant in real terms) and dynamic uptake, a

@@ -11,7 +11,7 @@ Useful links:
 
 - <https://github.com/MSDLLCpapers/dynamicpv>
 
-- Report bugs at <https://github.com/MSDLLCpapers/dynamipv/issues>
+- Report bugs at <https://github.com/MSDLLCpapers/dynamicpv/issues>
 
 ## Author
 

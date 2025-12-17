@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/MSDLLCpapers/dynamipv/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/MSDLLCpapers/dynamicpv/blob/main/DESCRIPTION)
 
 Muston D (2025). *dynamicpv: Evaluates Present Values and
 Cost-Effectiveness With Dynamic Pricing And Uptake*. R package version

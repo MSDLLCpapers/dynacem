@@ -59,7 +59,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/MSDLLCpapers/dynamipv/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/MSDLLCpapers/dynamicpv/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -75,7 +75,7 @@
 <!-- badges: start -->
 
 <p>The goal of <em>dynamicpv</em> is to evaluate present values and cost-effectiveness with dynamic pricing and uptake.</p>
-<p>Through the <a href="https://msdllcpapers.github.io/dynacem/reference/dynpv.html" class="external-link">dynpv()</a> function, the package provides calculations of the present values of costs, life years, QALYs or other payoffs allowing for dynamic uptake (also known as multiple cohorts) and dynamic pricing (also known as life-cycle). The starting point is a conventional cohort cost-effectiveness model, such as one computed using the <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a> package.</p>
+<p>Through the <a href="https://msdllcpapers.github.io/dynamicpv/reference/dynpv.html" class="external-link">dynpv()</a> function, the package provides calculations of the present values of costs, life years, QALYs or other payoffs allowing for dynamic uptake (also known as multiple cohorts) and dynamic pricing (also known as life-cycle). The starting point is a conventional cohort cost-effectiveness model, such as one computed using the <a href="https://cran.r-project.org/package=heemod" class="external-link">heemod</a> package.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -84,11 +84,11 @@
 <code class="sourceCode R"><span><span class="co"># Install devtools package if not already installed</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Install dynamicpv using pak, from MSD's dynacem repository</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"MSDLLCpapers/dynacem"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Install dynamicpv using pak from MSD repository</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"MSDLLCpapers/dynamicpv"</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the above does not install vignettes. Vignettes may be viewed on the <a href="https://msdllcpapers.github.io/dynacem" class="external-link">package website</a> or by instead running the following.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MSDLLCpapers/dynacem"</span>, build_vignettes<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MSDLLCpapers/dynamicpv"</span>, build_vignettes<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>You should then load the package, alongside some other packages used here.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the dynamicpv package</span></span>
@@ -105,18 +105,18 @@
 </h2>
 <p>There are four vignettes provided.</p>
 <ol style="list-style-type: decimal">
-<li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/dynamic-pricing.html" class="external-link">Dynamic Pricing</a> vignette (<code><a href="articles/dynamic-pricing.html">vignette("dynamic-pricing")</a></code>) describes how present values may be calculated in the package from a payoff vector, allowing for the prices of the resources costed to be dynamic.</p></li>
-<li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/dynamic-uptake.html" class="external-link">Dynamic Uptake</a> vignette (<code><a href="articles/dynamic-uptake.html">vignette("dynamic-uptake")</a></code>) explores further how present values can be derived allowing for dynamic uptake. This is in contrast to the non-dynamic approach of calculating a present value for a single cohort of patients. This is analogous to the use by general insurance actuaries of run-off triangles.</p></li>
-<li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/cost-effectiveness-applications.html" class="external-link">Cost-Effectiveness Applications</a> (<code>vignette(cost-effectiveness-applications")</code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms), Incremental Cost-Effectiveness Ratios may be calculated that allow for dynamic pricing and/or dynamic uptake. This is illustrated by taking an example three-state partitioned survival model of a new intervention for an oncology indication compared to standard of care, with stated assumptions for how pricing and uptake may be dynamic. Nominal and Real ICERs are plotted over time, illustrating the impact of the loss of exclusivity points for each intervention.</p></li>
-<li><p>The <a href="https://msdllcpapers.github.io/dynacem/articles/budget-impact-applications.html" class="external-link">Budget Impact Applications</a> (<code><a href="articles/budget-impact-applications.html">vignette("budget-impact-applications")</a></code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms) and dynamic uptake, a budget impact can be readily calculated. The calculations are repeated with the dynamic pricing assumptions to illustrate how easily this can be done, and examine the differences between a budget impact assessment with and without dynamic pricing.</p></li>
+<li><p>The <a href="https://msdllcpapers.github.io/dynamicpv/articles/dynamic-pricing.html" class="external-link">Dynamic Pricing</a> vignette (<code><a href="articles/dynamic-pricing.html">vignette("dynamic-pricing")</a></code>) describes how present values may be calculated in the package from a payoff vector, allowing for the prices of the resources costed to be dynamic.</p></li>
+<li><p>The <a href="https://msdllcpapers.github.io/dynamicpv/articles/dynamic-uptake.html" class="external-link">Dynamic Uptake</a> vignette (<code><a href="articles/dynamic-uptake.html">vignette("dynamic-uptake")</a></code>) explores further how present values can be derived allowing for dynamic uptake. This is in contrast to the non-dynamic approach of calculating a present value for a single cohort of patients. This is analogous to the use by general insurance actuaries of run-off triangles.</p></li>
+<li><p>The <a href="https://msdllcpapers.github.io/dynamicpv/articles/cost-effectiveness-applications.html" class="external-link">Cost-Effectiveness Applications</a> (<code>vignette(cost-effectiveness-applications")</code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms), Incremental Cost-Effectiveness Ratios may be calculated that allow for dynamic pricing and/or dynamic uptake. This is illustrated by taking an example three-state partitioned survival model of a new intervention for an oncology indication compared to standard of care, with stated assumptions for how pricing and uptake may be dynamic. Nominal and Real ICERs are plotted over time, illustrating the impact of the loss of exclusivity points for each intervention.</p></li>
+<li><p>The <a href="https://msdllcpapers.github.io/dynamicpv/articles/budget-impact-applications.html" class="external-link">Budget Impact Applications</a> (<code><a href="articles/budget-impact-applications.html">vignette("budget-impact-applications")</a></code>) vignette describes how, given a static cost-effectiveness model (single cohort, prices constant in real terms) and dynamic uptake, a budget impact can be readily calculated. The calculations are repeated with the dynamic pricing assumptions to illustrate how easily this can be done, and examine the differences between a budget impact assessment with and without dynamic pricing.</p></li>
 </ol>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/MSDLLCpapers/dynamipv/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/MSDLLCpapers/dynamipv/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/MSDLLCpapers/dynamicpv/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/MSDLLCpapers/dynamicpv/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -148,8 +148,8 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://github.com/MSDLLCpapers/dynacem/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/MSDLLCpapers/dynacem/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/MSDLLCpapers/dynacem" class="external-link"><img src="https://codecov.io/gh/MSDLLCpapers/dynacem/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/MSDLLCpapers/dynamicpv/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/MSDLLCpapers/dynamicpv/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/MSDLLCpapers/dynamicpv" class="external-link"><img src="https://codecov.io/gh/MSDLLCpapers/dynamicpv/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
