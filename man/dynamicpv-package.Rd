@@ -13,9 +13,9 @@ Evaluates present values and cost-effectiveness with dynamic pricing and uptake.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://MSDLLCpapers.github.io/dynacem/}
-  \item \url{https://github.com/MSDLLCpapers/dynacem}
-  \item Report bugs at \url{https://github.com/MSDLLCpapers/dynacem/issues}
+  \item \url{https://MSDLLCpapers.github.io/dynamicpv/}
+  \item \url{https://github.com/MSDLLCpapers/dynamicpv}
+  \item Report bugs at \url{https://github.com/MSDLLCpapers/dynamipv/issues}
 }
 
 }
