@@ -9,18 +9,19 @@ not for price inflation, prices would be constant. This assumption
 provides a lot of mathematical convenience in that we can keep
 calculations of Net Present Value (NPV) a lot simpler.
 
-The NPV of a cashflow $c_{t}$ in $t$ years time, assuming prices
-constant in real terms and an annual discount rate of $i_{real}$ is
+The NPV of a cashflow \\c_t\\ in \\t\\ years time, assuming prices
+constant in real terms and an annual discount rate of \\i\_{real}\\ is
 calculated as follows:
 
-$$NPV = \frac{c_{t}}{\left( 1 + i_{real} \right)^{t}}$$
+\\NPV = \frac{c_t}{(1+i\_{real})^{t}}\\
 
 Cashflows may not in general be expected to be constant in real terms.
 Accordingly it can be preferable to explicitly estimate the cashflow in
-nominal terms, $c\prime_{t} = c_{t} \cdot R_{t}$, and discount with a
-nominal discount rate that includes expected inflation.
+nominal terms, \\c'\_t = c_t \cdot R_t\\, and discount with a nominal
+discount rate that includes expected inflation.
 
-$$1 + i_{nom} = \left( 1 + i_{real} \right)\left( 1 + r_{g} \right)$$$$NPV = \frac{c\prime_{t}}{\left( 1 + i_{nom} \right)^{t}}$$
+\\ 1+i\_{nom} = (1+i\_{real})(1+r_g) \\ \\NPV =
+\frac{c'\_t}{(1+i\_{nom})^t} \\
 
 ## Using *dynamicpv*
 
@@ -64,15 +65,15 @@ total(pv1)
 
 The calculation can be presented in a table as follows.
 
-| Time  | Cashflow | Discount factor           | Product |
-|-------|----------|---------------------------|---------|
-| $t$   | $c_{t}$  | $v^{t} = (1 + i)^{1 - t}$ |         |
-| 1     | 110      | 1                         | 110     |
-| 2     | 120      | 0.971                     | 117     |
-| 3     | 130      | 0.943                     | 123     |
-| 4     | 140      | 0.915                     | 128     |
-| 5     | 150      | 0.888                     | 133     |
-| Total | 650      |                           | 610     |
+| Time  | Cashflow | Discount factor       | Product |
+|-------|----------|-----------------------|---------|
+| \\t\\ | \\c_t\\  | \\v^t = (1+i)^{1-t}\\ |         |
+| 1     | 110      | 1                     | 110     |
+| 2     | 120      | 0.971                 | 117     |
+| 3     | 130      | 0.943                 | 123     |
+| 4     | 140      | 0.915                 | 128     |
+| 5     | 150      | 0.888                 | 133     |
+| Total | 650      |                       | 610     |
 
 Calculation of NPV from a simple cashflow and given discount rate
 

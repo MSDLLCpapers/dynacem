@@ -11,7 +11,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -50,7 +56,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/MSDLLCpapers/dynacem/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/MSDLLCpapers/dynamipv/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -66,7 +72,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Dynamic Uptake</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MSDLLCpapers/dynacem/blob/main/vignettes/dynamic-uptake.Rmd" class="external-link"><code>vignettes/dynamic-uptake.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MSDLLCpapers/dynamipv/blob/main/vignettes/dynamic-uptake.Rmd" class="external-link"><code>vignettes/dynamic-uptake.Rmd</code></a></small>
       <div class="d-none name"><code>dynamic-uptake.Rmd</code></div>
     </div>
 
@@ -93,7 +99,7 @@ of dynamic pricing, as covered in
 </h2>
 <p>First let us load the packages we will use for this vignette.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynacem/">dynamicpv</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://MSDLLCpapers.github.io/dynamicpv/" class="external-link">dynamicpv</a></span><span class="op">)</span></span></code></pre></div>
 <p>Let us work with the same cashflow as in
 <code><a href="../articles/dynamic-pricing.html">vignette("dynamic-pricing")</a></code>, but assume all costs/prices
 are constant in real terms. The discount rate is 3 % per year, real.</p>
@@ -122,9 +128,9 @@ rate</caption>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>t</mi></msub><annotation encoding="application/x-tex">c_t</annotation></semantics></math></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>v</mi><mi>t</mi></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">v^t = (1+i)^{1-t}</annotation></semantics></math></td>
+<td><span class="math inline">\(t\)</span></td>
+<td><span class="math inline">\(c_t\)</span></td>
+<td><span class="math inline">\(v^t = (1+i)^{1-t}\)</span></td>
 <td></td>
 </tr>
 <tr class="even">
@@ -214,14 +220,14 @@ rate</caption>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>t</mi></msub><annotation encoding="application/x-tex">c_t</annotation></semantics></math></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">c_{t-1}</annotation></semantics></math></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mi>t</mi><mo>−</mo><mn>2</mn></mrow></msub><annotation encoding="application/x-tex">c_{t-2}</annotation></semantics></math></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mi>t</mi><mo>−</mo><mn>3</mn></mrow></msub><annotation encoding="application/x-tex">c_{t-3}</annotation></semantics></math></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mi>t</mi><mo>−</mo><mn>4</mn></mrow></msub><annotation encoding="application/x-tex">c_{t-4}</annotation></semantics></math></td>
+<td><span class="math inline">\(t\)</span></td>
+<td><span class="math inline">\(c_t\)</span></td>
+<td><span class="math inline">\(c_{t-1}\)</span></td>
+<td><span class="math inline">\(c_{t-2}\)</span></td>
+<td><span class="math inline">\(c_{t-3}\)</span></td>
+<td><span class="math inline">\(c_{t-4}\)</span></td>
 <td></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>v</mi><mi>t</mi></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">v^t = (1+i)^{1-t}</annotation></semantics></math></td>
+<td><span class="math inline">\(v^t = (1+i)^{1-t}\)</span></td>
 <td></td>
 </tr>
 <tr class="even">
@@ -327,9 +333,7 @@ the total and mean NPVs must reflect weightings applicable to each
 cashflow.</p>
 <p>For example, suppose the number of patients receiving treatment
 increases by one each year. The weighting given to cashflow 1 would then
-be
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>3</mn><mo>+</mo><mn>4</mn><mo>+</mo><mn>5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>6.67</mn></mrow><annotation encoding="application/x-tex">1/(1+2+3+4+5)=6.67</annotation></semantics></math>
-%.</p>
+be <span class="math inline">\(1/(1+2+3+4+5)=6.67\)</span> %.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Uptake vector is simple</span></span>
 <span><span class="va">uptakes3</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span></span>

@@ -11,16 +11,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/MSDLLCpapers/dynacem/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/MSDLLCpapers/dynamipv/blob/main/DESCRIPTION)
 
 Muston D (2025). *dynamicpv: Evaluates Present Values and
 Cost-Effectiveness With Dynamic Pricing And Uptake*. R package version
-0.3.0, <https://MSDLLCpapers.github.io/dynacem/>.
+0.3.0, <https://MSDLLCpapers.github.io/dynamicpv/>.
 
     @Manual{,
       title = {dynamicpv: Evaluates Present Values and Cost-Effectiveness With Dynamic Pricing And Uptake},
       author = {Dominic Muston},
       year = {2025},
       note = {R package version 0.3.0},
-      url = {https://MSDLLCpapers.github.io/dynacem/},
+      url = {https://MSDLLCpapers.github.io/dynamicpv/},
     }

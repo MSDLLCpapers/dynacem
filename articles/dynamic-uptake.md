@@ -45,15 +45,15 @@ vt1 <- (1 + disc)^(-1 * (0:4))
 First let us consider non-dynamic uptake, as covered in
 [`vignette("dynamic-pricing")`](https://MSDLLCpapers.github.io/dynacem/articles/dynamic-pricing.md).
 
-| Time  | Cashflow 1 | Discount factor           | Product |
-|-------|------------|---------------------------|---------|
-| $t$   | $c_{t}$    | $v^{t} = (1 + i)^{1 - t}$ |         |
-| 1     | 110        | 1                         | 110     |
-| 2     | 120        | 0.971                     | 117     |
-| 3     | 130        | 0.943                     | 123     |
-| 4     | 140        | 0.915                     | 128     |
-| 5     | 150        | 0.888                     | 133     |
-| Total | 650        |                           | 610     |
+| Time  | Cashflow 1 | Discount factor       | Product |
+|-------|------------|-----------------------|---------|
+| \\t\\ | \\c_t\\    | \\v^t = (1+i)^{1-t}\\ |         |
+| 1     | 110        | 1                     | 110     |
+| 2     | 120        | 0.971                 | 117     |
+| 3     | 130        | 0.943                 | 123     |
+| 4     | 140        | 0.915                 | 128     |
+| 5     | 150        | 0.888                 | 133     |
+| Total | 650        |                       | 610     |
 
 Calculation of NPV from a simple cashflow and given discount rate
 
@@ -83,15 +83,15 @@ Suppose we have one new patient each year, and we wish to calculate the
 total NPV in a time horizon of 5 years. Now we have a payoff triangle as
 follows.
 
-| Time  | Cashflow 1 | Cashflow 2  | Cashflow 3  | Cashflow 4  | Cashflow 5  | Cashflow Sum | Discount factor           | Product |
-|-------|------------|-------------|-------------|-------------|-------------|--------------|---------------------------|---------|
-| $t$   | $c_{t}$    | $c_{t - 1}$ | $c_{t - 2}$ | $c_{t - 3}$ | $c_{t - 4}$ |              | $v^{t} = (1 + i)^{1 - t}$ |         |
-| 1     | 110        | \-          | \-          | \-          | \-          | 110          | 1                         | 110     |
-| 2     | 120        | 110         | \-          | \-          | \-          | 230          | 0.971                     | 223     |
-| 3     | 130        | 120         | 110         | \-          | \-          | 360          | 0.943                     | 339     |
-| 4     | 140        | 130         | 120         | 110         | \-          | 500          | 0.915                     | 458     |
-| 5     | 150        | 140         | 130         | 120         | 110         | 650          | 0.888                     | 578     |
-| Total | 650        |             |             |             |             |              |                           | 1,708   |
+| Time  | Cashflow 1 | Cashflow 2   | Cashflow 3   | Cashflow 4   | Cashflow 5   | Cashflow Sum | Discount factor       | Product |
+|-------|------------|--------------|--------------|--------------|--------------|--------------|-----------------------|---------|
+| \\t\\ | \\c_t\\    | \\c\_{t-1}\\ | \\c\_{t-2}\\ | \\c\_{t-3}\\ | \\c\_{t-4}\\ |              | \\v^t = (1+i)^{1-t}\\ |         |
+| 1     | 110        | \-           | \-           | \-           | \-           | 110          | 1                     | 110     |
+| 2     | 120        | 110          | \-           | \-           | \-           | 230          | 0.971                 | 223     |
+| 3     | 130        | 120          | 110          | \-           | \-           | 360          | 0.943                 | 339     |
+| 4     | 140        | 130          | 120          | 110          | \-           | 500          | 0.915                 | 458     |
+| 5     | 150        | 140          | 130          | 120          | 110          | 650          | 0.888                 | 578     |
+| Total | 650        |              |              |              |              |              |                       | 1,708   |
 
 Calculation of NPV from a simple cashflow and given discount rate
 
@@ -136,7 +136,7 @@ cashflow.
 
 For example, suppose the number of patients receiving treatment
 increases by one each year. The weighting given to cashflow 1 would then
-be $1/(1 + 2 + 3 + 4 + 5) = 6.67$ %.
+be \\1/(1+2+3+4+5)=6.67\\ %.
 
 ``` r
 # Uptake vector is simple

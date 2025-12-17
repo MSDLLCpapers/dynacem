@@ -7,11 +7,11 @@ uptake.
 
 Useful links:
 
-- <https://MSDLLCpapers.github.io/dynacem/>
+- <https://MSDLLCpapers.github.io/dynamicpv/>
 
-- <https://github.com/MSDLLCpapers/dynacem>
+- <https://github.com/MSDLLCpapers/dynamicpv>
 
-- Report bugs at <https://github.com/MSDLLCpapers/dynacem/issues>
+- Report bugs at <https://github.com/MSDLLCpapers/dynamipv/issues>
 
 ## Author
 

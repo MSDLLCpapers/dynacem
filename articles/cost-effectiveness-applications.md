@@ -52,49 +52,51 @@ provides the technical basis of the calculations within the package.
 
 ### Mathematical framework
 
-Let us partition time as follows. Suppose $j = 1,...,T$ indexes the time
-at which the patient begins treatment (with either the new intervention
-of Standard of Care, SoC), where $T$ is the time horizon of the
-decision-maker. Suppose $k = 1,...,T$ indexes time since initiating
-treatment.
+Let us partition time as follows. Suppose \\j=1, ..., T\\ indexes the
+time at which the patient begins treatment (with either the new
+intervention of Standard of Care, SoC), where \\T\\ is the time horizon
+of the decision-maker. Suppose \\k=1, ..., T\\ indexes time since
+initiating treatment.
 
 This can be illustrated through an example. Suppose then we are
 considering a cashflow in timestep 3. This will comprise:
 
 - patients who are in the third timestep of treatment that began in
-  timestep 1, $(j,k) = (1,3)$;
+  timestep 1, \\(j,k) = (1, 3)\\;
 - patients who are in the second timestep of treatment that began in
-  timestep 2, $(j,k) = (2,2)$; and
+  timestep 2, \\(j,k) = (2, 2)\\; and
 - patients who are in the first timestep of treatment that began in
-  timestep 3, $(j,k) = (3,1)$.
+  timestep 3, \\(j,k) = (3, 1)\\.
 
-In general, $t = j + k - 1$, and we are interested in $t = 1,...,T$.
+In general, \\t=j+k-1\\, and we are interested in \\t=1,...,T\\.
 
-The Present Value of a cashflow $p_{k}$ for the $u_{j}$ patients who
-began treatment at time $j$ and who are in their $k$th timestep of
+The Present Value of a cashflow \\p_k\\ for the \\u_j\\ patients who
+began treatment at time \\j\\ and who are in their \\k\\th timestep of
 treatment is as follows
 
-$$PV(j,k) = u_{j} \cdot p_{k} \cdot R_{j + k - 1} \cdot (1 + i)^{2 - j - k}$$
+\\ PV(j,k) = u_j \cdot p_k \cdot R\_{j+k-1} \cdot (1+i)^{2-j-k} \\
 
-where $i$ is the risk-free discount rate per timestep, and $p_{k}$ is
-the cashflow amount in today’s money, and $p_{k} \cdot R_{j + k - 1}$ is
+where \\i\\ is the risk-free discount rate per timestep, and \\p_k\\ is
+the cashflow amount in today’s money, and \\p_k \cdot R\_{j+k-1}\\ is
 the nominal amount of the cashflow at the time it is incurred.
 
-The total present value is therefore the sum over all $j$ and $k$ within
-the time horizon $T$, namely:
+The total present value is therefore the sum over all \\j\\ and \\k\\
+within the time horizon \\T\\, namely:
 
-$$TPV = \sum\limits_{j = 1}^{T}\sum\limits_{k = 1}^{T - j + 1}PV(j,k) = \sum\limits_{j = 1}^{T}\sum\limits_{k = 1}^{T - j + 1}u_{j} \cdot p_{k} \cdot R_{j + k - 1} \cdot (1 + i)^{2 - j - k}$$
+\\ TPV = \sum\_{j=1}^{T} \sum\_{k=1}^{T-j+1} PV(j, k) = \sum\_{j=1}^{T}
+\sum\_{k=1}^{T-j+1} u_j \cdot p_k \cdot R\_{j+k-1} \cdot (1+i)^{2-j-k}
+\\
 
 The
 [`dynamicpv::dynpv()`](https://MSDLLCpapers.github.io/dynacem/reference/dynpv.md)
 function operationalizes this calculation with arguments:
 
-- `payoffs` $= p_{k}$
-- `uptakes` $= u_{j}$
-- `horizon` $= T$, defaulting to the length of `payoffs`
-- `prices` $= R_{t}$, where $t = j + k - 1 + t_{0}$
-- `discrate` $= i$
-- `tzero` $= t_{0}$, defaulting to zero
+- `payoffs` \\= {p_k}\\
+- `uptakes` \\= {u_j}\\
+- `horizon` \\= T\\, defaulting to the length of `payoffs`
+- `prices` \\= {R_t}\\, where \\t=j+k-1+t_0\\
+- `discrate` \\= i\\
+- `tzero` \\= t_0\\, defaulting to zero
 
 The `tzero` argument is a time offset useful to be able to calculate
 present values into the future, which can be performed for single
@@ -558,7 +560,7 @@ Other costs rise in line with general price inflation
 (`discrate=disc_cycle`).
 
 ``` r
-# SOC
+# SOC, costs other than drug acquisition
 s1_soc_othcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_soc$cost_nondaq_rup,
@@ -566,6 +568,7 @@ s1_soc_othcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# SOC, drug acquisition costs
 s1_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_soc$cost_daq_soc_rup,
@@ -573,8 +576,10 @@ s1_soc_daqcost <- dynamicpv::dynpv(
     discrate = disc_cycle
     )
 
+# SOC, total costs
 s1_soc_cost <- s1_soc_daqcost + s1_soc_othcost
 
+# SOC, QALYs
 s1_soc_qaly <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_soc$qaly_rup,
@@ -582,8 +587,7 @@ s1_soc_qaly <- dynamicpv::dynpv(
     discrate = disc_cycle
     )
 
-# New intervention
-
+# New intervention, costs other than drug acquisition
 s1_new_othcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$cost_nondaq_rup,
@@ -591,6 +595,7 @@ s1_new_othcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# New intervention, drug acquisition costs
 s1_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$cost_daq_new_rup,
@@ -598,8 +603,10 @@ s1_new_daqcost <- dynamicpv::dynpv(
     discrate = disc_cycle
     )
 
+# New intervention, total costs
 s1_new_cost <- s1_new_daqcost + s1_new_othcost
 
+# New intervention, QALYs
 s1_new_qaly <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$qaly_rup,
@@ -607,7 +614,7 @@ s1_new_qaly <- dynamicpv::dynpv(
     discrate = disc_cycle
     )
 
-# Incrementals
+# Incremental costs, QALYs, and ICER
 s1_icost <- total(s1_new_cost) - total(s1_soc_cost)
 s1_iqaly <- total(s1_new_qaly) - total(s1_soc_qaly)
 s1_icer <- s1_icost / s1_iqaly
@@ -628,9 +635,10 @@ applying the relevant dynamic price index (`prices_dyn_soc` and
 from Scenario 1.
 
 ``` r
-# SOC
+# SOC, costs other than drug acquisition are unchanged
 s2_soc_othcost <- s1_soc_othcost
 
+# SoC, drug acquisition costs
 s2_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_soc$cost_daq_soc_rup,
@@ -638,13 +646,16 @@ s2_soc_daqcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# SoC, total costs
 s2_soc_cost <- s2_soc_daqcost + s2_soc_othcost
+
+# SoC, QALYs are unchanged
 s2_soc_qaly <- s1_soc_qaly
 
-# New intervention
-
+# New intervention, costs other than drug acquisition are unchanged
 s2_new_othcost <- s1_new_othcost
 
+# New intervention, drug acquisition costs
 s2_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_single,
     payoffs = hemout_new$cost_daq_new_rup,
@@ -652,7 +663,10 @@ s2_new_daqcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# New intervention, total costs
 s2_new_cost <- s2_new_daqcost + s2_new_othcost
+
+# New intervention, QALYs are unchanged
 s2_new_qaly <- s1_new_qaly
 
 # Incrementals
@@ -671,7 +685,7 @@ The calculation for Scenario 3 is the same as for Scenario 1 except for
 dynamic uptake, which is handled by setting `uptakes = uptake_multi`.
 
 ``` r
-# SOC
+# SOC, costs other than drug acquisition
 s3_soc_othcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_soc$cost_nondaq_rup,
@@ -679,6 +693,7 @@ s3_soc_othcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# SoC, drug acquisition costs
 s3_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_soc$cost_daq_soc_rup,
@@ -686,8 +701,10 @@ s3_soc_daqcost <- dynamicpv::dynpv(
     discrate = disc_cycle
     )
 
+# SoC, total costs
 s3_soc_cost <- s3_soc_daqcost + s3_soc_othcost
 
+# SoC, QALYs
 s3_soc_qaly <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_soc$qaly_rup,
@@ -695,7 +712,7 @@ s3_soc_qaly <- dynamicpv::dynpv(
     discrate = disc_cycle
     )
 
-# New intervention
+# New intervention, costs other than drug acquisition
 s3_new_othcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_new$cost_nondaq_rup,
@@ -703,6 +720,7 @@ s3_new_othcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# New intervention, drug acquisition costs
 s3_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_new$cost_daq_new_rup,
@@ -710,8 +728,10 @@ s3_new_daqcost <- dynamicpv::dynpv(
     discrate = disc_cycle
     )
 
+# New intervention, total costs
 s3_new_cost <- s3_new_daqcost + s3_new_othcost
 
+# New intervention, QALYs
 s3_new_qaly <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_new$qaly_rup,
@@ -738,9 +758,10 @@ Scenario 3 through applying the relevant dynamic price index
 unchanged from Scenario 3.
 
 ``` r
-# SOC
+# SOC, costs other than drug acquisition are unchanged
 s4_soc_othcost <- s3_soc_othcost
 
+# SoC, drug acquisition costs
 s4_soc_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_soc$cost_daq_soc_rup,
@@ -748,14 +769,16 @@ s4_soc_daqcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# SoC, total costs
 s4_soc_cost <- s4_soc_daqcost + s4_soc_othcost
 
+# SoC, QALYs are unchanged
 s4_soc_qaly <- s3_soc_qaly
 
-# New intervention
-
+# New intervention, costs other than drug acquisition are unchanged
 s4_new_othcost <- s3_new_othcost
 
+# New intervention, drug acquisition costs
 s4_new_daqcost <- dynamicpv::dynpv(
     uptakes = uptake_multi,
     payoffs = hemout_new$cost_daq_new_rup,
@@ -763,7 +786,10 @@ s4_new_daqcost <- dynamicpv::dynpv(
     discrate = nomdisc_cycle
     )
 
+# New intervention, total costs
 s4_new_cost <- s4_new_daqcost + s4_new_othcost
+
+# New intervention, QALYs
 s4_new_qaly <- s3_new_qaly
 
 # Incrementals
