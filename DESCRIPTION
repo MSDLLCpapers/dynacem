@@ -1,9 +1,11 @@
 Package: dynamicpv
 Title: Evaluates Present Values and Cost-Effectiveness With Dynamic Pricing And Uptake
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
     person("Dominic", "Muston", , "dominic.muston@msd.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4876-7940")),
+      person("John", "Blischak", role = c("ctb"),
+             comment = c(ORCID = "0000-0003-2634-9879")),
     person("Merck & Co., Inc., Rahway, NJ, USA and its affiliates", role = c("cph", "fnd"))
     )
 Description: Evaluates present values and cost-effectiveness with dynamic pricing and uptake.

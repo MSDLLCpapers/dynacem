@@ -1,3 +1,7 @@
+# dynamicpv 0.4.0
+
+* Converted S7 classes and methods to S3
+
 # dynamicpv 0.3.0
 
 # dynamicpv 0.2.2
