@@ -15,7 +15,7 @@ Useful links:
 \itemize{
   \item \url{https://MSDLLCpapers.github.io/dynamicpv/}
   \item \url{https://github.com/MSDLLCpapers/dynamicpv}
-  \item Report bugs at \url{https://github.com/MSDLLCpapers/dynamipv/issues}
+  \item Report bugs at \url{https://github.com/MSDLLCpapers/dynamicpv/issues}
 }
 
 }
